@@ -33,7 +33,6 @@ jobs:
         uses: actions/setup-node@v5
         with:
           node-version: 24
-          cache: npm
 
       - name: Verify required data files
         run: |
@@ -45,7 +44,7 @@ jobs:
 
       - name: Validate JSON syntax
         run: |
-          node --input-type=module -e "JSON.parse(require('node:fs').readFileSync('data/commands.json','utf8')); JSON.parse(require('node:fs').readFileSync('data/categories.json','utf8')); console.log('JSON SYNTAX VALIDATION: PASS')"
+          node --input-type=module -e "import { readFileSync } from 'node:fs'; JSON.parse(readFileSync('data/commands.json','utf8')); JSON.parse(readFileSync('data/categories.json','utf8')); console.log('JSON SYNTAX VALIDATION: PASS')"
 
       - name: Validate command data integrity
         run: npm run validate:data
@@ -61,8 +60,5 @@ jobs:
           {
             echo "## Command Data V2 Validation"
             echo ""
-            echo "- Required files: PASS"
-            echo "- JSON syntax: PASS"
-            echo "- Command data integrity: PASS"
-            echo "- commands-v2.js syntax: PASS"
+            echo "Workflow completed. See individual steps above for validation results."
           } >> "$GITHUB_STEP_SUMMARY"
