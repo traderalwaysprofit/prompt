@@ -1,0 +1,61 @@
+name: Command Data V2 Extraction
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'data/source/command-data-v1.html'
+      - 'scripts/extract-command-data-v2.mjs'
+      - '.github/workflows/command-data-v2-extraction.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  extract:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v5
+        with:
+          node-version: 24
+
+      - name: Extract V2 data
+        run: node scripts/extract-command-data-v2.mjs
+
+      - name: Validate extracted data
+        run: npm run validate:data
+
+      - name: Detect generated changes
+        id: changes
+        shell: bash
+        run: |
+          if git diff --quiet -- data/commands.json data/categories.json; then
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Commit generated data
+        if: steps.changes.outputs.changed == 'true'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/commands.json data/categories.json
+          git commit -m "chore: extract Command Data V2 from source"
+          git push
+
+      - name: Summary
+        run: |
+          {
+            echo "## Command Data V2 Extraction"
+            echo ""
+            echo "- Source: data/source/command-data-v1.html"
+            echo "- Extractor: scripts/extract-command-data-v2.mjs"
+            echo "- Validation: npm run validate:data"
+            echo "- Generated data committed when changed"
+          } >> "$GITHUB_STEP_SUMMARY"
