@@ -5,6 +5,7 @@
   "description": "Samson Prompt baseline V1",
   "type": "module",
   "scripts": {
-    "build": "node scripts/build-static.mjs"
+    "build": "node scripts/build-static.mjs",
+    "validate:data": "node scripts/validate-data.mjs"
   }
 }
