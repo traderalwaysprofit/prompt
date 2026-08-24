@@ -21,6 +21,9 @@ jobs:
       - name: Build
         run: npm run build
 
+      - name: Validate data integrity
+        run: npm run validate:data
+
       - name: Validate build output
         run: |
           test -f dist/index.html
@@ -28,3 +31,4 @@ jobs:
           test -f dist/src/styles.css
           test -d dist
           echo "BASELINE BUILD VALIDATION: PASS"
+          echo "DATA INTEGRITY VALIDATION: PASS"
