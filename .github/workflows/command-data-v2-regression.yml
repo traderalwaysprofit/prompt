@@ -1,0 +1,134 @@
+name: Command Data V2 Regression Validation
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'data/commands.json'
+      - 'data/categories.json'
+      - '.github/workflows/command-data-v2-regression.yml'
+  pull_request:
+    paths:
+      - 'data/commands.json'
+      - 'data/categories.json'
+      - '.github/workflows/command-data-v2-regression.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  regression-validation:
+    name: Command Data V2 Regression Validation
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository with history
+        uses: actions/checkout@v5
+        with:
+          fetch-depth: 2
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v5
+        with:
+          node-version: 24
+
+      - name: Validate current data
+        run: npm run validate:data
+
+      - name: Detect command regressions
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          if ! git rev-parse HEAD^ >/dev/null 2>&1; then
+            echo "No parent commit available; regression comparison skipped."
+            exit 0
+          fi
+
+          git show HEAD^:data/commands.json > /tmp/commands-baseline.json
+          cp data/commands.json /tmp/commands-current.json
+
+          node --input-type=module <<'NODE'
+          import { readFileSync } from 'node:fs';
+
+          const baseline = JSON.parse(readFileSync('/tmp/commands-baseline.json', 'utf8'));
+          const current = JSON.parse(readFileSync('/tmp/commands-current.json', 'utf8'));
+
+          const oldById = new Map(baseline.map((item) => [item.id, item]));
+          const newById = new Map(current.map((item) => [item.id, item]));
+
+          const removed = baseline.filter((item) => !newById.has(item.id));
+          const added = current.filter((item) => !oldById.has(item.id));
+          const changed = [];
+
+          for (const oldItem of baseline) {
+            const newItem = newById.get(oldItem.id);
+            if (!newItem) continue;
+
+            for (const field of ['name', 'categoryId', 'template']) {
+              if (oldItem[field] !== newItem[field]) {
+                changed.push({ id: oldItem.id, field });
+              }
+            }
+          }
+
+          console.log(`Baseline commands: ${baseline.length}`);
+          console.log(`Current commands:  ${current.length}`);
+          console.log(`Added commands:    ${added.length}`);
+          console.log(`Removed commands:  ${removed.length}`);
+          console.log(`Changed fields:    ${changed.length}`);
+
+          if (removed.length) {
+            console.error('\nREGRESSION: command deletion detected:');
+            for (const item of removed) console.error(`- ${item.id} (${item.name})`);
+            process.exit(1);
+          }
+
+          console.log('\nCOMMAND REGRESSION: PASS');
+          NODE
+
+      - name: Validate category regression
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          if ! git rev-parse HEAD^ >/dev/null 2>&1; then
+            exit 0
+          fi
+
+          git show HEAD^:data/categories.json > /tmp/categories-baseline.json
+
+          node --input-type=module <<'NODE'
+          import { readFileSync } from 'node:fs';
+
+          const baseline = JSON.parse(readFileSync('/tmp/categories-baseline.json', 'utf8'));
+          const current = JSON.parse(readFileSync('data/categories.json', 'utf8'));
+
+          const currentIds = new Set(current.map((item) => item.id));
+          const removed = baseline.filter((item) => !currentIds.has(item.id));
+
+          console.log(`Baseline categories: ${baseline.length}`);
+          console.log(`Current categories:  ${current.length}`);
+
+          if (removed.length) {
+            console.error('\nREGRESSION: category deletion detected:');
+            for (const item of removed) console.error(`- ${item.id} (${item.name})`);
+            process.exit(1);
+          }
+
+          console.log('CATEGORY REGRESSION: PASS');
+          NODE
+
+      - name: Regression summary
+        if: always()
+        run: |
+          {
+            echo "## Command Data V2 Regression Validation"
+            echo ""
+            echo "- Current data validation: completed"
+            echo "- Command deletion detection: completed"
+            echo "- Category deletion detection: completed"
+            echo "- Intentional additions are allowed"
+          } >> "$GITHUB_STEP_SUMMARY"
