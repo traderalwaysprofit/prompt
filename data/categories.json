@@ -1,0 +1,5 @@
+[
+  {"id":"core","name":"Core","description":"Core prompt commands"},
+  {"id":"design","name":"Design","description":"Visual and design commands"},
+  {"id":"marketing","name":"Marketing","description":"Marketing and conversion commands"}
+]
