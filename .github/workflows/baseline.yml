@@ -1,0 +1,57 @@
+name: Baseline Build Validation
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  baseline:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v5
+        with:
+          node-version: 24
+          cache: npm
+
+      - name: Validate package manifest
+        run: test -f package.json
+
+      - name: Build production output
+        run: npm run build
+
+      - name: Validate production output
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -f dist/index.html
+          test -f dist/src/main.js
+          test -f dist/src/styles.css
+          test -d dist
+          test "$(find dist -type f | wc -l)" -gt 0
+          test "$(find dist -type f -size +25M | wc -l)" -eq 0
+
+      - name: Check for forbidden runtime dependencies
+        shell: bash
+        run: |
+          set -euo pipefail
+          if grep -R -n -E 'cdn\.tailwindcss\.com|babel/standalone|react\.production\.min\.js|react-dom\.production\.min\.js|<script[^>]+src=["'"']https?://' dist --include='*.html' --include='*.js'; then
+            echo "ERROR: forbidden external frontend runtime detected."
+            exit 1
+          fi
+
+      - name: Check production output does not contain node_modules
+        run: '! find dist -type d -name node_modules -print -quit | grep -q .'
+
+      - name: Baseline validation passed
+        run: echo "BASELINE BUILD VALIDATION: PASS"
