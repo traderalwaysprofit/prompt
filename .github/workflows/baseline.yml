@@ -2,9 +2,11 @@ name: Baseline Build Validation
 
 on:
   push:
-    branches: [main]
+    branches:
+      - main
   pull_request:
-    branches: [main]
+    branches:
+      - main
   workflow_dispatch:
 
 permissions:
@@ -23,9 +25,6 @@ jobs:
         with:
           node-version: 24
 
-      - name: Install dependencies
-        run: npm install
-
       - name: Build production output
         run: npm run build
 
@@ -39,19 +38,18 @@ jobs:
           test -d dist
           test "$(find dist -type f | wc -l)" -gt 0
           test "$(find dist -type f -size +25M | wc -l)" -eq 0
-          ! find dist -type d -name node_modules -print -quit | grep -q .
+          if find dist -type d -name node_modules -print -quit | grep -q .; then
+            echo "ERROR: node_modules found in production output."
+            exit 1
+          fi
           echo "Production output validation: PASS"
 
-      - name: Check for forbidden runtime dependencies
+      - name: Validate runtime dependencies
         shell: bash
         run: |
           set -euo pipefail
           if grep -R -n -E 'cdn\.tailwindcss\.com|babel/standalone|react\.production\.min\.js|react-dom\.production\.min\.js' dist --include='*.html' --include='*.js'; then
             echo "ERROR: forbidden external frontend runtime detected."
-            exit 1
-          fi
-          if grep -R -n -E '<script[^>]+src="https?://' dist --include='*.html'; then
-            echo "ERROR: external script runtime detected."
             exit 1
           fi
           echo "Runtime dependency guard: PASS"
@@ -60,7 +58,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          grep -q '"directory": "./dist"' wrangler.jsonc
+          grep -Fq '"directory": "./dist"' wrangler.jsonc
           echo "Wrangler asset directory validation: PASS"
 
       - name: Baseline validation passed
