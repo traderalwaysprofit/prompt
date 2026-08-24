@@ -1,0 +1,43 @@
+name: Command Data V2 Release Gate
+
+on:
+  workflow_dispatch:
+  workflow_run:
+    workflows:
+      - Command Data V2 Extraction
+      - Command Data V2 Validation
+      - Command Data V2 Schema Validation
+      - Command Data V2 Regression Validation
+    types: [completed]
+
+permissions:
+  contents: read
+  actions: read
+
+jobs:
+  release-gate:
+    if: ${{ github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Verify generated data exists
+        run: |
+          test -s data/commands.json
+          test -s data/categories.json
+          echo "Generated Command Data V2 files are present."
+
+      - name: Validate command count
+        run: |
+          node -e "const d=require('./data/commands.json'); if(d.length!==193) throw new Error('Expected 193 commands, got '+d.length); console.log('193 commands verified.')"
+
+      - name: Release gate summary
+        run: |
+          {
+            echo "## Command Data V2 Release Gate"
+            echo ""
+            echo "✅ Extraction output present"
+            echo "✅ Command count = 193"
+            echo "✅ Release gate passed"
+          } >> "$GITHUB_STEP_SUMMARY"
