@@ -1,5 +1,82 @@
 [
-  {"id":"core","name":"Core","description":"Core prompt commands"},
-  {"id":"design","name":"Design","description":"Visual and design commands"},
-  {"id":"marketing","name":"Marketing","description":"Marketing and conversion commands"}
+  {
+    "id": "visual",
+    "name": "Visual, Sketsa & Diagram Teknis"
+  },
+  {
+    "id": "perspektif",
+    "name": "Perspektif, Skala & Perbandingan"
+  },
+  {
+    "id": "sistem",
+    "name": "Sistem, Proses & Arsitektur"
+  },
+  {
+    "id": "kreatif",
+    "name": "Desain Kreatif & Pemasaran"
+  },
+  {
+    "id": "belajar",
+    "name": "Belajar & Mengajar"
+  },
+  {
+    "id": "kritis",
+    "name": "Berpikir Kritis & Analisis"
+  },
+  {
+    "id": "bisnis",
+    "name": "Strategi Bisnis & Simulasi"
+  },
+  {
+    "id": "produktivitas",
+    "name": "Produktivitas & Riset"
+  },
+  {
+    "id": "komunikasi",
+    "name": "Komunikasi & Penulisan"
+  },
+  {
+    "id": "pengembangan",
+    "name": "Pengembangan Diri"
+  },
+  {
+    "id": "ai",
+    "name": "AI & Prompting Lanjutan"
+  },
+  {
+    "id": "data",
+    "name": "Data & Analisis Kuantitatif"
+  },
+  {
+    "id": "multibahasa",
+    "name": "Multibahasa & Lokalisasi"
+  },
+  {
+    "id": "produk",
+    "name": "Produk Digital & UX"
+  },
+  {
+    "id": "interpersonal",
+    "name": "Negosiasi & Interpersonal"
+  },
+  {
+    "id": "coding",
+    "name": "Coding & Teknis"
+  },
+  {
+    "id": "marketing",
+    "name": "Marketing & Strategi"
+  },
+  {
+    "id": "education",
+    "name": "Education & Pengajaran"
+  },
+  {
+    "id": "trading",
+    "name": "Trading Forex & XAU"
+  },
+  {
+    "id": "design",
+    "name": "Design & Kreatif Visual"
+  }
 ]

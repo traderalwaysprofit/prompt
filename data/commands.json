@@ -1,30 +1,1353 @@
 [
   {
     "id": 1,
-    "name": "/prompt",
-    "categoryId": "core",
-    "description": "Baseline prompt command.",
-    "template": "Create a clear, structured prompt for the requested task."
+    "name": "/handwritten",
+    "categoryId": "visual",
+    "description": "Catatan bergaya tulisan tangan",
+    "template": "Create a structured catatan bergaya tulisan tangan."
   },
   {
     "id": 2,
-    "name": "/poster",
-    "categoryId": "design",
-    "description": "Create a structured poster brief.",
-    "template": "Create a professional poster concept with hierarchy, copy, layout, and visual direction."
+    "name": "/visualize",
+    "categoryId": "visual",
+    "description": "Ubah ide jadi penjelasan visual",
+    "template": "Create a structured ubah ide jadi penjelasan visual."
   },
   {
     "id": 3,
-    "name": "/thumbnail",
-    "categoryId": "design",
-    "description": "Create a structured thumbnail brief.",
-    "template": "Create a high-impact thumbnail concept with clear focal point, hierarchy, and readable copy."
+    "name": "/stickynotes",
+    "categoryId": "visual",
+    "description": "Satu ide per sticky note",
+    "template": "Create a structured satu ide per sticky note."
   },
   {
     "id": 4,
-    "name": "/marketing",
+    "name": "/infographic",
+    "categoryId": "visual",
+    "description": "Tata letak infografis",
+    "template": "Create a structured tata letak infografis."
+  },
+  {
+    "id": 5,
+    "name": "/diagram",
+    "categoryId": "visual",
+    "description": "Diagram konsep",
+    "template": "Create a structured diagram konsep."
+  },
+  {
+    "id": 6,
+    "name": "/flowchart",
+    "categoryId": "visual",
+    "description": "Bagan alur langkah demi langkah",
+    "template": "Create a structured bagan alur langkah demi langkah."
+  },
+  {
+    "id": 7,
+    "name": "/mindmap",
+    "categoryId": "visual",
+    "description": "Peta pikiran",
+    "template": "Create a structured peta pikiran."
+  },
+  {
+    "id": 8,
+    "name": "/xray",
+    "categoryId": "visual",
+    "description": "Tampilkan struktur internal",
+    "template": "Create a structured tampilkan struktur internal."
+  },
+  {
+    "id": 9,
+    "name": "/blueprint",
+    "categoryId": "visual",
+    "description": "Cetak biru teknis",
+    "template": "Create a structured cetak biru teknis."
+  },
+  {
+    "id": 10,
+    "name": "/explodedview",
+    "categoryId": "visual",
+    "description": "Bongkar objek jadi komponen",
+    "template": "Create a structured bongkar objek jadi komponen."
+  },
+  {
+    "id": 11,
+    "name": "/cutaway",
+    "categoryId": "visual",
+    "description": "Potongan melintang (cutaway)",
+    "template": "Create a structured potongan melintang (cutaway)."
+  },
+  {
+    "id": 12,
+    "name": "/anatomy",
+    "categoryId": "visual",
+    "description": "Jelaskan seluruh bagian/struktur",
+    "template": "Create a structured jelaskan seluruh bagian/struktur."
+  },
+  {
+    "id": 13,
+    "name": "/layers",
+    "categoryId": "visual",
+    "description": "Arsitektur lapis demi lapis",
+    "template": "Create a structured arsitektur lapis demi lapis."
+  },
+  {
+    "id": 14,
+    "name": "/crosssection",
+    "categoryId": "visual",
+    "description": "Irisan melintang",
+    "template": "Create a structured irisan melintang."
+  },
+  {
+    "id": 15,
+    "name": "/schematic",
+    "categoryId": "visual",
+    "description": "Skema teknis sederhana",
+    "template": "Create a structured skema teknis sederhana."
+  },
+  {
+    "id": 16,
+    "name": "/isometric",
+    "categoryId": "visual",
+    "description": "Ilustrasi isometrik 3D",
+    "template": "Create a structured ilustrasi isometrik 3d."
+  },
+  {
+    "id": 17,
+    "name": "/thenvsnow",
+    "categoryId": "perspektif",
+    "description": "Bandingkan masa lalu vs kini",
+    "template": "Create a structured bandingkan masa lalu vs kini."
+  },
+  {
+    "id": 18,
+    "name": "/timeline",
+    "categoryId": "perspektif",
+    "description": "Lini masa kronologis",
+    "template": "Create a structured lini masa kronologis."
+  },
+  {
+    "id": 19,
+    "name": "/beforeafter",
+    "categoryId": "perspektif",
+    "description": "Transformasi sebelum & sesudah",
+    "template": "Create a structured transformasi sebelum & sesudah."
+  },
+  {
+    "id": 20,
+    "name": "/comparison",
+    "categoryId": "perspektif",
+    "description": "Perbandingan side-by-side",
+    "template": "Create a structured perbandingan side-by-side."
+  },
+  {
+    "id": 21,
+    "name": "/versus",
+    "categoryId": "perspektif",
+    "description": "Head-to-head comparison",
+    "template": "Create a structured head-to-head comparison."
+  },
+  {
+    "id": 22,
+    "name": "/scale",
+    "categoryId": "perspektif",
+    "description": "Bandingkan ukuran secara visual",
+    "template": "Create a structured bandingkan ukuran secara visual."
+  },
+  {
+    "id": 23,
+    "name": "/evolution",
+    "categoryId": "perspektif",
+    "description": "Evolusi dari waktu ke waktu",
+    "template": "Create a structured evolusi dari waktu ke waktu."
+  },
+  {
+    "id": 24,
+    "name": "/future",
+    "categoryId": "perspektif",
+    "description": "Skenario masa depan",
+    "template": "Create a structured skenario masa depan."
+  },
+  {
+    "id": 25,
+    "name": "/inside",
+    "categoryId": "perspektif",
+    "description": "Cara kerja bagian dalam",
+    "template": "Create a structured cara kerja bagian dalam."
+  },
+  {
+    "id": 26,
+    "name": "/microscopic",
+    "categoryId": "perspektif",
+    "description": "Tampilan mikroskopis",
+    "template": "Create a structured tampilan mikroskopis."
+  },
+  {
+    "id": 27,
+    "name": "/macroscopic",
+    "categoryId": "perspektif",
+    "description": "Tampilan makroskopis/sistem",
+    "template": "Create a structured tampilan makroskopis/sistem."
+  },
+  {
+    "id": 28,
+    "name": "/birdseye",
+    "categoryId": "perspektif",
+    "description": "Top-down view",
+    "template": "Create a structured top-down view."
+  },
+  {
+    "id": 29,
+    "name": "/360view",
+    "categoryId": "perspektif",
+    "description": "Visualisasi segala sudut",
+    "template": "Create a structured visualisasi segala sudut."
+  },
+  {
+    "id": 30,
+    "name": "/benchmark",
+    "categoryId": "perspektif",
+    "description": "Perbandingan tolok ukur",
+    "template": "Create a structured perbandingan tolok ukur."
+  },
+  {
+    "id": 31,
+    "name": "/ecosystem",
+    "categoryId": "sistem",
+    "description": "Semua pihak yang terhubung",
+    "template": "Create a structured semua pihak yang terhubung."
+  },
+  {
+    "id": 32,
+    "name": "/journey",
+    "categoryId": "sistem",
+    "description": "End-to-end journey",
+    "template": "Create a structured end-to-end journey."
+  },
+  {
+    "id": 33,
+    "name": "/process",
+    "categoryId": "sistem",
+    "description": "Proses lengkap",
+    "template": "Create a structured proses lengkap."
+  },
+  {
+    "id": 34,
+    "name": "/cycle",
+    "categoryId": "sistem",
+    "description": "Siklus berulang",
+    "template": "Create a structured siklus berulang."
+  },
+  {
+    "id": 35,
+    "name": "/roadmap",
+    "categoryId": "sistem",
+    "description": "Peta jalan belajar/eksekusi",
+    "template": "Create a structured peta jalan belajar/eksekusi."
+  },
+  {
+    "id": 36,
+    "name": "/dashboard",
+    "categoryId": "sistem",
+    "description": "Dashboard dengan KPI utama",
+    "template": "Create a structured dashboard dengan kpi utama."
+  },
+  {
+    "id": 37,
+    "name": "/map",
+    "categoryId": "sistem",
+    "description": "Peta geografis/konsep",
+    "template": "Create a structured peta geografis/konsep."
+  },
+  {
+    "id": 38,
+    "name": "/heatmap",
+    "categoryId": "sistem",
+    "description": "Visualisasi tingkat intensitas",
+    "template": "Create a structured visualisasi tingkat intensitas."
+  },
+  {
+    "id": 39,
+    "name": "/network",
+    "categoryId": "sistem",
+    "description": "Jaringan hubungan/keterkaitan",
+    "template": "Create a structured jaringan hubungan/keterkaitan."
+  },
+  {
+    "id": 40,
+    "name": "/architecture",
+    "categoryId": "sistem",
+    "description": "Arsitektur perangkat lunak/sistem",
+    "template": "Create a structured arsitektur perangkat lunak/sistem."
+  },
+  {
+    "id": 41,
+    "name": "/wireframe",
+    "categoryId": "sistem",
+    "description": "Tata letak web/aplikasi",
+    "template": "Create a structured tata letak web/aplikasi."
+  },
+  {
+    "id": 42,
+    "name": "/mockup",
+    "categoryId": "sistem",
+    "description": "Pratinjau produk realistis",
+    "template": "Create a structured pratinjau produk realistis."
+  },
+  {
+    "id": 43,
+    "name": "/prototype",
+    "categoryId": "sistem",
+    "description": "Konsep awal produk",
+    "template": "Create a structured konsep awal produk."
+  },
+  {
+    "id": 44,
+    "name": "/marketmap",
+    "categoryId": "sistem",
+    "description": "Peta lanskap industri",
+    "template": "Create a structured peta lanskap industri."
+  },
+  {
+    "id": 45,
+    "name": "/storyboard",
+    "categoryId": "kreatif",
+    "description": "Papan cerita adegan demi adegan",
+    "template": "Create a structured papan cerita adegan demi adegan."
+  },
+  {
+    "id": 46,
+    "name": "/comic",
+    "categoryId": "kreatif",
+    "description": "Panel komik",
+    "template": "Create a structured panel komik."
+  },
+  {
+    "id": 47,
+    "name": "/poster",
+    "categoryId": "kreatif",
+    "description": "Desain poster",
+    "template": "Create a structured desain poster."
+  },
+  {
+    "id": 48,
+    "name": "/cover",
+    "categoryId": "kreatif",
+    "description": "Sampul buku/laporan",
+    "template": "Create a structured sampul buku/laporan."
+  },
+  {
+    "id": 49,
+    "name": "/adcreative",
+    "categoryId": "kreatif",
+    "description": "Konsep kreatif iklan",
+    "template": "Create a structured konsep kreatif iklan."
+  },
+  {
+    "id": 50,
+    "name": "/thumbnail",
+    "categoryId": "kreatif",
+    "description": "Thumbnail YouTube",
+    "template": "Create a structured thumbnail youtube."
+  },
+  {
+    "id": 51,
+    "name": "/carousel",
+    "categoryId": "kreatif",
+    "description": "Carousel Instagram/LinkedIn",
+    "template": "Create a structured carousel instagram/linkedin."
+  },
+  {
+    "id": 52,
+    "name": "/socialvisual",
+    "categoryId": "kreatif",
+    "description": "Grafik media sosial",
+    "template": "Create a structured grafik media sosial."
+  },
+  {
+    "id": 53,
+    "name": "/quotevisual",
+    "categoryId": "kreatif",
+    "description": "Kutipan sebagai visual",
+    "template": "Create a structured kutipan sebagai visual."
+  },
+  {
+    "id": 54,
+    "name": "/pitch",
+    "categoryId": "kreatif",
+    "description": "Presentasi singkat untuk investor",
+    "template": "Create a structured presentasi singkat untuk investor."
+  },
+  {
+    "id": 55,
+    "name": "/eli5",
+    "categoryId": "belajar",
+    "description": "Penjelasan sangat sederhana",
+    "template": "Create a structured penjelasan sangat sederhana."
+  },
+  {
+    "id": 56,
+    "name": "/expert",
+    "categoryId": "belajar",
+    "description": "Penjelasan tingkat ahli",
+    "template": "Create a structured penjelasan tingkat ahli."
+  },
+  {
+    "id": 57,
+    "name": "/firstprinciples",
+    "categoryId": "belajar",
+    "description": "Bedah ke prinsip dasar",
+    "template": "Create a structured bedah ke prinsip dasar."
+  },
+  {
+    "id": 58,
+    "name": "/deepdive",
+    "categoryId": "belajar",
+    "description": "Penjelasan mendalam & komprehensif",
+    "template": "Create a structured penjelasan mendalam & komprehensif."
+  },
+  {
+    "id": 59,
+    "name": "/simplify",
+    "categoryId": "belajar",
+    "description": "Sederhanakan materi sulit",
+    "template": "Create a structured sederhanakan materi sulit."
+  },
+  {
+    "id": 60,
+    "name": "/analogy",
+    "categoryId": "belajar",
+    "description": "Jelaskan dengan analogi",
+    "template": "Create a structured jelaskan dengan analogi."
+  },
+  {
+    "id": 61,
+    "name": "/socratic",
+    "categoryId": "belajar",
+    "description": "Mengajar lewat pertanyaan",
+    "template": "Create a structured mengajar lewat pertanyaan."
+  },
+  {
+    "id": 62,
+    "name": "/teachme",
+    "categoryId": "belajar",
+    "description": "Bimbingan belajar terstruktur",
+    "template": "Create a structured bimbingan belajar terstruktur."
+  },
+  {
+    "id": 63,
+    "name": "/cheatsheet",
+    "categoryId": "belajar",
+    "description": "Catatan referensi cepat",
+    "template": "Create a structured catatan referensi cepat."
+  },
+  {
+    "id": 64,
+    "name": "/flashcards",
+    "categoryId": "belajar",
+    "description": "Kartu kilat untuk belajar",
+    "template": "Create a structured kartu kilat untuk belajar."
+  },
+  {
+    "id": 65,
+    "name": "/quiz",
+    "categoryId": "belajar",
+    "description": "Kuis uji pemahaman",
+    "template": "Create a structured kuis uji pemahaman."
+  },
+  {
+    "id": 66,
+    "name": "/viva",
+    "categoryId": "belajar",
+    "description": "Persiapan ujian lisan",
+    "template": "Create a structured persiapan ujian lisan."
+  },
+  {
+    "id": 67,
+    "name": "/interview",
+    "categoryId": "belajar",
+    "description": "Simulasi wawancara kerja",
+    "template": "Create a structured simulasi wawancara kerja."
+  },
+  {
+    "id": 68,
+    "name": "/devilsadvocate",
+    "categoryId": "kritis",
+    "description": "Menentang asumsi",
+    "template": "Create a structured menentang asumsi."
+  },
+  {
+    "id": 69,
+    "name": "/factcheck",
+    "categoryId": "kritis",
+    "description": "Verifikasi klaim dan fakta",
+    "template": "Create a structured verifikasi klaim dan fakta."
+  },
+  {
+    "id": 70,
+    "name": "/mythvsfact",
+    "categoryId": "kritis",
+    "description": "Pisahkan mitos dari fakta",
+    "template": "Create a structured pisahkan mitos dari fakta."
+  },
+  {
+    "id": 71,
+    "name": "/proscons",
+    "categoryId": "kritis",
+    "description": "Keuntungan vs kerugian",
+    "template": "Create a structured keuntungan vs kerugian."
+  },
+  {
+    "id": 72,
+    "name": "/swot",
+    "categoryId": "kritis",
+    "description": "Analisis SWOT",
+    "template": "Create a structured analisis swot."
+  },
+  {
+    "id": 73,
+    "name": "/pestle",
+    "categoryId": "kritis",
+    "description": "Analisis PESTLE",
+    "template": "Create a structured analisis pestle."
+  },
+  {
+    "id": 74,
+    "name": "/fiveforces",
+    "categoryId": "kritis",
+    "description": "Lima Kekuatan Porter",
+    "template": "Create a structured lima kekuatan porter."
+  },
+  {
+    "id": 75,
+    "name": "/rootcause",
+    "categoryId": "kritis",
+    "description": "Cari akar penyebab masalah",
+    "template": "Create a structured cari akar penyebab masalah."
+  },
+  {
+    "id": 76,
+    "name": "/fivewhys",
+    "categoryId": "kritis",
+    "description": "Analisis 5 Kenapa",
+    "template": "Create a structured analisis 5 kenapa."
+  },
+  {
+    "id": 77,
+    "name": "/decisionmatrix",
+    "categoryId": "kritis",
+    "description": "Matriks keputusan berbobot",
+    "template": "Create a structured matriks keputusan berbobot."
+  },
+  {
+    "id": 78,
+    "name": "/redteam",
+    "categoryId": "kritis",
+    "description": "Uji stres & kritik tajam",
+    "template": "Create a structured uji stres & kritik tajam."
+  },
+  {
+    "id": 79,
+    "name": "/premortem",
+    "categoryId": "kritis",
+    "description": "Analisis kegagalan dini",
+    "template": "Create a structured analisis kegagalan dini."
+  },
+  {
+    "id": 80,
+    "name": "/reverseengineer",
+    "categoryId": "kritis",
+    "description": "Rekayasa balik keberhasilan",
+    "template": "Create a structured rekayasa balik keberhasilan."
+  },
+  {
+    "id": 81,
+    "name": "/scenario",
+    "categoryId": "bisnis",
+    "description": "Perencanaan skenario",
+    "template": "Create a structured perencanaan skenario."
+  },
+  {
+    "id": 82,
+    "name": "/simulate",
+    "categoryId": "bisnis",
+    "description": "Latihan simulasi",
+    "template": "Create a structured latihan simulasi."
+  },
+  {
+    "id": 83,
+    "name": "/roleplay",
+    "categoryId": "bisnis",
+    "description": "Bermain peran sebagai ahli",
+    "template": "Create a structured bermain peran sebagai ahli."
+  },
+  {
+    "id": 84,
+    "name": "/consultant",
+    "categoryId": "bisnis",
+    "description": "Nasihat konsultan bisnis",
+    "template": "Create a structured nasihat konsultan bisnis."
+  },
+  {
+    "id": 85,
+    "name": "/executivebrief",
+    "categoryId": "bisnis",
+    "description": "Ringkasan eksekutif",
+    "template": "Create a structured ringkasan eksekutif."
+  },
+  {
+    "id": 86,
+    "name": "/insights",
+    "categoryId": "bisnis",
+    "description": "Ekstrak wawasan penting",
+    "template": "Create a structured ekstrak wawasan penting."
+  },
+  {
+    "id": 87,
+    "name": "/recommendations",
+    "categoryId": "bisnis",
+    "description": "Rekomendasi aksi",
+    "template": "Create a structured rekomendasi aksi."
+  },
+  {
+    "id": 88,
+    "name": "/prioritize",
+    "categoryId": "bisnis",
+    "description": "Urutkan berdasarkan prioritas",
+    "template": "Create a structured urutkan berdasarkan prioritas."
+  },
+  {
+    "id": 89,
+    "name": "/strategy",
+    "categoryId": "bisnis",
+    "description": "Perencanaan strategis",
+    "template": "Create a structured perencanaan strategis."
+  },
+  {
+    "id": 90,
+    "name": "/businessmodel",
+    "categoryId": "bisnis",
+    "description": "Model bisnis",
+    "template": "Create a structured model bisnis."
+  },
+  {
+    "id": 91,
+    "name": "/investor",
+    "categoryId": "bisnis",
+    "description": "Sudut pandang investor",
+    "template": "Create a structured sudut pandang investor."
+  },
+  {
+    "id": 92,
+    "name": "/promptengineer",
+    "categoryId": "produktivitas",
+    "description": "Optimasi instruksi prompt",
+    "template": "Create a structured optimasi instruksi prompt."
+  },
+  {
+    "id": 93,
+    "name": "/research",
+    "categoryId": "produktivitas",
+    "description": "Riset terstruktur",
+    "template": "Create a structured riset terstruktur."
+  },
+  {
+    "id": 94,
+    "name": "/sources",
+    "categoryId": "produktivitas",
+    "description": "Cari sumber terpercaya",
+    "template": "Create a structured cari sumber terpercaya."
+  },
+  {
+    "id": 95,
+    "name": "/summarize",
+    "categoryId": "produktivitas",
+    "description": "Ringkas konten",
+    "template": "Create a structured ringkas konten."
+  },
+  {
+    "id": 96,
+    "name": "/extract",
+    "categoryId": "produktivitas",
+    "description": "Ekstrak informasi kunci",
+    "template": "Create a structured ekstrak informasi kunci."
+  },
+  {
+    "id": 97,
+    "name": "/table",
+    "categoryId": "produktivitas",
+    "description": "Konversi jadi tabel",
+    "template": "Create a structured konversi jadi tabel."
+  },
+  {
+    "id": 98,
+    "name": "/presentation",
+    "categoryId": "produktivitas",
+    "description": "Kerangka presentasi",
+    "template": "Create a structured kerangka presentasi."
+  },
+  {
+    "id": 99,
+    "name": "/dashboardanalysis",
+    "categoryId": "produktivitas",
+    "description": "Analisis dashboard data",
+    "template": "Create a structured analisis dashboard data."
+  },
+  {
+    "id": 100,
+    "name": "/actionplan",
+    "categoryId": "produktivitas",
+    "description": "Rencana aksi langkah demi langkah",
+    "template": "Create a structured rencana aksi langkah demi langkah."
+  },
+  {
+    "id": 101,
+    "name": "/email",
+    "categoryId": "komunikasi",
+    "description": "Email profesional berbagai konteks",
+    "template": "Create a structured email profesional berbagai konteks."
+  },
+  {
+    "id": 102,
+    "name": "/proposal",
+    "categoryId": "komunikasi",
+    "description": "Proposal/proyek yang meyakinkan",
+    "template": "Create a structured proposal/proyek yang meyakinkan."
+  },
+  {
+    "id": 103,
+    "name": "/feedback",
+    "categoryId": "komunikasi",
+    "description": "Umpan balik konstruktif",
+    "template": "Create a structured umpan balik konstruktif."
+  },
+  {
+    "id": 104,
+    "name": "/reply",
+    "categoryId": "komunikasi",
+    "description": "Balasan/bantahan profesional",
+    "template": "Create a structured balasan/bantahan profesional."
+  },
+  {
+    "id": 105,
+    "name": "/narrative",
+    "categoryId": "komunikasi",
+    "description": "Narasi & storytelling",
+    "template": "Create a structured narasi & storytelling."
+  },
+  {
+    "id": 106,
+    "name": "/newsletter",
+    "categoryId": "komunikasi",
+    "description": "Newsletter informatif & engaging",
+    "template": "Create a structured newsletter informatif & engaging."
+  },
+  {
+    "id": 107,
+    "name": "/meetingnotes",
+    "categoryId": "komunikasi",
+    "description": "Notulen rapat terstruktur",
+    "template": "Create a structured notulen rapat terstruktur."
+  },
+  {
+    "id": 108,
+    "name": "/habittracker",
+    "categoryId": "pengembangan",
+    "description": "Sistem pembentukan kebiasaan",
+    "template": "Create a structured sistem pembentukan kebiasaan."
+  },
+  {
+    "id": 109,
+    "name": "/goalsetting",
+    "categoryId": "pengembangan",
+    "description": "Tujuan SMART",
+    "template": "Create a structured tujuan smart."
+  },
+  {
+    "id": 110,
+    "name": "/morningroutine",
+    "categoryId": "pengembangan",
+    "description": "Rutinitas harian produktif",
+    "template": "Create a structured rutinitas harian produktif."
+  },
+  {
+    "id": 111,
+    "name": "/timemanagement",
+    "categoryId": "pengembangan",
+    "description": "Manajemen waktu berbasis prioritas",
+    "template": "Create a structured manajemen waktu berbasis prioritas."
+  },
+  {
+    "id": 112,
+    "name": "/reflection",
+    "categoryId": "pengembangan",
+    "description": "Refleksi harian/mingguan",
+    "template": "Create a structured refleksi harian/mingguan."
+  },
+  {
+    "id": 113,
+    "name": "/stressrelief",
+    "categoryId": "pengembangan",
+    "description": "Manajemen stres & burnout",
+    "template": "Create a structured manajemen stres & burnout."
+  },
+  {
+    "id": 114,
+    "name": "/careerpath",
+    "categoryId": "pengembangan",
+    "description": "Peta jalur karir jangka panjang",
+    "template": "Create a structured peta jalur karir jangka panjang."
+  },
+  {
+    "id": 115,
+    "name": "/metaprompt",
+    "categoryId": "ai",
+    "description": "Prompt yang menghasilkan prompt",
+    "template": "Create a structured prompt yang menghasilkan prompt."
+  },
+  {
+    "id": 116,
+    "name": "/chaining",
+    "categoryId": "ai",
+    "description": "Merantai beberapa prompt",
+    "template": "Create a structured merantai beberapa prompt."
+  },
+  {
+    "id": 117,
+    "name": "/systemprompt",
+    "categoryId": "ai",
+    "description": "System prompt untuk kontrol AI",
+    "template": "Create a structured system prompt untuk kontrol ai."
+  },
+  {
+    "id": 118,
+    "name": "/fewshot",
+    "categoryId": "ai",
+    "description": "Contoh-contoh untuk arah output",
+    "template": "Create a structured contoh-contoh untuk arah output."
+  },
+  {
+    "id": 119,
+    "name": "/constraint",
+    "categoryId": "ai",
+    "description": "Batasan format, panjang, gaya",
+    "template": "Create a structured batasan format, panjang, gaya."
+  },
+  {
+    "id": 120,
+    "name": "/persona",
+    "categoryId": "ai",
+    "description": "Persona AI kustom",
+    "template": "Create a structured persona ai kustom."
+  },
+  {
+    "id": 121,
+    "name": "/autogpt",
+    "categoryId": "ai",
+    "description": "Alur kerja AI otonom multi-langkah",
+    "template": "Create a structured alur kerja ai otonom multi-langkah."
+  },
+  {
+    "id": 122,
+    "name": "/statistics",
+    "categoryId": "data",
+    "description": "Analisis statistik deskriptif",
+    "template": "Create a structured analisis statistik deskriptif."
+  },
+  {
+    "id": 123,
+    "name": "/trend",
+    "categoryId": "data",
+    "description": "Identifikasi pola & tren time-series",
+    "template": "Create a structured identifikasi pola & tren time-series."
+  },
+  {
+    "id": 124,
+    "name": "/forecast",
+    "categoryId": "data",
+    "description": "Peramalan/prediksi masa depan",
+    "template": "Create a structured peramalan/prediksi masa depan."
+  },
+  {
+    "id": 125,
+    "name": "/regression",
+    "categoryId": "data",
+    "description": "Analisis hubungan kausal antar variabel",
+    "template": "Create a structured analisis hubungan kausal antar variabel."
+  },
+  {
+    "id": 126,
+    "name": "/distribution",
+    "categoryId": "data",
+    "description": "Analisis distribusi & penyebaran data",
+    "template": "Create a structured analisis distribusi & penyebaran data."
+  },
+  {
+    "id": 127,
+    "name": "/kpi",
+    "categoryId": "data",
+    "description": "Desain KPI & metrik",
+    "template": "Create a structured desain kpi & metrik."
+  },
+  {
+    "id": 128,
+    "name": "/abtest",
+    "categoryId": "data",
+    "description": "Desain eksperimen A/B test",
+    "template": "Create a structured desain eksperimen a/b test."
+  },
+  {
+    "id": 129,
+    "name": "/datadict",
+    "categoryId": "data",
+    "description": "Kamus data & dokumentasi skema",
+    "template": "Create a structured kamus data & dokumentasi skema."
+  },
+  {
+    "id": 130,
+    "name": "/translate",
+    "categoryId": "multibahasa",
+    "description": "Terjemahan profesional bernuansa",
+    "template": "Create a structured terjemahan profesional bernuansa."
+  },
+  {
+    "id": 131,
+    "name": "/localize",
+    "categoryId": "multibahasa",
+    "description": "Adaptasi konteks budaya lokal",
+    "template": "Create a structured adaptasi konteks budaya lokal."
+  },
+  {
+    "id": 132,
+    "name": "/glossary",
+    "categoryId": "multibahasa",
+    "description": "Glosarium istilah multibahasa",
+    "template": "Create a structured glosarium istilah multibahasa."
+  },
+  {
+    "id": 133,
+    "name": "/transcreate",
+    "categoryId": "multibahasa",
+    "description": "Terjemahan kreatif lintas budaya",
+    "template": "Create a structured terjemahan kreatif lintas budaya."
+  },
+  {
+    "id": 134,
+    "name": "/langlearn",
+    "categoryId": "multibahasa",
+    "description": "Rencana belajar bahasa efektif",
+    "template": "Create a structured rencana belajar bahasa efektif."
+  },
+  {
+    "id": 135,
+    "name": "/userresearch",
+    "categoryId": "produk",
+    "description": "Riset pengguna terstruktur",
+    "template": "Create a structured riset pengguna terstruktur."
+  },
+  {
+    "id": 136,
+    "name": "/personas",
+    "categoryId": "produk",
+    "description": "User personas berbasis riset",
+    "template": "Create a structured user personas berbasis riset."
+  },
+  {
+    "id": 137,
+    "name": "/usability",
+    "categoryId": "produk",
+    "description": "Evaluasi kemudahan penggunaan",
+    "template": "Create a structured evaluasi kemudahan penggunaan."
+  },
+  {
+    "id": 138,
+    "name": "/onboarding",
+    "categoryId": "produk",
+    "description": "Alur onboarding intuitif",
+    "template": "Create a structured alur onboarding intuitif."
+  },
+  {
+    "id": 139,
+    "name": "/featurespec",
+    "categoryId": "produk",
+    "description": "Spesifikasi fitur produk",
+    "template": "Create a structured spesifikasi fitur produk."
+  },
+  {
+    "id": 140,
+    "name": "/prddraft",
+    "categoryId": "produk",
+    "description": "Product Requirements Document",
+    "template": "Create a structured product requirements document."
+  },
+  {
+    "id": 141,
+    "name": "/changelog",
+    "categoryId": "produk",
+    "description": "Changelog release",
+    "template": "Create a structured changelog release."
+  },
+  {
+    "id": 142,
+    "name": "/negotiate",
+    "categoryId": "interpersonal",
+    "description": "Strategi & skrip negosiasi",
+    "template": "Create a structured strategi & skrip negosiasi."
+  },
+  {
+    "id": 143,
+    "name": "/conflict",
+    "categoryId": "interpersonal",
+    "description": "Resolusi konflik profesional",
+    "template": "Create a structured resolusi konflik profesional."
+  },
+  {
+    "id": 144,
+    "name": "/persuade",
+    "categoryId": "interpersonal",
+    "description": "Teknik persuasi etis",
+    "template": "Create a structured teknik persuasi etis."
+  },
+  {
+    "id": 145,
+    "name": "/delegate",
+    "categoryId": "interpersonal",
+    "description": "Panduan delegasi tugas",
+    "template": "Create a structured panduan delegasi tugas."
+  },
+  {
+    "id": 146,
+    "name": "/motivate",
+    "categoryId": "interpersonal",
+    "description": "Pesan & strategi motivasi tim",
+    "template": "Create a structured pesan & strategi motivasi tim."
+  },
+  {
+    "id": 147,
+    "name": "/apology",
+    "categoryId": "interpersonal",
+    "description": "Permintaan maaf profesional",
+    "template": "Create a structured permintaan maaf profesional."
+  },
+  {
+    "id": 148,
+    "name": "/debug",
+    "categoryId": "coding",
+    "description": "Analisis & temukan bug",
+    "template": "Create a structured analisis & temukan bug."
+  },
+  {
+    "id": 149,
+    "name": "/codereview",
+    "categoryId": "coding",
+    "description": "Code review best practice",
+    "template": "Create a structured code review best practice."
+  },
+  {
+    "id": 150,
+    "name": "/techdoc",
+    "categoryId": "coding",
+    "description": "Dokumen teknis lengkap",
+    "template": "Create a structured dokumen teknis lengkap."
+  },
+  {
+    "id": 151,
+    "name": "/apidesign",
+    "categoryId": "coding",
+    "description": "Desain arsitektur API",
+    "template": "Create a structured desain arsitektur api."
+  },
+  {
+    "id": 152,
+    "name": "/databaseschema",
+    "categoryId": "coding",
+    "description": "Skema database efisien",
+    "template": "Create a structured skema database efisien."
+  },
+  {
+    "id": 153,
+    "name": "/gitworkflow",
+    "categoryId": "coding",
+    "description": "Strategi branching & Git workflow",
+    "template": "Create a structured strategi branching & git workflow."
+  },
+  {
+    "id": 154,
+    "name": "/techstack",
+    "categoryId": "coding",
+    "description": "Rekomendasi tech stack",
+    "template": "Create a structured rekomendasi tech stack."
+  },
+  {
+    "id": 155,
+    "name": "/security",
+    "categoryId": "coding",
+    "description": "Audit keamanan dasar",
+    "template": "Create a structured audit keamanan dasar."
+  },
+  {
+    "id": 156,
+    "name": "/contentstrategy",
     "categoryId": "marketing",
-    "description": "Create a marketing strategy brief.",
-    "template": "Develop a marketing strategy with audience, problem, offer, message, channel, CTA, and measurement."
+    "description": "Strategi konten lengkap",
+    "template": "Create a structured strategi konten lengkap."
+  },
+  {
+    "id": 157,
+    "name": "/copywriting",
+    "categoryId": "marketing",
+    "description": "Copy persuasif untuk iklan & sales",
+    "template": "Create a structured copy persuasif untuk iklan & sales."
+  },
+  {
+    "id": 158,
+    "name": "/funnel",
+    "categoryId": "marketing",
+    "description": "Marketing funnel awareness-retention",
+    "template": "Create a structured marketing funnel awareness-retention."
+  },
+  {
+    "id": 159,
+    "name": "/brand",
+    "categoryId": "marketing",
+    "description": "Posisi, value proposition, identitas brand",
+    "template": "Create a structured posisi, value proposition, identitas brand."
+  },
+  {
+    "id": 160,
+    "name": "/segmentation",
+    "categoryId": "marketing",
+    "description": "Segmentasi pasar target",
+    "template": "Create a structured segmentasi pasar target."
+  },
+  {
+    "id": 161,
+    "name": "/pricestrategy",
+    "categoryId": "marketing",
+    "description": "Model & strategi pricing",
+    "template": "Create a structured model & strategi pricing."
+  },
+  {
+    "id": 162,
+    "name": "/seocontent",
+    "categoryId": "marketing",
+    "description": "Strategi SEO & konten organik",
+    "template": "Create a structured strategi seo & konten organik."
+  },
+  {
+    "id": 163,
+    "name": "/campaign",
+    "categoryId": "marketing",
+    "description": "Kampanye multi-channel terintegrasi",
+    "template": "Create a structured kampanye multi-channel terintegrasi."
+  },
+  {
+    "id": 164,
+    "name": "/competitor",
+    "categoryId": "marketing",
+    "description": "Analisis strategi kompetitor",
+    "template": "Create a structured analisis strategi kompetitor."
+  },
+  {
+    "id": 165,
+    "name": "/curriculum",
+    "categoryId": "education",
+    "description": "Desain kurikulum lengkap",
+    "template": "Create a structured desain kurikulum lengkap."
+  },
+  {
+    "id": 166,
+    "name": "/lessonplan",
+    "categoryId": "education",
+    "description": "Rencana pelajaran per sesi",
+    "template": "Create a structured rencana pelajaran per sesi."
+  },
+  {
+    "id": 167,
+    "name": "/rubric",
+    "categoryId": "education",
+    "description": "Rubrik penilaian objektif & terukur",
+    "template": "Create a structured rubrik penilaian objektif & terukur."
+  },
+  {
+    "id": 168,
+    "name": "/differentiate",
+    "categoryId": "education",
+    "description": "Pembelajaran diferensiasi",
+    "template": "Create a structured pembelajaran diferensiasi."
+  },
+  {
+    "id": 169,
+    "name": "/flipped",
+    "categoryId": "education",
+    "description": "Desain flipped classroom",
+    "template": "Create a structured desain flipped classroom."
+  },
+  {
+    "id": 170,
+    "name": "/pbl",
+    "categoryId": "education",
+    "description": "Project-based learning",
+    "template": "Create a structured project-based learning."
+  },
+  {
+    "id": 171,
+    "name": "/edtech",
+    "categoryId": "education",
+    "description": "Rekomendasi & integrasi EdTech",
+    "template": "Create a structured rekomendasi & integrasi edtech."
+  },
+  {
+    "id": 172,
+    "name": "/assessment",
+    "categoryId": "education",
+    "description": "Desain asesmen formatif & sumatif",
+    "template": "Create a structured desain asesmen formatif & sumatif."
+  },
+  {
+    "id": 173,
+    "name": "/lmscontent",
+    "categoryId": "education",
+    "description": "Konten untuk LMS",
+    "template": "Create a structured konten untuk lms."
+  },
+  {
+    "id": 174,
+    "name": "/fxanalysis",
+    "categoryId": "trading",
+    "description": "Analisis teknikal pair forex",
+    "template": "Create a structured analisis teknikal pair forex."
+  },
+  {
+    "id": 175,
+    "name": "/xauanalysis",
+    "categoryId": "trading",
+    "description": "Analisis teknikal XAU/Gold",
+    "template": "Create a structured analisis teknikal xau/gold."
+  },
+  {
+    "id": 176,
+    "name": "/snr",
+    "categoryId": "trading",
+    "description": "Identifikasi support & resistance kunci",
+    "template": "Create a structured identifikasi support & resistance kunci."
+  },
+  {
+    "id": 177,
+    "name": "/riskmgmt",
+    "categoryId": "trading",
+    "description": "Hitung position size, SL, risk-reward",
+    "template": "Create a structured hitung position size, sl, risk-reward."
+  },
+  {
+    "id": 178,
+    "name": "/tradejournal",
+    "categoryId": "trading",
+    "description": "Template jurnal trading & evaluasi",
+    "template": "Create a structured template jurnal trading & evaluasi."
+  },
+  {
+    "id": 179,
+    "name": "/tradingpsych",
+    "categoryId": "trading",
+    "description": "Atasi FOMO, revenge trade, bias kognitif",
+    "template": "Create a structured atasi fomo, revenge trade, bias kognitif."
+  },
+  {
+    "id": 180,
+    "name": "/marketstructure",
+    "categoryId": "trading",
+    "description": "Analisis HH/LL, BOS, tren pasar",
+    "template": "Create a structured analisis hh/ll, bos, tren pasar."
+  },
+  {
+    "id": 181,
+    "name": "/tradingplan",
+    "categoryId": "trading",
+    "description": "Rencana trading harian lengkap",
+    "template": "Create a structured rencana trading harian lengkap."
+  },
+  {
+    "id": 182,
+    "name": "/fundamental",
+    "categoryId": "trading",
+    "description": "Dampak news, FED, data ekonomi",
+    "template": "Create a structured dampak news, fed, data ekonomi."
+  },
+  {
+    "id": 183,
+    "name": "/pricecton",
+    "categoryId": "trading",
+    "description": "Price action: pin bar, engulfing, inside bar",
+    "template": "Create a structured price action: pin bar, engulfing, inside bar."
+  },
+  {
+    "id": 184,
+    "name": "/poster",
+    "categoryId": "design",
+    "description": "Konsep poster event/promosi",
+    "template": "Create a structured konsep poster event/promosi."
+  },
+  {
+    "id": 185,
+    "name": "/flyer",
+    "categoryId": "design",
+    "description": "Desain flyer/brosur promosi",
+    "template": "Create a structured desain flyer/brosur promosi."
+  },
+  {
+    "id": 186,
+    "name": "/idcard",
+    "categoryId": "design",
+    "description": "Desain ID card profesional",
+    "template": "Create a structured desain id card profesional."
+  },
+  {
+    "id": 187,
+    "name": "/logo",
+    "categoryId": "design",
+    "description": "Konsep logo dengan brand guidelines",
+    "template": "Create a structured konsep logo dengan brand guidelines."
+  },
+  {
+    "id": 188,
+    "name": "/banner",
+    "categoryId": "design",
+    "description": "Banner web, roll-up, event banner",
+    "template": "Create a structured banner web, roll-up, event banner."
+  },
+  {
+    "id": 189,
+    "name": "/billboard",
+    "categoryId": "design",
+    "description": "Billboard outdoor yang impactful",
+    "template": "Create a structured billboard outdoor yang impactful."
+  },
+  {
+    "id": 190,
+    "name": "/coverdesign",
+    "categoryId": "design",
+    "description": "Cover buku, majalah, ebook",
+    "template": "Create a structured cover buku, majalah, ebook."
+  },
+  {
+    "id": 191,
+    "name": "/thumbnail",
+    "categoryId": "design",
+    "description": "Thumbnail YouTube/podcast clickable",
+    "template": "Create a structured thumbnail youtube/podcast clickable."
+  },
+  {
+    "id": 192,
+    "name": "/socialdesign",
+    "categoryId": "design",
+    "description": "Konten visual Instagram/TikTok/LinkedIn",
+    "template": "Create a structured konten visual instagram/tiktok/linkedin."
+  },
+  {
+    "id": 193,
+    "name": "/tshirtdesign",
+    "categoryId": "design",
+    "description": "Desain kaos untuk merchandise/clothing",
+    "template": "Create a structured desain kaos untuk merchandise/clothing."
   }
 ]
