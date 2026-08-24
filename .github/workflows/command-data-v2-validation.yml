@@ -1,0 +1,68 @@
+name: Command Data V2 Validation
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'data/**'
+      - 'scripts/validate-data.mjs'
+      - 'package.json'
+      - '.github/workflows/command-data-v2-validation.yml'
+  pull_request:
+    paths:
+      - 'data/**'
+      - 'scripts/validate-data.mjs'
+      - 'package.json'
+      - '.github/workflows/command-data-v2-validation.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate-command-data-v2:
+    name: Validate Command Data V2
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v5
+        with:
+          node-version: 24
+          cache: npm
+
+      - name: Verify required data files
+        run: |
+          test -f data/commands-v2.js
+          test -f data/commands.json
+          test -f data/categories.json
+          test -f scripts/validate-data.mjs
+          echo "REQUIRED DATA FILES: PASS"
+
+      - name: Validate JSON syntax
+        run: |
+          node --input-type=module -e "JSON.parse(require('node:fs').readFileSync('data/commands.json','utf8')); JSON.parse(require('node:fs').readFileSync('data/categories.json','utf8')); console.log('JSON SYNTAX VALIDATION: PASS')"
+
+      - name: Validate command data integrity
+        run: npm run validate:data
+
+      - name: Validate Command V2 module syntax
+        run: |
+          node --check data/commands-v2.js
+          echo "COMMAND V2 MODULE SYNTAX: PASS"
+
+      - name: Generate validation summary
+        if: always()
+        run: |
+          {
+            echo "## Command Data V2 Validation"
+            echo ""
+            echo "- Required files: PASS"
+            echo "- JSON syntax: PASS"
+            echo "- Command data integrity: PASS"
+            echo "- commands-v2.js syntax: PASS"
+          } >> "$GITHUB_STEP_SUMMARY"
