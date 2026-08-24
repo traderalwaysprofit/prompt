@@ -1,6 +1,8 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-labelledby="title desc">
-  <title>Samson Prompt</title>
-  <desc>Samson Prompt favicon</desc>
-  <rect width="64" height="64" rx="16" fill="#111827"/>
-  <text x="32" y="43" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="34" font-weight="800" fill="#f97316">S</text>
+  <title id="title">Samson Prompt</title>
+  <desc id="desc">Brutalist S slash slash P monochrome favicon</desc>
+  <rect width="64" height="64" fill="#000"/>
+  <path d="M18 12h28v9H27v6h14c5 0 9 4 9 9v4c0 7-5 12-12 12H18v-9h19c2 0 4-1 4-3v-2c0-2-2-3-4-3H27c-6 0-9-4-9-9v-3c0-6 4-11 10-11Z" fill="#fff"/>
+  <path d="M29 15l-5 16m14-16-5 16" fill="none" stroke="#000" stroke-width="4" stroke-linecap="square"/>
+  <path d="M42 22h7v30h-9V31h-7v-9h9Z" fill="#fff"/>
 </svg>
