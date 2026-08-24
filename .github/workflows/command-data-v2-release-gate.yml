@@ -2,21 +2,24 @@ name: Command Data V2 Release Gate
 
 on:
   workflow_dispatch:
-  workflow_run:
-    workflows:
-      - Command Data V2 Extraction
-      - Command Data V2 Validation
-      - Command Data V2 Schema Validation
-      - Command Data V2 Regression Validation
-    types: [completed]
+  push:
+    branches: [main]
+    paths:
+      - 'data/**'
+      - 'scripts/**'
+      - 'src/**'
+      - 'index.html'
+      - 'package.json'
+      - '.github/workflows/command-data-v2-release-gate.yml'
+      - '.github/workflows/command-data-v2-validation.yml'
+      - '.github/workflows/command-data-v2-schema-validation.yml'
+      - '.github/workflows/command-data-v2-regression-validation.yml'
 
 permissions:
   contents: read
-  actions: read
 
 jobs:
   release-gate:
-    if: ${{ github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -26,18 +29,37 @@ jobs:
         run: |
           test -s data/commands.json
           test -s data/categories.json
-          echo "Generated Command Data V2 files are present."
 
-      - name: Validate command count
+      - name: Validate JSON and command count
         run: |
-          node -e "const d=require('./data/commands.json'); if(d.length!==193) throw new Error('Expected 193 commands, got '+d.length); console.log('193 commands verified.')"
+          node --input-type=module <<'NODE'
+          import { readFileSync } from 'node:fs';
+          const commands = JSON.parse(readFileSync('data/commands.json', 'utf8'));
+          const categories = JSON.parse(readFileSync('data/categories.json', 'utf8'));
+          if (commands.length !== 193) throw new Error(`Expected 193 commands, got ${commands.length}`);
+          if (categories.length !== 20) throw new Error(`Expected 20 categories, got ${categories.length}`);
+          if (new Set(commands.map(c => c.id)).size !== 193) throw new Error('Command IDs must be unique');
+          console.log('Command Data V2 release gate checks passed.');
+          NODE
+
+      - name: Verify frontend data contract
+        run: |
+          test -f src/main.js
+          grep -q "data/commands.json" src/main.js
+          grep -q "data/categories.json" src/main.js
+          echo "Frontend data contract: PASS"
 
       - name: Release gate summary
         run: |
           {
             echo "## Command Data V2 Release Gate"
             echo ""
-            echo "✅ Extraction output present"
-            echo "✅ Command count = 193"
-            echo "✅ Release gate passed"
+            echo "✅ Generated data present"
+            echo "✅ JSON valid"
+            echo "✅ 193 commands"
+            echo "✅ 20 categories"
+            echo "✅ Unique command IDs"
+            echo "✅ Frontend data contract"
+            echo ""
+            echo "### Result: PASS"
           } >> "$GITHUB_STEP_SUMMARY"
