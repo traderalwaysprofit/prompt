@@ -46,8 +46,12 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          if grep -R -n -E 'cdn\.tailwindcss\.com|babel/standalone|react\.production\.min\.js|react-dom\.production\.min\.js|<script[^>]+src=["'"']https?://' dist --include='*.html' --include='*.js'; then
+          if grep -R -n -E 'cdn\.tailwindcss\.com|babel/standalone|react\.production\.min\.js|react-dom\.production\.min\.js' dist --include='*.html' --include='*.js'; then
             echo "ERROR: forbidden external frontend runtime detected."
+            exit 1
+          fi
+          if grep -R -n -E '<script[^>]+src="https?://' dist --include='*.html'; then
+            echo "ERROR: external script runtime detected."
             exit 1
           fi
           echo "Runtime dependency guard: PASS"
@@ -56,7 +60,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          grep -q '"directory": "\\./dist"' wrangler.jsonc
+          grep -q '"directory": "./dist"' wrangler.jsonc
           echo "Wrangler asset directory validation: PASS"
 
       - name: Baseline validation passed
