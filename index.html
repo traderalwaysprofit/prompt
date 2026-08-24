@@ -3,71 +3,12 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Samson Prompt — command explorer and prompt composition workspace.">
-  <title>Samson Prompt</title>
+  <meta name="description" content="Samson Prompt — 193 command prompt explorer, data-driven dari Command Data V2.">
+  <title>193 Perintah Rahasia ChatGPT — Samson Prompt</title>
   <link rel="stylesheet" href="/src/styles.css">
 </head>
 <body>
-  <div id="app">
-    <header class="site-header">
-      <a class="brand" href="#/" aria-label="Samson Prompt home">
-        <span class="brand-mark">S</span>
-        <span><strong>SAMSON</strong><small>PROMPT</small></span>
-      </a>
-      <label class="search-wrap" for="command-search">
-        <span aria-hidden="true">⌕</span>
-        <input id="command-search" type="search" placeholder="Cari command, fungsi, kategori…" autocomplete="off">
-      </label>
-      <button id="theme-toggle" class="icon-button" type="button" aria-label="Ganti tema">◐</button>
-    </header>
-
-    <main class="page-shell">
-      <section class="hero-panel">
-        <div>
-          <p class="eyebrow">SAMSON.WEB.ID · FRONTEND V1</p>
-          <h1>Prompt, organized<br><em>for action.</em></h1>
-          <p class="hero-copy">Temukan command, pahami fungsinya, lalu susun kombinasi hingga 3 command menjadi satu workflow.</p>
-        </div>
-        <div class="composer-card">
-          <span class="label">COMMAND COMPOSER</span>
-          <div id="composer" class="composer-list" aria-live="polite"></div>
-          <div class="composer-output" id="composer-output">Pilih command untuk mulai menyusun workflow.</div>
-        </div>
-      </section>
-
-      <section class="workspace" aria-label="Prompt command explorer">
-        <aside class="sidebar">
-          <div class="section-head"><span>KATEGORI</span><span id="command-count">—</span></div>
-          <nav id="category-list" class="category-list" aria-label="Filter kategori"></nav>
-        </aside>
-
-        <section class="results-area">
-          <div class="results-toolbar">
-            <div>
-              <p class="eyebrow">COMMAND LIBRARY</p>
-              <h2 id="results-title">Semua command</h2>
-            </div>
-            <button id="clear-filter" class="text-button" type="button">Reset</button>
-          </div>
-          <div id="status" class="status" role="status" aria-live="polite">Memuat data…</div>
-          <div id="command-grid" class="command-grid"></div>
-        </section>
-
-        <aside id="detail-panel" class="detail-panel" aria-label="Command detail">
-          <div class="empty-detail">
-            <span class="detail-number">01</span>
-            <h2>Pilih sebuah command</h2>
-            <p>Detail, template, dan opsi composer akan tampil di sini.</p>
-          </div>
-        </aside>
-      </section>
-    </main>
-
-    <footer class="site-footer">
-      <span>Samson Prompt · Frontend Architecture V1</span>
-      <span id="data-status">Data: —</span>
-    </footer>
-  </div>
+  <div id="root"></div>
   <script type="module" src="/src/main.js"></script>
 </body>
 </html>
