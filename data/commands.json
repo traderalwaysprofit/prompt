@@ -1,0 +1,30 @@
+[
+  {
+    "id": 1,
+    "name": "/prompt",
+    "categoryId": "core",
+    "description": "Baseline prompt command.",
+    "template": "Create a clear, structured prompt for the requested task."
+  },
+  {
+    "id": 2,
+    "name": "/poster",
+    "categoryId": "design",
+    "description": "Create a structured poster brief.",
+    "template": "Create a professional poster concept with hierarchy, copy, layout, and visual direction."
+  },
+  {
+    "id": 3,
+    "name": "/thumbnail",
+    "categoryId": "design",
+    "description": "Create a structured thumbnail brief.",
+    "template": "Create a high-impact thumbnail concept with clear focal point, hierarchy, and readable copy."
+  },
+  {
+    "id": 4,
+    "name": "/marketing",
+    "categoryId": "marketing",
+    "description": "Create a marketing strategy brief.",
+    "template": "Develop a marketing strategy with audience, problem, offer, message, channel, CTA, and measurement."
+  }
+]
