@@ -1,0 +1,9 @@
+[
+  {"id":194,"name":"/vibecode","categoryId":"coding","description":"Vibe coding dengan AI","template":"Gunakan vibe coding untuk topik: [TOPIK]. Buat implementasi production-ready dengan planning, coding, testing, dan verification."},
+  {"id":195,"name":"/multimodel","categoryId":"ai","description":"Orkestrasi multi-model AI","template":"Gunakan multi-model AI untuk topik: [TOPIK]. Pilih model terbaik untuk reasoning, coding, research, design, dan evaluasi lalu sintesis hasilnya."},
+  {"id":196,"name":"/brutalui","categoryId":"design","description":"Brutalist UI generator","template":"Gunakan brutalist UI untuk topik: [TOPIK]. Buat interface bold, high-contrast, responsive, accessible, dan modern dengan hierarchy yang kuat."},
+  {"id":197,"name":"/cloudflare","categoryId":"coding","description":"Cloudflare deploy & optimization","template":"Gunakan Cloudflare untuk topik: [TOPIK]. Audit, optimalkan, dan siapkan deployment production dengan performance, security, caching, dan reliability yang baik."},
+  {"id":198,"name":"/github","categoryId":"coding","description":"GitHub code workflow","template":"Gunakan GitHub workflow untuk topik: [TOPIK]. Audit repository, rancang perubahan aman, testing, commit plan, dan pull request yang production-ready."},
+  {"id":199,"name":"/aiaudit","categoryId":"kritis","description":"AI independent audit","template":"Gunakan AI audit untuk topik: [TOPIK]. Audit UI, UX, SEO, performance, accessibility, security, architecture, dan AI readiness secara independen."},
+  {"id":200,"name":"/autopilot","categoryId":"ai","description":"Full AI production orchestrator","template":"Gunakan autopilot untuk topik: [TOPIK]. Jalankan research → planning → production → multi-AI review → audit → fix → testing → deployment dengan verification di setiap tahap."}
+]
