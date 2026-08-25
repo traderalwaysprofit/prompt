@@ -1,8 +1,8 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-labelledby="title desc">
-  <title id="title">Samson Prompt</title>
-  <desc id="desc">Brutalist S slash slash P monochrome favicon</desc>
-  <rect width="64" height="64" fill="#000"/>
-  <path d="M18 12h28v9H27v6h14c5 0 9 4 9 9v4c0 7-5 12-12 12H18v-9h19c2 0 4-1 4-3v-2c0-2-2-3-4-3H27c-6 0-9-4-9-9v-3c0-6 4-11 10-11Z" fill="#fff"/>
-  <path d="M29 15l-5 16m14-16-5 16" fill="none" stroke="#000" stroke-width="4" stroke-linecap="square"/>
-  <path d="M42 22h7v30h-9V31h-7v-9h9Z" fill="#fff"/>
+  <title id="title">SAMSON PROMPT Library</title>
+  <desc id="desc">Minimal Samson Prompt Library monogram</desc>
+  <rect width="64" height="64" rx="14" fill="#18202b"/>
+  <path d="M17 18.5c0-3.6 2.9-6.5 6.5-6.5h20v7H24.5c-1.4 0-2.5 1.1-2.5 2.5S23.1 24 24.5 24h14c5.2 0 9.5 4.3 9.5 9.5S43.7 43 38.5 43h-15c-3.6 0-6.5-2.9-6.5-6.5V34h7v2.5c0 .8.7 1.5 1.5 1.5h13c1.4 0 2.5-1.1 2.5-2.5S39.9 33 38.5 33h-14c-5.2 0-9.5-4.3-9.5-9.5v-5Z" fill="#fff"/>
+  <path d="M31 14h6l-5 16h-6l5-16Zm9 0h6l-5 16h-6l5-16Z" fill="#8b96a8"/>
+  <circle cx="49" cy="14" r="4" fill="#f38020"/>
 </svg>
