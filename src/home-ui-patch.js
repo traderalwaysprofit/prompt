@@ -5,6 +5,13 @@
     const subtitle = logoText?.querySelector('span');
     if (subtitle) subtitle.textContent = 'AI COMMAND LIBRARY';
 
+    // Replace S//P mark with a scalable Cloudflare logo mark.
+    const logoMark = document.querySelector('.logo-mark');
+    if (logoMark) {
+      logoMark.innerHTML = '<svg class="cloudflare-logo" viewBox="0 0 64 40" role="img" aria-label="Cloudflare" xmlns="http://www.w3.org/2000/svg"><path fill="currentColor" d="M48.7 28.2c.4-1.2.6-2.5.6-3.8 0-6.9-5.6-12.5-12.5-12.5-5.2 0-9.7 3.2-11.6 7.8-.7-.2-1.4-.3-2.1-.3-4.2 0-7.6 3.4-7.6 7.6 0 .4 0 .8.1 1.2h33.1Z"/><path fill="currentColor" d="M8.1 28.2h45.7c1.3 0 2.3 1 2.3 2.3s-1 2.3-2.3 2.3H8.1c-1.3 0-2.3-1-2.3-2.3s1-2.3 2.3-2.3Z"/></svg>';
+      logoMark.setAttribute('aria-label', 'Cloudflare');
+    }
+
     // Remove visible Level 4 wording from homepage without touching application logic.
     document.querySelectorAll('body *').forEach((el) => {
       if (el.children.length === 0 && /LEVEL\s*4/i.test(el.textContent || '')) {
