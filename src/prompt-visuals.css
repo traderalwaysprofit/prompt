@@ -1,0 +1,15 @@
+.nft-art{isolation:isolate}
+.nft-art .prompt-visual-svg{position:absolute;inset:0;width:100%;height:100%;display:block;min-width:0;min-height:0;max-width:none;max-height:none;object-fit:contain;object-position:center;pointer-events:none;z-index:1}
+.nft-art .grid-lines{z-index:0}
+.nft-art>span,.nft-art>small,.nft-art>.favorite-btn{z-index:3}
+.nft-art .prompt-visual-svg+span{z-index:3}
+.nft-art .prompt-visual-svg text{font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
+.nft-art .prompt-visual-svg rect:first-of-type{vector-effect:non-scaling-stroke}
+.nft-card .nft-art{height:180px;min-height:180px;aspect-ratio:16/10}
+.nft-card .nft-art .prompt-visual-svg{padding:12px}
+.modal-art{position:relative;min-height:112px;height:112px;padding:12px 18px;overflow:hidden;isolation:isolate}
+.modal-art .prompt-visual-svg{width:150px;height:100%;display:block;flex:0 0 150px;object-fit:contain;object-position:center;z-index:1}
+.modal-art>span{position:relative;z-index:2}
+.modal-art .modal-fav{position:relative;z-index:3;margin-left:auto}
+@media(max-width:700px){.nft-card .nft-art{height:auto;min-height:0;aspect-ratio:1/0.9}.nft-card .nft-art .prompt-visual-svg{padding:8px}.modal-art{height:92px;min-height:92px;padding:8px 12px;gap:8px}.modal-art .prompt-visual-svg{width:108px;flex-basis:108px}.modal-art>span{font-size:9px;letter-spacing:.08em}.modal-art .modal-fav{padding:7px 8px}}
+@media(max-width:380px){.nft-card .nft-art{aspect-ratio:1/0.88}.nft-card .nft-art .prompt-visual-svg{padding:6px}.modal-art{height:82px;min-height:82px}.modal-art .prompt-visual-svg{width:88px;flex-basis:88px}.modal-art>span{display:none}}
