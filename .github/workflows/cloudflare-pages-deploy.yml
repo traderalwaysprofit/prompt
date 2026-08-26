@@ -41,13 +41,18 @@ jobs:
       - name: Verify production data payload
         run: |
           test -s dist/index.html
+          test -s dist/favicon.svg
           test -s dist/data/commands.json
+          test -s dist/data/commands-extra.json
           test -s dist/data/categories.json
           node --input-type=module <<'NODE'
           import { readFileSync } from 'node:fs';
-          const commands = JSON.parse(readFileSync('dist/data/commands.json', 'utf8'));
+          const commands = [
+            ...JSON.parse(readFileSync('dist/data/commands.json', 'utf8')),
+            ...JSON.parse(readFileSync('dist/data/commands-extra.json', 'utf8'))
+          ];
           const categories = JSON.parse(readFileSync('dist/data/categories.json', 'utf8'));
-          if (commands.length !== 193) throw new Error(`Expected 193 commands, got ${commands.length}`);
+          if (commands.length !== 200) throw new Error(`Expected 200 commands, got ${commands.length}`);
           if (categories.length !== 20) throw new Error(`Expected 20 categories, got ${categories.length}`);
           console.log('Production payload verified.');
           NODE
