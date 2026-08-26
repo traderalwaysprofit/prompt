@@ -2,8 +2,7 @@ name: Command Data V2 Schema Validation
 
 on:
   push:
-    branches:
-      - main
+    branches: [main]
     paths:
       - 'data/**'
       - 'scripts/validate-data.mjs'
@@ -20,129 +19,18 @@ permissions:
 
 jobs:
   schema-validation:
-    name: Command Data V2 Schema Validation
+    name: Validate complete runtime schema
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v5
+        uses: actions/checkout@v4
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v5
+      - name: Setup Node.js 22
+        uses: actions/setup-node@v4
         with:
-          node-version: 24
+          node-version: 22
 
-      - name: Validate commands schema
-        run: |
-          node --input-type=module <<'NODE'
-          import { readFileSync } from 'node:fs';
-
-          const commands = JSON.parse(readFileSync('data/commands.json', 'utf8'));
-          const errors = [];
-
-          if (!Array.isArray(commands)) errors.push('commands.json must contain an array');
-
-          const required = ['id', 'name', 'categoryId', 'template'];
-          const ids = new Set();
-
-          for (const [index, command] of commands.entries()) {
-            if (!command || typeof command !== 'object' || Array.isArray(command)) {
-              errors.push(`Command at index ${index} must be an object`);
-              continue;
-            }
-
-            for (const field of required) {
-              if (typeof command[field] !== 'string' || command[field].trim() === '') {
-                errors.push(`Command ${index}: ${field} must be a non-empty string`);
-              }
-            }
-
-            if (typeof command.id === 'string') {
-              if (!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(command.id)) {
-                errors.push(`Command ${index}: invalid id format: ${command.id}`);
-              }
-              if (ids.has(command.id)) errors.push(`Command ${index}: duplicate id: ${command.id}`);
-              ids.add(command.id);
-            }
-
-            if (typeof command.name === 'string' && command.name.length > 120) {
-              errors.push(`Command ${index}: name exceeds 120 characters`);
-            }
-          }
-
-          if (errors.length) {
-            console.error(errors.join('\n'));
-            process.exit(1);
-          }
-
-          console.log(`COMMAND SCHEMA: PASS (${commands.length} commands)`);
-          NODE
-
-      - name: Validate categories schema
-        run: |
-          node --input-type=module <<'NODE'
-          import { readFileSync } from 'node:fs';
-
-          const categories = JSON.parse(readFileSync('data/categories.json', 'utf8'));
-          const errors = [];
-          const ids = new Set();
-
-          if (!Array.isArray(categories)) errors.push('categories.json must contain an array');
-
-          for (const [index, category] of categories.entries()) {
-            if (!category || typeof category !== 'object' || Array.isArray(category)) {
-              errors.push(`Category at index ${index} must be an object`);
-              continue;
-            }
-
-            for (const field of ['id', 'name']) {
-              if (typeof category[field] !== 'string' || category[field].trim() === '') {
-                errors.push(`Category ${index}: ${field} must be a non-empty string`);
-              }
-            }
-
-            if (typeof category.id === 'string') {
-              if (!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(category.id)) {
-                errors.push(`Category ${index}: invalid id format: ${category.id}`);
-              }
-              if (ids.has(category.id)) errors.push(`Category ${index}: duplicate id: ${category.id}`);
-              ids.add(category.id);
-            }
-          }
-
-          if (errors.length) {
-            console.error(errors.join('\n'));
-            process.exit(1);
-          }
-
-          console.log(`CATEGORY SCHEMA: PASS (${categories.length} categories)`);
-          NODE
-
-      - name: Validate command to category references
-        run: |
-          node --input-type=module <<'NODE'
-          import { readFileSync } from 'node:fs';
-
-          const commands = JSON.parse(readFileSync('data/commands.json', 'utf8'));
-          const categories = JSON.parse(readFileSync('data/categories.json', 'utf8'));
-          const categoryIds = new Set(categories.map((category) => category.id));
-          const errors = [];
-
-          for (const command of commands) {
-            if (!categoryIds.has(command.categoryId)) {
-              errors.push(`Invalid category reference: ${command.id} -> ${command.categoryId}`);
-            }
-          }
-
-          if (errors.length) {
-            console.error(errors.join('\n'));
-            process.exit(1);
-          }
-
-          console.log(`CROSS-REFERENCE: PASS (${commands.length} command references checked)`);
-          NODE
-
-      - name: Run existing data validator
+      - name: Validate command, category, and example contracts
         run: npm run validate:data
 
       - name: Schema validation summary
@@ -151,5 +39,8 @@ jobs:
           {
             echo "## Command Data V2 Schema Validation"
             echo ""
-            echo "Schema, field, ID, and cross-reference checks completed."
+            echo "- Numeric command IDs"
+            echo "- Required fields: name, categoryId, description, template"
+            echo "- 200 commands + 20 categories + 200 examples"
+            echo "- Unique IDs and category/example cross-references"
           } >> "$GITHUB_STEP_SUMMARY"

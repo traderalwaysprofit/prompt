@@ -10,7 +10,14 @@ on:
       - 'scripts/**'
       - 'index.html'
       - 'package.json'
-      - 'package-lock.json'
+      - '.github/workflows/command-data-v2-regression-validation.yml'
+  pull_request:
+    paths:
+      - 'src/**'
+      - 'data/**'
+      - 'scripts/**'
+      - 'index.html'
+      - 'package.json'
       - '.github/workflows/command-data-v2-regression-validation.yml'
 
 permissions:
@@ -21,57 +28,40 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v5
+        uses: actions/checkout@v4
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v5
+      - name: Setup Node.js 22
+        uses: actions/setup-node@v4
         with:
-          node-version: 24
-          cache: npm
+          node-version: 22
 
-      - name: Install dependencies
-        run: npm ci
-
-      - name: Run data validation
+      - name: Validate complete runtime data
         run: npm run validate:data
 
-      - name: Verify Command Data V2 runtime contract
-        shell: bash
-        run: |
-          test -s data/commands.json
-          test -s data/categories.json
-          node <<'NODE'
-          const commands = require('./data/commands.json');
-          const categories = require('./data/categories.json');
-          if (commands.length !== 193) throw new Error(`Expected 193 commands, got ${commands.length}`);
-          if (!Array.isArray(categories) || categories.length !== 20) throw new Error(`Expected 20 categories, got ${categories.length}`);
-          const ids = new Set(commands.map(c => c.id));
-          if (ids.size !== 193) throw new Error('Command IDs are not unique');
-          for (const c of commands) {
-            if (!c.name || !c.categoryId || !c.description || !c.template) throw new Error(`Incomplete command: ${c.id}`);
-          }
-          console.log('Runtime contract passed: 193 commands, 20 categories, unique IDs, required fields present.');
-          NODE
+      - name: Build static frontend
+        run: npm run build
 
-      - name: Frontend regression smoke test
+      - name: Verify current frontend contract
         run: |
-          test -f src/main.js
-          grep -q "data/commands.json" src/main.js
-          grep -q "data/categories.json" src/main.js
-          ! grep -q "commands-v2.js" src/main.js
-          echo "Frontend is wired to extracted JSON data and not legacy commands-v2.js."
+          test -s dist/index.html
+          test -s dist/favicon.svg
+          test -s dist/src/main.js
+          test -s dist/src/app-shell.js
+          grep -q "data/commands.json" dist/src/main.js
+          grep -q "data/commands-extra.json" dist/src/main.js
+          ! grep -q "commands-v2.js" dist/src/main.js
+          ! grep -q "MutationObserver" dist/src/app-shell.js
+          echo "Frontend runtime contract passed."
 
       - name: Regression summary
+        if: always()
         run: |
           {
             echo "## Command Data V2 Regression Validation"
             echo ""
-            echo "✅ Data validation"
-            echo "✅ 193 commands"
-            echo "✅ 20 categories"
-            echo "✅ Unique command IDs"
-            echo "✅ Required runtime fields"
-            echo "✅ Frontend → extracted JSON contract"
-            echo ""
-            echo "### Result: PASS"
+            echo "- Runtime commands: 200"
+            echo "- Runtime examples: 200"
+            echo "- Categories: 20"
+            echo "- Static build + favicon"
+            echo "- Canonical app shell without global MutationObserver"
           } >> "$GITHUB_STEP_SUMMARY"

@@ -1,36 +1,61 @@
 import { readFile } from 'node:fs/promises';
 
-const commands = JSON.parse(await readFile('data/commands.json', 'utf8'));
-const categories = JSON.parse(await readFile('data/categories.json', 'utf8'));
+const readJson = async (path) => JSON.parse(await readFile(path, 'utf8'));
+const [baseCommands, extraCommands, categories, baseExamples, extraExamples] = await Promise.all([
+  readJson('data/commands.json'),
+  readJson('data/commands-extra.json'),
+  readJson('data/categories.json'),
+  readJson('data/examples.json'),
+  readJson('data/examples-extra.json')
+]);
 
+const commands = [...baseCommands, ...extraCommands];
+const examples = [...baseExamples, ...extraExamples];
 const errors = [];
 const warnings = [];
+const categoryIds = new Set(categories.map((item) => item.id));
+const duplicateValues = (values) => [...new Set(values.filter((value, index) => values.indexOf(value) !== index))];
 
-const ids = commands.map((item) => item.id);
-const names = commands.map((item) => item.name);
-const categoryIds = categories.map((item) => item.id);
-
-const duplicate = (values) => values.filter((value, index) => values.indexOf(value) !== index);
+if (baseCommands.length !== 193) errors.push(`Expected 193 base commands, got ${baseCommands.length}`);
+if (extraCommands.length !== 7) errors.push(`Expected 7 extra commands, got ${extraCommands.length}`);
+if (commands.length !== 200) errors.push(`Expected 200 runtime commands, got ${commands.length}`);
+if (categories.length !== 20) errors.push(`Expected 20 categories, got ${categories.length}`);
+if (examples.length !== 200) errors.push(`Expected 200 runtime examples, got ${examples.length}`);
 
 for (const command of commands) {
-  for (const field of ['id', 'name', 'categoryId', 'template']) {
-    if (command[field] === undefined || command[field] === '') {
-      errors.push(`Missing required field: ${field} in ${command.name ?? command.id}`);
+  if (!Number.isInteger(command.id) || command.id < 1) errors.push(`Invalid command id: ${command.id}`);
+  for (const field of ['name', 'categoryId', 'description', 'template']) {
+    if (typeof command[field] !== 'string' || command[field].trim() === '') {
+      errors.push(`Missing required field: ${field} in command ${command.id}`);
     }
   }
-  if (!categoryIds.includes(command.categoryId)) {
-    errors.push(`Invalid category reference: ${command.name}`);
-  }
+  if (!categoryIds.has(command.categoryId)) errors.push(`Invalid category reference: ${command.name}`);
 }
 
-for (const id of duplicate(ids)) errors.push(`Duplicate command id: ${id}`);
-for (const name of duplicate(names)) warnings.push(`Duplicate command alias: ${name}`);
-for (const id of duplicate(categoryIds)) errors.push(`Duplicate category id: ${id}`);
+for (const category of categories) {
+  if (typeof category.id !== 'string' || !category.id.trim()) errors.push('Category id must be a non-empty string');
+  if (typeof category.name !== 'string' || !category.name.trim()) errors.push(`Category name missing: ${category.id}`);
+}
+
+const commandIds = commands.map((item) => item.id);
+const commandNames = commands.map((item) => item.name);
+const exampleIds = examples.map((item) => item.id);
+for (const id of duplicateValues(commandIds)) errors.push(`Duplicate command id: ${id}`);
+for (const name of duplicateValues(commandNames)) warnings.push(`Duplicate command alias: ${name}`);
+for (const id of duplicateValues(exampleIds)) errors.push(`Duplicate example id: ${id}`);
+
+const commandIdSet = new Set(commandIds);
+const exampleIdSet = new Set(exampleIds);
+for (const id of commandIdSet) if (!exampleIdSet.has(id)) errors.push(`Missing example for command id: ${id}`);
+for (const id of exampleIdSet) if (!commandIdSet.has(id)) errors.push(`Orphan example id: ${id}`);
 
 console.log(JSON.stringify({
   status: errors.length ? 'FAIL' : 'PASS',
-  commands: commands.length,
+  baseCommands: baseCommands.length,
+  extraCommands: extraCommands.length,
+  runtimeCommands: commands.length,
   categories: categories.length,
+  examples: examples.length,
   warnings,
   errors
 }, null, 2));

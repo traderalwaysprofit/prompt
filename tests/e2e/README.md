@@ -1,13 +1,19 @@
-# Production Browser E2E
+# Browser E2E
 
-The browser suite validates the live `https://samson.web.id` application with Chromium.
+The suite validates the current SAMSON Prompt frontend in two modes:
+
+- **push / pull request:** the freshly built `dist/` output is served locally;
+- **workflow dispatch / successful Cloudflare deployment:** the live `https://samson.web.id` site is tested.
 
 Coverage:
-- production page load and JavaScript errors
-- Command Data V2: 193 commands and 20 categories
-- search interaction
-- category filtering
-- command detail modal
-- list/grid switching
 
-The suite is intentionally separate from the lightweight HTTP/data contract checks so failures identify whether the problem is data/API contract or real browser behavior.
+- page load without browser errors;
+- built and served `favicon.svg`;
+- complete runtime contract: 193 base + 7 extra = 200 commands, 20 categories, and 200 examples;
+- current search input and smart result grid;
+- category `select` filtering;
+- command modal open/close;
+- one canonical desktop/mobile onboarding flow;
+- favorites behavior.
+
+The browser suite complements the lightweight HTTP production contract check.
