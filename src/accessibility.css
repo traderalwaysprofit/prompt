@@ -1,0 +1,142 @@
+:root{
+  --text-secondary-accessible:#595959;
+}
+
+/* WCAG AA: #595959 on white is approximately 7:1. */
+.logo-text span,
+.nav-link,
+.eyebrow,
+.hero p,
+.hero-stats span,
+.tag,
+.hero-card p,
+.hero-card-footer,
+.view-all,
+.market-search .svg-icon,
+.nft-art>span,
+.nft-art small,
+.nft-info p,
+.results-count,
+.pagination button,
+.pagination span,
+.creator-spot h2 span,
+.creator-spot p,
+.creator-card span,
+footer,
+.modal header small,
+.modal-body label,
+.modal-body p,
+.close,
+.copy-section,
+.modal-fav,
+.smart-badge,
+.smart-panel-head small,
+.mini-prompts small,
+.smart-result,
+.smart-result span,
+.smart-result small,
+.market-search input::placeholder,
+.onboarding-option small,
+.onboarding-option p,
+.mobile-menu-title,
+.mobile-menu-panel button{
+  color:var(--text-secondary-accessible)!important;
+}
+
+/* Small labels remain readable without changing the visual hierarchy. */
+.logo-text span,
+.eyebrow,
+.hero-stats span,
+.tag,
+.hero-card p,
+.hero-card-footer,
+.nft-art>span,
+.nft-art small,
+.results-count,
+.pagination button,
+.pagination span,
+.creator-card span,
+footer,
+.modal header small,
+.modal-art,
+.modal-body label,
+.copy-section,
+.modal-fav,
+.smart-badge,
+.smart-panel-head span,
+.smart-panel-head small,
+.mini-prompts b,
+.mini-prompts small,
+.smart-result span,
+.smart-result b,
+.smart-result small,
+.onboarding-option small,
+.onboarding-option p,
+.mobile-menu-title{
+  font-size:12px!important;
+}
+
+.favorite-btn:not(.is-favorite):not(:hover),
+.open-btn:not(:hover):not(:focus-visible){
+  color:var(--text-secondary-accessible);
+}
+
+.market-search input::placeholder{
+  opacity:1;
+}
+
+/* Screen-reader-only content remains available to assistive technology. */
+.sr-only{
+  position:absolute!important;
+  width:1px!important;
+  height:1px!important;
+  padding:0!important;
+  margin:-1px!important;
+  overflow:hidden!important;
+  clip:rect(0,0,0,0)!important;
+  white-space:nowrap!important;
+  border:0!important;
+}
+
+/* Visible controls keep their compact appearance while receiving a 44px hit area. */
+.favorite-btn,
+.open-btn,
+.close,
+.copy-section,
+.modal-fav{
+  position:relative;
+  touch-action:manipulation;
+}
+.favorite-btn::after,
+.open-btn::after,
+.close::after,
+.copy-section::after,
+.modal-fav::after{
+  content:"";
+  position:absolute;
+  left:50%;
+  top:50%;
+  width:44px;
+  height:44px;
+  transform:translate(-50%,-50%);
+}
+
+.nav-link,
+.view-all,
+.hero-actions button,
+.mini-prompts button,
+.pagination button,
+.mobile-menu-toggle,
+.mobile-menu-panel button{
+  min-width:44px;
+  min-height:44px;
+  touch-action:manipulation;
+}
+
+@media(max-width:700px){
+  .pagination button,
+  .pagination span{
+    min-height:44px;
+    font-size:12px!important;
+  }
+}
