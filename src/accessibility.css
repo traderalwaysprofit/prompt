@@ -32,7 +32,10 @@ footer,
 .smart-badge,
 .smart-panel-head small,
 .mini-prompts small,
+.smart-result,
+.smart-result span,
 .smart-result small,
+.market-search input::placeholder,
 .onboarding-option small,
 .onboarding-option p,
 .mobile-menu-title,
@@ -68,8 +71,18 @@ footer,
 .smart-result b,
 .smart-result small,
 .onboarding-option small,
+.onboarding-option p,
 .mobile-menu-title{
   font-size:12px!important;
+}
+
+.favorite-btn:not(.is-favorite):not(:hover),
+.open-btn:not(:hover):not(:focus-visible){
+  color:var(--text-secondary-accessible);
+}
+
+.market-search input::placeholder{
+  opacity:1;
 }
 
 /* Screen-reader-only content remains available to assistive technology. */
