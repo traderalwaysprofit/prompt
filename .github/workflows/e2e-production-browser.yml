@@ -9,8 +9,21 @@ on:
     branches: [main]
     paths:
       - 'index.html'
+      - 'favicon.svg'
       - 'src/**'
       - 'data/**'
+      - 'scripts/build-static.mjs'
+      - 'tests/e2e/**'
+      - 'playwright.config.cjs'
+      - 'package.json'
+      - '.github/workflows/e2e-production-browser.yml'
+  pull_request:
+    paths:
+      - 'index.html'
+      - 'favicon.svg'
+      - 'src/**'
+      - 'data/**'
+      - 'scripts/build-static.mjs'
       - 'tests/e2e/**'
       - 'playwright.config.cjs'
       - 'package.json'
@@ -21,31 +34,52 @@ permissions:
 
 jobs:
   browser-e2e:
-    name: Browser E2E — samson.web.id
+    name: Browser E2E — current frontend
     if: ${{ github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-latest
     timeout-minutes: 15
     env:
-      PROD_URL: https://samson.web.id
+      PROD_URL: ${{ (github.event_name == 'push' || github.event_name == 'pull_request') && 'http://127.0.0.1:4173' || 'https://samson.web.id' }}
+
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-      - name: Setup Node.js 24
+
+      - name: Setup Node.js 22
         uses: actions/setup-node@v4
         with:
-          node-version: 24
-          cache: npm
+          node-version: 22
+
       - name: Install dependencies
-        run: npm install
+        run: npm install --no-audit --no-fund
+
+      - name: Build current source
+        run: npm run build
+
+      - name: Start local static server
+        if: github.event_name == 'push' || github.event_name == 'pull_request'
+        run: |
+          python3 -m http.server 4173 --directory dist > /tmp/samson-http.log 2>&1 &
+          for attempt in {1..20}; do
+            if curl --fail --silent http://127.0.0.1:4173/ > /dev/null; then
+              exit 0
+            fi
+            sleep 1
+          done
+          cat /tmp/samson-http.log
+          exit 1
+
       - name: Install Chromium
         run: npx playwright install --with-deps chromium
+
       - name: Run browser E2E
         run: npm run test:e2e
+
       - name: Upload Playwright report
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: playwright-production-report
+          name: playwright-current-frontend-report
           path: |
             playwright-report/
             test-results/
