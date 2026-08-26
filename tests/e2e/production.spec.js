@@ -52,6 +52,27 @@ test.describe('samson.web.id current frontend', () => {
     expect(hitArea).toEqual({ width: '44px', height: '44px' });
   });
 
+  test('prompt cards keep a proportional, consistent responsive layout', async ({ page }) => {
+    await page.goto(BASE_URL, { waitUntil: 'networkidle' });
+
+    const layout = await page.locator('.nft-grid').evaluate((grid) => {
+      const cards = [...grid.querySelectorAll('.nft-card')];
+      const gridStyle = getComputedStyle(grid);
+      const boxes = cards.slice(0, 4).map((card) => card.getBoundingClientRect());
+      return {
+        columns: gridStyle.gridTemplateColumns.split(' ').length,
+        heights: boxes.map((box) => Math.round(box.height)),
+        firstRatio: boxes[0].width / boxes[0].height
+      };
+    });
+
+    const viewportWidth = page.viewportSize()?.width || 1280;
+    expect(layout.columns).toBe(viewportWidth <= 520 ? 1 : viewportWidth <= 760 ? 2 : viewportWidth <= 1080 ? 3 : 4);
+    expect(new Set(layout.heights).size).toBe(1);
+    expect(layout.firstRatio).toBeGreaterThan(viewportWidth <= 520 ? 1.7 : 1.35);
+    expect(layout.firstRatio).toBeLessThan(viewportWidth <= 520 ? 2.8 : 1.55);
+  });
+
   test('search filters commands using the current search control', async ({ page }) => {
     await page.goto(BASE_URL, { waitUntil: 'networkidle' });
     const search = page.locator('#search');
