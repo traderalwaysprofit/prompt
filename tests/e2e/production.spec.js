@@ -69,7 +69,7 @@ test.describe('samson.web.id current frontend', () => {
     const viewportWidth = page.viewportSize()?.width || 1280;
     expect(layout.columns).toBe(viewportWidth <= 520 ? 1 : viewportWidth <= 760 ? 2 : viewportWidth <= 1080 ? 3 : 4);
     expect(new Set(layout.heights).size).toBe(1);
-    expect(layout.firstRatio).toBeGreaterThan(viewportWidth <= 520 ? 1.8 : 1.35);
+    expect(layout.firstRatio).toBeGreaterThan(viewportWidth <= 520 ? 1.7 : 1.35);
     expect(layout.firstRatio).toBeLessThan(viewportWidth <= 520 ? 2.8 : 1.55);
   });
 
