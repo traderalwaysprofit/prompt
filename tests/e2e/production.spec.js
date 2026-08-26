@@ -102,9 +102,9 @@ test.describe('samson.web.id current frontend', () => {
     const pagination = page.locator('nav.pagination[role="navigation"][aria-label="Pagination"]');
     await expect(pagination).toBeVisible();
     await expect(page.getByRole('button', { name: 'Go to previous page' })).toBeDisabled();
-    await expect(page.getByRole('button', { name: 'Go to page 1' })).toHaveAttribute('aria-current', 'page');
+    await expect(page.getByRole('button', { name: 'Go to page 1', exact: true })).toHaveAttribute('aria-current', 'page');
 
-    const activeAnimation = await page.getByRole('button', { name: 'Go to page 1' }).evaluate((element) =>
+    const activeAnimation = await page.getByRole('button', { name: 'Go to page 1', exact: true }).evaluate((element) =>
       getComputedStyle(element, '::before').animationName
     );
     expect(activeAnimation).toBe('none');
