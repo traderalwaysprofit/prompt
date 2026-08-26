@@ -95,6 +95,34 @@ test.describe('samson.web.id current frontend', () => {
     });
   });
 
+  test('pagination exposes page numbers, smart ellipsis, and accessible controls', async ({ page }) => {
+    await page.emulateMedia({ reducedMotion: 'reduce' });
+    await page.goto(BASE_URL, { waitUntil: 'networkidle' });
+
+    const pagination = page.locator('nav.pagination[role="navigation"][aria-label="Pagination"]');
+    await expect(pagination).toBeVisible();
+    await expect(page.getByRole('button', { name: 'Go to previous page' })).toBeDisabled();
+    await expect(page.getByRole('button', { name: 'Go to page 1', exact: true })).toHaveAttribute('aria-current', 'page');
+
+    const activeAnimation = await page.getByRole('button', { name: 'Go to page 1', exact: true }).evaluate((element) =>
+      getComputedStyle(element, '::before').animationName
+    );
+    expect(activeAnimation).toBe('none');
+
+    const next = page.getByRole('button', { name: 'Go to next page' });
+    await next.focus();
+    await page.keyboard.press('Enter');
+    await expect(page.getByRole('button', { name: 'Go to page 2' })).toHaveAttribute('aria-current', 'page');
+    await expect(page.locator('.results-count')).toContainText('SHOWING 21-40 OF 200 COMMANDS');
+
+    await page.getByRole('button', { name: 'Go to page 4' }).click();
+    await page.getByRole('button', { name: 'Go to page 5' }).click();
+    await expect(page.getByRole('button', { name: 'Go to page 5' })).toHaveAttribute('aria-current', 'page');
+    await expect(page.locator('.pagination-ellipsis')).toHaveCount(2);
+    await expect(page.getByRole('button', { name: 'Go to previous page' })).toBeEnabled();
+    await expect(page.getByRole('button', { name: 'Go to next page' })).toBeEnabled();
+  });
+
   test('search filters commands using the current search control', async ({ page }) => {
     await page.goto(BASE_URL, { waitUntil: 'networkidle' });
     const search = page.locator('#search');
