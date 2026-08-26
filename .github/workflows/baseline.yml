@@ -27,6 +27,7 @@ jobs:
       - name: Validate build output
         run: |
           test -f dist/index.html
+          test -f dist/favicon.svg
           test -f dist/src/main.js
           test -f dist/src/styles.css
           test -d dist
