@@ -6,20 +6,13 @@ on:
     workflows:
       - Cloudflare Pages Deploy
     types: [completed]
-  push:
-    branches: [main]
-    paths:
-      - 'index.html'
-      - 'src/**'
-      - 'data/**'
-      - '.github/workflows/e2e-production-validation.yml'
 
 permissions:
   contents: read
 
 jobs:
   e2e-production:
-    name: E2E Production Validation — prompt-v5
+    name: HTTP Contract — deployed frontend
     if: ${{ github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-latest
     timeout-minutes: 10
@@ -28,78 +21,93 @@ jobs:
       PROD_URL: https://samson.web.id
 
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Validate production endpoints and Command Data V2
+      - name: Validate deployed frontend and runtime data
         run: |
           set -euo pipefail
           python - <<'PY'
-          import json, os, re, sys, urllib.request
+          import json, os, sys, urllib.request
 
           urls = {"origin": os.environ["ORIGIN_URL"], "production": os.environ["PROD_URL"]}
           failures = []
 
           def get(url):
-              req = urllib.request.Request(url, headers={"User-Agent": "samson-e2e/2.0"})
-              with urllib.request.urlopen(req, timeout=20) as r:
-                  return r.status, r.headers.get("content-type", ""), r.read()
+              request = urllib.request.Request(url, headers={"User-Agent": "samson-e2e/3.0"})
+              with urllib.request.urlopen(request, timeout=20) as response:
+                  return response.status, response.headers.get("content-type", ""), response.read()
 
           for name, base in urls.items():
               print(f"=== {name}: {base} ===")
               try:
-                  status, content_type, html = get(base + "/")
-                  print("ROOT", status, content_type, len(html))
-                  if status != 200: failures.append(f"{name} root HTTP {status}")
+                  status, _, html = get(base + "/")
                   text = html.decode("utf-8", "replace")
-                  if "193" not in text and "Peta Perintah" not in text:
-                      failures.append(f"{name} frontend identity marker missing")
-                  if "commands.json" not in text:
-                      failures.append(f"{name} frontend does not reference commands.json")
-              except Exception as e:
-                  failures.append(f"{name} root unavailable: {e}")
-                  continue
+                  if status != 200:
+                      failures.append(f"{name} root HTTP {status}")
+                  if 'id="root"' not in text or "/src/main.js" not in text:
+                      failures.append(f"{name} current frontend entry markers missing")
 
-              try:
-                  status, content_type, body = get(base + "/data/commands.json")
-                  print("COMMANDS", status, content_type, len(body))
-                  if status != 200: failures.append(f"{name} commands HTTP {status}")
-                  commands = json.loads(body)
-                  if not isinstance(commands, list) or len(commands) != 193:
-                      failures.append(f"{name} expected 193 commands")
-                  ids = [str(x.get("id")) for x in commands if isinstance(x, dict)]
-                  if len(ids) != len(set(ids)): failures.append(f"{name} duplicate command IDs")
-                  if any(not x.get("cmd") or not x.get("category") for x in commands if isinstance(x, dict)):
-                      failures.append(f"{name} command contract incomplete")
-              except Exception as e:
-                  failures.append(f"{name} commands invalid: {e}")
+                  status, _, main_js = get(base + "/src/main.js")
+                  source = main_js.decode("utf-8", "replace")
+                  if status != 200 or "/data/commands.json" not in source or "/data/commands-extra.json" not in source:
+                      failures.append(f"{name} main.js runtime data references missing")
 
-              try:
-                  status, content_type, body = get(base + "/data/categories.json")
-                  print("CATEGORIES", status, content_type, len(body))
-                  if status != 200: failures.append(f"{name} categories HTTP {status}")
-                  categories = json.loads(body)
-                  if not isinstance(categories, list) or len(categories) != 20:
-                      failures.append(f"{name} expected 20 categories")
-              except Exception as e:
-                  failures.append(f"{name} categories invalid: {e}")
+                  status, content_type, favicon = get(base + "/favicon.svg")
+                  if status != 200 or b"<svg" not in favicon or "svg" not in content_type.lower():
+                      failures.append(f"{name} favicon.svg missing or invalid")
+
+                  _, _, base_body = get(base + "/data/commands.json")
+                  _, _, extra_body = get(base + "/data/commands-extra.json")
+                  _, _, categories_body = get(base + "/data/categories.json")
+                  _, _, examples_body = get(base + "/data/examples.json")
+                  _, _, extra_examples_body = get(base + "/data/examples-extra.json")
+
+                  commands = json.loads(base_body) + json.loads(extra_body)
+                  categories = json.loads(categories_body)
+                  examples = json.loads(examples_body) + json.loads(extra_examples_body)
+
+                  if len(commands) != 200:
+                      failures.append(f"{name} expected 200 runtime commands, got {len(commands)}")
+                  if len(categories) != 20:
+                      failures.append(f"{name} expected 20 categories, got {len(categories)}")
+                  if len(examples) != 200:
+                      failures.append(f"{name} expected 200 examples, got {len(examples)}")
+
+                  ids = [command.get("id") for command in commands if isinstance(command, dict)]
+                  if len(ids) != len(set(ids)):
+                      failures.append(f"{name} duplicate command IDs")
+
+                  category_ids = {category.get("id") for category in categories if isinstance(category, dict)}
+                  for command in commands:
+                      if not isinstance(command, dict):
+                          failures.append(f"{name} command entry is not an object")
+                          continue
+                      if any(not command.get(field) for field in ("name", "categoryId", "description", "template")):
+                          failures.append(f"{name} command {command.get('id')} contract incomplete")
+                      if command.get("categoryId") not in category_ids:
+                          failures.append(f"{name} command {command.get('id')} has invalid categoryId")
+              except Exception as error:
+                  failures.append(f"{name} validation error: {error}")
 
           if failures:
-              print("\nE2E FAIL")
-              for failure in failures: print("-", failure)
+              print()
+              print("E2E FAIL")
+              for failure in failures:
+                  print("-", failure)
               sys.exit(1)
-          print("\nE2E PASS: prompt-v5 origin and samson.web.id production are healthy.")
+
+          print()
+          print("E2E PASS: deployed frontend, favicon, and 200-command runtime contract are healthy.")
           PY
 
       - name: Write E2E summary
         if: always()
         run: |
           {
-            echo "## E2E Production Validation — prompt-v5"
+            echo "## E2E Production Validation"
             echo ""
-            echo "- Origin: \\`$ORIGIN_URL\\`"
-            echo "- Production: \\`$PROD_URL\\`"
-            echo "- Root: HTTP 200 + frontend identity"
-            echo "- Command Data V2: 193 commands + unique IDs"
-            echo "- Categories: 20"
+            echo "- Origin: $ORIGIN_URL"
+            echo "- Production: $PROD_URL"
+            echo "- Frontend entry: root + main.js"
+            echo "- Runtime data: 200 commands + 20 categories + 200 examples"
+            echo "- Required fields: name, categoryId, description, template"
+            echo "- Static asset: favicon.svg"
           } >> "$GITHUB_STEP_SUMMARY"
