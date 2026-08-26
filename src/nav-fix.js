@@ -28,6 +28,9 @@
       toggle = freshToggle;
     }
 
+    if (toggle.dataset.bound === '1') return;
+    toggle.dataset.bound = '1';
+
     const panels = Array.from(document.querySelectorAll('.mobile-menu-panel'));
     let panel = panels.shift();
     panels.forEach((duplicate) => duplicate.remove());
@@ -37,9 +40,6 @@
       header.insertAdjacentElement('afterend', panel);
     }
     panel.innerHTML = '<div class="mobile-menu-title">SAMSON PROMPT</div><button data-mobile-nav="explore">Explore</button><button data-mobile-nav="recent">Recently Used</button><button data-mobile-nav="favorites">Favorites</button><button data-mobile-nav="onboarding">Onboarding AI</button>';
-
-    if (toggle.dataset.bound === '1') return;
-    toggle.dataset.bound = '1';
 
     const close = () => {
       panel.classList.remove('is-open');
