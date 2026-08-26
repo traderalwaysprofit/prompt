@@ -9,6 +9,7 @@ test.describe('samson.web.id current frontend', () => {
     await page.goto(BASE_URL, { waitUntil: 'networkidle' });
 
     await expect(page.locator('.site-header')).toContainText('SAMSON PROMPT Library');
+    await expect(page.locator('label[for="search"]')).toHaveClass(/sr-only/);
     await expect(page.locator('.nft-card')).toHaveCount(20);
     await expect(page.locator('.results-count')).toContainText('OF 200 COMMANDS');
 
@@ -32,6 +33,23 @@ test.describe('samson.web.id current frontend', () => {
     expect(new Set(commands.map((command) => command.id)).size).toBe(200);
     expect(commands.every((command) => command.name && command.categoryId && command.description && command.template)).toBeTruthy();
     expect(errors).toEqual([]);
+  });
+
+  test('core secondary text and compact controls meet accessibility targets', async ({ page }) => {
+    await page.goto(BASE_URL, { waitUntil: 'networkidle' });
+
+    const description = page.locator('.nft-info p').first();
+    const category = page.locator('.nft-art small').first();
+    const favorite = page.locator('.favorite-btn').first();
+
+    await expect(description).toHaveCSS('color', 'rgb(89, 89, 89)');
+    await expect(category).toHaveCSS('font-size', '12px');
+
+    const hitArea = await favorite.evaluate((element) => {
+      const pseudo = getComputedStyle(element, '::after');
+      return { width: pseudo.width, height: pseudo.height };
+    });
+    expect(hitArea).toEqual({ width: '44px', height: '44px' });
   });
 
   test('search filters commands using the current search control', async ({ page }) => {
