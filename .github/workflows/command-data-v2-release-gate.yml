@@ -8,6 +8,7 @@ on:
       - 'data/**'
       - 'scripts/**'
       - 'src/**'
+      - 'favicon.svg'
       - 'index.html'
       - 'package.json'
       - '.github/workflows/command-data-v2-release-gate.yml'
@@ -23,43 +24,37 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v5
+        uses: actions/checkout@v4
 
-      - name: Verify generated data exists
-        run: |
-          test -s data/commands.json
-          test -s data/categories.json
+      - name: Setup Node.js 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
 
-      - name: Validate JSON and command count
-        run: |
-          node --input-type=module <<'NODE'
-          import { readFileSync } from 'node:fs';
-          const commands = JSON.parse(readFileSync('data/commands.json', 'utf8'));
-          const categories = JSON.parse(readFileSync('data/categories.json', 'utf8'));
-          if (commands.length !== 193) throw new Error(`Expected 193 commands, got ${commands.length}`);
-          if (categories.length !== 20) throw new Error(`Expected 20 categories, got ${categories.length}`);
-          if (new Set(commands.map(c => c.id)).size !== 193) throw new Error('Command IDs must be unique');
-          console.log('Command Data V2 release gate checks passed.');
-          NODE
+      - name: Validate complete runtime data
+        run: npm run validate:data
 
-      - name: Verify frontend data contract
+      - name: Build release output
+        run: npm run build
+
+      - name: Verify release artifacts
         run: |
-          test -f src/main.js
-          grep -q "data/commands.json" src/main.js
-          grep -q "data/categories.json" src/main.js
-          echo "Frontend data contract: PASS"
+          test -s dist/index.html
+          test -s dist/favicon.svg
+          test -s dist/src/main.js
+          test -s dist/src/app-shell.js
+          test -s dist/data/commands.json
+          test -s dist/data/commands-extra.json
+          grep -q "data/commands.json" dist/src/main.js
+          grep -q "data/commands-extra.json" dist/src/main.js
 
       - name: Release gate summary
         run: |
           {
             echo "## Command Data V2 Release Gate"
             echo ""
-            echo "✅ Generated data present"
-            echo "✅ JSON valid"
-            echo "✅ 193 commands"
-            echo "✅ 20 categories"
-            echo "✅ Unique command IDs"
-            echo "✅ Frontend data contract"
-            echo ""
-            echo "### Result: PASS"
+            echo "PASS: complete 200-command runtime data"
+            echo "PASS: 20 categories and 200 examples"
+            echo "PASS: static build and favicon"
+            echo "PASS: current frontend data contract"
           } >> "$GITHUB_STEP_SUMMARY"
