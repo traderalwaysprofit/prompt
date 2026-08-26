@@ -99,12 +99,14 @@ footer,
 }
 
 /* Visible controls keep their compact appearance while receiving a 44px hit area. */
-.favorite-btn,
-.open-btn,
 .close,
 .copy-section,
 .modal-fav{
   position:relative;
+  touch-action:manipulation;
+}
+.favorite-btn,
+.open-btn{
   touch-action:manipulation;
 }
 .favorite-btn::after,
