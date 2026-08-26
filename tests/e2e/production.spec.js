@@ -52,7 +52,8 @@ test.describe('samson.web.id current frontend', () => {
 
   test('command detail modal opens and closes', async ({ page }) => {
     await page.goto(BASE_URL, { waitUntil: 'networkidle' });
-    await page.locator('.nft-card code', { hasText: '/xauanalysis' }).click();
+    await page.locator('#search').fill('/xauanalysis');
+    await page.locator('.nft-card').click();
     await expect(page.locator('.modal[role="dialog"]')).toBeVisible();
     await expect(page.locator('.modal h2')).toHaveText('/xauanalysis');
     await expect(page.locator('[data-copy-template]')).toBeVisible();
@@ -83,7 +84,12 @@ test.describe('samson.web.id current frontend', () => {
   test('favorites remain functional', async ({ page }) => {
     await page.goto(BASE_URL, { waitUntil: 'networkidle' });
     await page.locator('[data-favorite]').first().click();
-    await page.locator('#nav-favorites').click({ force: true });
+    if ((page.viewportSize()?.width || 1280) <= 700) {
+      await page.locator('#mobile-menu-toggle').click();
+      await page.locator('[data-mobile-nav="favorites"]').click();
+    } else {
+      await page.locator('#nav-favorites').click();
+    }
     await expect(page.locator('.results-count')).toContainText('1 SAVED PROMPTS');
   });
 });
