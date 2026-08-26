@@ -59,10 +59,25 @@ test.describe('samson.web.id current frontend', () => {
       const cards = [...grid.querySelectorAll('.nft-card')];
       const gridStyle = getComputedStyle(grid);
       const boxes = cards.slice(0, 4).map((card) => card.getBoundingClientRect());
+      const firstCard = cards[0];
+      const cardBox = firstCard.getBoundingClientRect();
+      const favorite = firstCard.querySelector('.favorite-btn');
+      const open = firstCard.querySelector('.open-btn');
+      const category = firstCard.querySelector('.nft-art small');
+      const favoriteBox = favorite.getBoundingClientRect();
+      const openBox = open.getBoundingClientRect();
+      const categoryBox = category.getBoundingClientRect();
       return {
         columns: gridStyle.gridTemplateColumns.split(' ').length,
         heights: boxes.map((box) => Math.round(box.height)),
-        firstRatio: boxes[0].width / boxes[0].height
+        firstRatio: boxes[0].width / boxes[0].height,
+        controls: {
+          favoritePosition: getComputedStyle(favorite).position,
+          openPosition: getComputedStyle(open).position,
+          favoriteInsideRight: favoriteBox.right <= cardBox.right + 1 && favoriteBox.left >= cardBox.left,
+          openInsideRight: openBox.right <= cardBox.right + 1 && openBox.left >= cardBox.left,
+          categoryClearsOpen: categoryBox.right <= openBox.left
+        }
       };
     });
 
@@ -71,6 +86,13 @@ test.describe('samson.web.id current frontend', () => {
     expect(new Set(layout.heights).size).toBe(1);
     expect(layout.firstRatio).toBeGreaterThan(viewportWidth <= 520 ? 1.7 : 1.35);
     expect(layout.firstRatio).toBeLessThan(viewportWidth <= 520 ? 2.8 : 1.55);
+    expect(layout.controls).toEqual({
+      favoritePosition: 'absolute',
+      openPosition: 'absolute',
+      favoriteInsideRight: true,
+      openInsideRight: true,
+      categoryClearsOpen: true
+    });
   });
 
   test('search filters commands using the current search control', async ({ page }) => {
