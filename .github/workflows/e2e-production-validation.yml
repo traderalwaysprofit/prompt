@@ -2,10 +2,6 @@ name: E2E Production Validation
 
 on:
   workflow_dispatch:
-  workflow_run:
-    workflows:
-      - Cloudflare Pages Deploy
-    types: [completed]
 
 permissions:
   contents: read
@@ -13,7 +9,6 @@ permissions:
 jobs:
   e2e-production:
     name: HTTP Contract — deployed frontend
-    if: ${{ github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-latest
     timeout-minutes: 10
     env:
@@ -104,6 +99,7 @@ jobs:
           {
             echo "## E2E Production Validation"
             echo ""
+            echo "- Deployment: native Cloudflare Workers Builds"
             echo "- Origin: $ORIGIN_URL"
             echo "- Production: $PROD_URL"
             echo "- Frontend entry: root + main.js"
