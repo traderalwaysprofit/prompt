@@ -14,7 +14,7 @@ await cp(path.join(root, 'src'), path.join(dist, 'src'), { recursive: true });
 await cp(path.join(root, 'data'), path.join(dist, 'data'), { recursive: true });
 
 const commit = process.env.WORKERS_CI_COMMIT_SHA || process.env.GITHUB_SHA || 'local';
-await writeFile(path.join(dist, 'version.json'), `${JSON.stringify({ commit: '${commit}' }, null, 2)}\n`.replace("'${commit}'", JSON.stringify(commit)));
+await writeFile(path.join(dist, 'version.json'), `${JSON.stringify({ commit }, null, 2)}\n`);
 
 console.log('Static production output created in dist/');
 console.log('Included: index.html, favicon.svg, _headers, version.json, src/, data/');
