@@ -72,9 +72,7 @@ jobs:
             --base main \
             --head "$UPDATE_BRANCH" \
             --title "Update generated Command Data V2" \
-            --body "Automated extraction from `data/source/command-data-v1.html`.
-
-          Validation completed before this pull request was opened. Review the generated command and category changes, then merge through the normal protected-branch workflow.")"
+            --body "Automated extraction from data/source/command-data-v1.html. Validation completed before this pull request was opened. Review the generated command and category changes, then merge through the normal protected-branch workflow.")"
           echo "url=$PR_URL" >> "$GITHUB_OUTPUT"
 
       - name: Summary
