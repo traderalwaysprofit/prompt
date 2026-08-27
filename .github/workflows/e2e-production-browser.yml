@@ -7,11 +7,11 @@ on:
     paths:
       - 'index.html'
       - '_headers'
-      - '_headers'
       - 'favicon.svg'
       - 'src/**'
       - 'data/**'
       - 'scripts/build-static.mjs'
+      - 'scripts/validate-security-headers.mjs'
       - 'tests/e2e/**'
       - 'playwright.config.cjs'
       - 'package.json'
@@ -20,10 +20,12 @@ on:
   pull_request:
     paths:
       - 'index.html'
+      - '_headers'
       - 'favicon.svg'
       - 'src/**'
       - 'data/**'
       - 'scripts/build-static.mjs'
+      - 'scripts/validate-security-headers.mjs'
       - 'tests/e2e/**'
       - 'playwright.config.cjs'
       - 'package.json'
