@@ -6,6 +6,8 @@ on:
     branches: [main]
     paths:
       - 'index.html'
+      - '_headers'
+      - '_headers'
       - 'favicon.svg'
       - 'src/**'
       - 'data/**'
@@ -54,6 +56,9 @@ jobs:
 
       - name: Build current source
         run: npm run build
+
+      - name: Validate security policy artifact
+        run: npm run validate:security-headers
 
       - name: Start local static server
         if: github.event_name == 'push' || github.event_name == 'pull_request'
