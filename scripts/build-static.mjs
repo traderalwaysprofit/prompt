@@ -1,4 +1,4 @@
-import { cp, mkdir, rm } from 'node:fs/promises';
+import { cp, mkdir, rm, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 
 const root = process.cwd();
@@ -13,5 +13,8 @@ await cp(path.join(root, '_headers'), path.join(dist, '_headers'));
 await cp(path.join(root, 'src'), path.join(dist, 'src'), { recursive: true });
 await cp(path.join(root, 'data'), path.join(dist, 'data'), { recursive: true });
 
+const commit = process.env.WORKERS_CI_COMMIT_SHA || process.env.GITHUB_SHA || 'local';
+await writeFile(path.join(dist, 'version.json'), `${JSON.stringify({ commit }, null, 2)}\n`);
+
 console.log('Static production output created in dist/');
-console.log('Included: index.html, favicon.svg, _headers, src/, data/');
+console.log('Included: index.html, favicon.svg, _headers, version.json, src/, data/');
