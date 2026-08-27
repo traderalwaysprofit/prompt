@@ -8,7 +8,8 @@
     "build": "node scripts/build-static.mjs",
     "validate:data": "node scripts/validate-data.mjs",
     "test:e2e": "playwright test",
-    "validate:security-headers": "node scripts/validate-security-headers.mjs"
+    "validate:security-headers": "node scripts/validate-security-headers.mjs",
+    "validate:regression": "node scripts/validate-regression.mjs"
   },
   "devDependencies": {
     "@playwright/test": "^1.55.0"
