@@ -8,7 +8,8 @@ test.describe('samson.web.id current frontend', () => {
     page.on('pageerror', (error) => errors.push(error.message));
     await page.goto(BASE_URL, { waitUntil: 'networkidle' });
 
-    await expect(page.locator('.site-header')).toContainText('SAMSON PROMPT Library');
+    await expect(page.locator('.site-header')).toContainText('SAMSON');
+    await expect(page).toHaveTitle(/AI Cheatcodes for Real Work/);
     await expect(page.locator('label[for="search"]')).toHaveClass(/sr-only/);
     await expect(page.locator('.nft-card')).toHaveCount(20);
     await expect(page.locator('.results-count')).toContainText('OF 200 COMMANDS');
@@ -19,6 +20,7 @@ test.describe('samson.web.id current frontend', () => {
       page.request.get(BASE_URL + '/data/categories.json'),
       page.request.get(BASE_URL + '/data/examples.json'),
       page.request.get(BASE_URL + '/data/examples-extra.json'),
+      page.request.get(BASE_URL + '/data/cheatcodes.json'),
       page.request.get(BASE_URL + '/favicon.svg')
     ]);
     for (const response of responses) expect(response.ok()).toBeTruthy();
@@ -26,10 +28,14 @@ test.describe('samson.web.id current frontend', () => {
     const commands = [...await responses[0].json(), ...await responses[1].json()];
     const categories = await responses[2].json();
     const examples = [...await responses[3].json(), ...await responses[4].json()];
+    const cheatcodes = await responses[5].json();
 
     expect(commands).toHaveLength(200);
     expect(categories).toHaveLength(20);
     expect(examples).toHaveLength(200);
+    expect(cheatcodes).toHaveLength(1);
+    expect(cheatcodes[0].id).toBe('build-website');
+    expect(cheatcodes[0].steps).toHaveLength(8);
     expect(new Set(commands.map((command) => command.id)).size).toBe(200);
     expect(commands.every((command) => command.name && command.categoryId && command.description && command.template)).toBeTruthy();
     expect(errors).toEqual([]);
@@ -130,6 +136,46 @@ test.describe('samson.web.id current frontend', () => {
     await search.fill('/xauanalysis');
     await expect(page.locator('.nft-card')).toHaveCount(1);
     await expect(page.locator('.nft-card code')).toHaveText('/xauanalysis');
+  });
+
+  test('homepage positions Cheatcodes first while preserving Prompt Library', async ({ page }) => {
+    await page.goto(BASE_URL, { waitUntil: 'networkidle' });
+
+    await expect(page.getByRole('heading', { name: 'What do you want to create?' })).toBeVisible();
+    await expect(page.getByRole('heading', { name: 'Build a Website' })).toBeVisible();
+    await expect(page.getByRole('heading', { name: 'Prompt Library' })).toBeVisible();
+    await expect(page.locator('#nav-cheatcodes')).toHaveText('Cheatcodes');
+    await expect(page.locator('#nav-recent')).toHaveText('Prompt Library');
+    await expect(page.locator('#nav-categories')).toHaveText('Categories');
+  });
+
+  test('Build Website runs as an eight-step workflow with local progress', async ({ page }) => {
+    await page.goto(BASE_URL, { waitUntil: 'networkidle' });
+    await page.getByRole('button', { name: /Start Workflow/ }).click();
+
+    const detail = page.locator('#cheatcode-detail');
+    await expect(detail).toBeVisible();
+    await expect(detail.getByRole('heading', { name: 'Build a Website' })).toBeVisible();
+    await expect(detail.locator('.workflow-step-tab')).toHaveCount(8);
+    await expect(detail.locator('.workflow-content')).toContainText('Define the Idea');
+    await expect(detail.getByRole('button', { name: 'Copy prompt /businessmodel' })).toBeVisible();
+
+    await detail.getByRole('button', { name: 'Complete & Next' }).click();
+    await expect(detail.locator('.workflow-content')).toContainText('Research the Audience');
+    await expect(detail.locator('.workflow-progress-label')).toContainText('1/8');
+    await expect(page).toHaveURL(/#cheatcodes\/build-website\/step-2$/);
+
+    await page.reload({ waitUntil: 'networkidle' });
+    await expect(page.locator('#cheatcode-detail .workflow-content')).toContainText('Research the Audience');
+    await expect(page.locator('#cheatcode-detail .workflow-progress-label')).toContainText('1/8');
+  });
+
+  test('task paths route users into filtered Prompt Library results', async ({ page }) => {
+    await page.goto(BASE_URL, { waitUntil: 'networkidle' });
+    await page.getByRole('button', { name: /Debug Code/ }).click();
+    await expect(page.locator('#category-filter')).toHaveValue('coding');
+    await expect(page).toHaveURL(/#prompts$/);
+    await expect(page.locator('.nft-card code', { hasText: '/debug' })).toBeVisible();
   });
 
   test('category select filters the command grid', async ({ page }) => {

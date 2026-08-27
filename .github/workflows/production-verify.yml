@@ -119,16 +119,20 @@ jobs:
                   _, _, categories_body = get(base + "/data/categories.json?verify=" + os.environ["EXPECTED_SHA"])
                   _, _, examples_body = get(base + "/data/examples.json?verify=" + os.environ["EXPECTED_SHA"])
                   _, _, extra_examples_body = get(base + "/data/examples-extra.json?verify=" + os.environ["EXPECTED_SHA"])
+                  _, _, cheatcodes_body = get(base + "/data/cheatcodes.json?verify=" + os.environ["EXPECTED_SHA"])
 
                   commands = json.loads(base_body) + json.loads(extra_body)
                   categories = json.loads(categories_body)
                   examples = json.loads(examples_body) + json.loads(extra_examples_body)
+                  cheatcodes = json.loads(cheatcodes_body)
                   if len(commands) != 200:
                       failures.append(f"{name} expected 200 commands, got {len(commands)}")
                   if len(categories) != 20:
                       failures.append(f"{name} expected 20 categories, got {len(categories)}")
                   if len(examples) != 200:
                       failures.append(f"{name} expected 200 examples, got {len(examples)}")
+                  if not cheatcodes or cheatcodes[0].get("id") != "build-website" or len(cheatcodes[0].get("steps", [])) != 8:
+                      failures.append(f"{name} Build Website cheatcode contract invalid")
               except Exception as error:
                   failures.append(f"{name} validation error: {error}")
 

@@ -1,12 +1,13 @@
 import { readFile } from 'node:fs/promises';
 
 const readJson = async (path) => JSON.parse(await readFile(path, 'utf8'));
-const [baseCommands, extraCommands, categories, baseExamples, extraExamples] = await Promise.all([
+const [baseCommands, extraCommands, categories, baseExamples, extraExamples, cheatcodes] = await Promise.all([
   readJson('data/commands.json'),
   readJson('data/commands-extra.json'),
   readJson('data/categories.json'),
   readJson('data/examples.json'),
-  readJson('data/examples-extra.json')
+  readJson('data/examples-extra.json'),
+  readJson('data/cheatcodes.json')
 ]);
 
 const commands = [...baseCommands, ...extraCommands];
@@ -21,6 +22,7 @@ if (extraCommands.length !== 7) errors.push(`Expected 7 extra commands, got ${ex
 if (commands.length !== 200) errors.push(`Expected 200 runtime commands, got ${commands.length}`);
 if (categories.length !== 20) errors.push(`Expected 20 categories, got ${categories.length}`);
 if (examples.length !== 200) errors.push(`Expected 200 runtime examples, got ${examples.length}`);
+if (!Array.isArray(cheatcodes) || cheatcodes.length < 1) errors.push('Expected at least one cheatcode');
 
 for (const command of commands) {
   if (!Number.isInteger(command.id) || command.id < 1) errors.push(`Invalid command id: ${command.id}`);
@@ -49,6 +51,39 @@ const exampleIdSet = new Set(exampleIds);
 for (const id of commandIdSet) if (!exampleIdSet.has(id)) errors.push(`Missing example for command id: ${id}`);
 for (const id of exampleIdSet) if (!commandIdSet.has(id)) errors.push(`Orphan example id: ${id}`);
 
+const cheatcodeIds = [];
+for (const cheatcode of cheatcodes) {
+  if (typeof cheatcode.id !== 'string' || !cheatcode.id.trim()) errors.push('Cheatcode id must be a non-empty string');
+  else cheatcodeIds.push(cheatcode.id);
+  for (const field of ['title', 'description', 'difficulty', 'estimatedTime', 'status']) {
+    if (typeof cheatcode[field] !== 'string' || !cheatcode[field].trim()) {
+      errors.push(`Missing cheatcode field ${field}: ${cheatcode.id}`);
+    }
+  }
+  if (!Array.isArray(cheatcode.steps) || cheatcode.steps.length < 2) {
+    errors.push(`Cheatcode must contain at least two steps: ${cheatcode.id}`);
+    continue;
+  }
+  const stepNumbers = [];
+  for (const step of cheatcode.steps) {
+    stepNumbers.push(step.number);
+    for (const field of ['title', 'description', 'output']) {
+      if (typeof step[field] !== 'string' || !step[field].trim()) {
+        errors.push(`Missing step field ${field}: ${cheatcode.id} step ${step.number}`);
+      }
+    }
+    if (!Array.isArray(step.promptIds) || step.promptIds.length < 1) {
+      errors.push(`Step has no prompt references: ${cheatcode.id} step ${step.number}`);
+    } else {
+      for (const promptId of step.promptIds) {
+        if (!commandIdSet.has(promptId)) errors.push(`Invalid prompt reference ${promptId}: ${cheatcode.id} step ${step.number}`);
+      }
+    }
+  }
+  for (const number of duplicateValues(stepNumbers)) errors.push(`Duplicate step number ${number}: ${cheatcode.id}`);
+}
+for (const id of duplicateValues(cheatcodeIds)) errors.push(`Duplicate cheatcode id: ${id}`);
+
 console.log(JSON.stringify({
   status: errors.length ? 'FAIL' : 'PASS',
   baseCommands: baseCommands.length,
@@ -56,6 +91,7 @@ console.log(JSON.stringify({
   runtimeCommands: commands.length,
   categories: categories.length,
   examples: examples.length,
+  cheatcodes: cheatcodes.length,
   warnings,
   errors
 }, null, 2));

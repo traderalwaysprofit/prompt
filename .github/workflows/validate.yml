@@ -60,8 +60,11 @@ jobs:
           test -s dist/version.json
           test -s dist/src/main.js
           test -s dist/src/app-shell.js
+          test -s dist/src/cheatcodes.js
+          test -s dist/src/cheatcodes.css
           test -s dist/data/commands.json
           test -s dist/data/commands-extra.json
+          test -s dist/data/cheatcodes.json
           grep -q "data/commands.json" dist/src/main.js
           grep -q "data/commands-extra.json" dist/src/main.js
           ! grep -q "commands-v2.js" dist/src/main.js
@@ -74,7 +77,7 @@ jobs:
             echo "## Validate"
             echo ""
             echo "- Locked install: npm ci"
-            echo "- Runtime contract: 200 commands, 20 categories, 200 examples"
+            echo "- Runtime contract: 200 commands, 20 categories, 200 examples, active cheatcodes"
             echo "- Regression protection: command/category deletion blocked"
             echo "- Build contract: static assets + version metadata"
             echo "- Security policy: strict CSP and required response headers"
