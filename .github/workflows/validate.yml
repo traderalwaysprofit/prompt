@@ -1,0 +1,164 @@
+name: Validate
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: validate-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  validate:
+    name: validate
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444 # v5
+        with:
+          node-version: 24
+          cache: npm
+
+      - name: Install locked dependencies
+        run: npm ci --no-audit --no-fund
+
+      - name: Validate runtime data
+        run: npm run validate:data
+
+      - name: Validate data regression
+        shell: bash
+        run: |
+          if [ "$GITHUB_EVENT_NAME" = "pull_request" ]; then
+            BASELINE_REF="origin/$GITHUB_BASE_REF"
+          else
+            BASELINE_REF="HEAD^"
+          fi
+          npm run validate:regression -- "$BASELINE_REF"
+
+      - name: Build production output
+        run: npm run build
+
+      - name: Validate security policy
+        run: npm run validate:security-headers
+
+      - name: Verify release contract
+        run: |
+          test -s dist/index.html
+          test -s dist/favicon.svg
+          test -s dist/_headers
+          test -s dist/version.json
+          test -s dist/src/main.js
+          test -s dist/src/app-shell.js
+          test -s dist/data/commands.json
+          test -s dist/data/commands-extra.json
+          grep -q "data/commands.json" dist/src/main.js
+          grep -q "data/commands-extra.json" dist/src/main.js
+          ! grep -q "commands-v2.js" dist/src/main.js
+          ! grep -q "MutationObserver" dist/src/app-shell.js
+
+      - name: Validation summary
+        if: always()
+        run: |
+          {
+            echo "## Validate"
+            echo ""
+            echo "- Locked install: npm ci"
+            echo "- Runtime contract: 200 commands, 20 categories, 200 examples"
+            echo "- Regression protection: command/category deletion blocked"
+            echo "- Build contract: static assets + version metadata"
+            echo "- Security policy: strict CSP and required response headers"
+          } >> "$GITHUB_STEP_SUMMARY"
+
+  extract-via-pr:
+    name: extract-via-pr
+    if: github.event_name != 'pull_request'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: write
+      pull-requests: write
+    steps:
+      - name: Checkout main
+        uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+        with:
+          ref: main
+
+      - name: Setup Node.js
+        uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444 # v5
+        with:
+          node-version: 24
+          cache: npm
+
+      - name: Install locked dependencies
+        run: npm ci --no-audit --no-fund
+
+      - name: Extract and validate Command Data V2
+        run: |
+          node scripts/extract-command-data-v2.mjs
+          npm run validate:data
+
+      - name: Detect generated changes
+        id: changes
+        shell: bash
+        run: |
+          if git diff --quiet -- data/commands.json data/categories.json; then
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Commit generated branch
+        id: commit
+        if: steps.changes.outputs.changed == 'true'
+        env:
+          UPDATE_BRANCH: automation/command-data-v2-${{ github.run_id }}-${{ github.run_attempt }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git switch -c "$UPDATE_BRANCH"
+          git add data/commands.json data/categories.json
+          git commit -m "chore: extract Command Data V2 from source"
+          git push --set-upstream origin "$UPDATE_BRANCH"
+          echo "branch=$UPDATE_BRANCH" >> "$GITHUB_OUTPUT"
+
+      - name: Open generated-data pull request
+        id: pull-request
+        if: steps.changes.outputs.changed == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          UPDATE_BRANCH: ${{ steps.commit.outputs.branch }}
+        run: |
+          PR_URL="$(gh pr create \
+            --base main \
+            --head "$UPDATE_BRANCH" \
+            --title "Update generated Command Data V2" \
+            --body "Automated extraction from data/source/command-data-v1.html. Validation passed; review and merge this update through the protected pull-request workflow.")"
+          echo "url=$PR_URL" >> "$GITHUB_OUTPUT"
+
+      - name: Extraction summary
+        if: always()
+        env:
+          CHANGED: ${{ steps.changes.outputs.changed }}
+          PR_URL: ${{ steps.pull-request.outputs.url }}
+        run: |
+          {
+            echo "## Extract via pull request"
+            echo ""
+            if [ "$CHANGED" = "true" ]; then
+              echo "- Direct push to main: blocked"
+              echo "- Pull request: $PR_URL"
+            else
+              echo "- Generated changes: none"
+            fi
+          } >> "$GITHUB_STEP_SUMMARY"
