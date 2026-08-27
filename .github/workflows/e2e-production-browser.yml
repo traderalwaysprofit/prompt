@@ -2,9 +2,6 @@ name: E2E Production Browser Validation
 
 on:
   workflow_dispatch:
-  workflow_run:
-    workflows: [Cloudflare Pages Deploy]
-    types: [completed]
   push:
     branches: [main]
     paths:
@@ -35,7 +32,6 @@ permissions:
 jobs:
   browser-e2e:
     name: Browser E2E — current frontend
-    if: ${{ github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-latest
     timeout-minutes: 15
     env:
