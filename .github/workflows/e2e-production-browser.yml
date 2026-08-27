@@ -6,10 +6,12 @@ on:
     branches: [main]
     paths:
       - 'index.html'
+      - '_headers'
       - 'favicon.svg'
       - 'src/**'
       - 'data/**'
       - 'scripts/build-static.mjs'
+      - 'scripts/validate-security-headers.mjs'
       - 'tests/e2e/**'
       - 'playwright.config.cjs'
       - 'package.json'
@@ -18,10 +20,12 @@ on:
   pull_request:
     paths:
       - 'index.html'
+      - '_headers'
       - 'favicon.svg'
       - 'src/**'
       - 'data/**'
       - 'scripts/build-static.mjs'
+      - 'scripts/validate-security-headers.mjs'
       - 'tests/e2e/**'
       - 'playwright.config.cjs'
       - 'package.json'
@@ -54,6 +58,9 @@ jobs:
 
       - name: Build current source
         run: npm run build
+
+      - name: Validate security policy artifact
+        run: npm run validate:security-headers
 
       - name: Start local static server
         if: github.event_name == 'push' || github.event_name == 'pull_request'
