@@ -1,0 +1,22 @@
+.workflow-filters{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 20px}
+.workflow-filters button{min-height:38px;padding:0 13px;border:1px solid #354353;border-radius:9px;background:#151d26;color:#aeb9c5;font:800 10px ui-monospace,monospace;letter-spacing:.06em;cursor:pointer}
+.workflow-filters button:hover,.workflow-filters button:focus-visible{border-color:#61adf7;color:#eef7ff;outline:2px solid rgba(97,173,247,.2)}
+.workflow-filters button[aria-pressed="true"]{background:#eef6ff;color:#112031;border-color:#eef6ff}
+.trading-workflow-group{margin-top:26px;padding-top:26px;border-top:1px solid #2d3946}
+.trading-workflow-group[hidden],#workflow-catalog-grid[hidden]{display:none}
+.trading-group-head{display:flex;justify-content:space-between;align-items:end;gap:24px;margin-bottom:16px}
+.trading-group-head h3{margin:6px 0 0;font-size:25px;letter-spacing:-.035em}
+.trading-group-head p{max-width:450px;margin:0;color:#9fabb8;font-size:12px;line-height:1.65}
+.trading-workflow-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+.trading-workflow-card{min-width:0;min-height:360px;border:1px solid #36506a;border-radius:18px;background:linear-gradient(160deg,#172532,#121a22);padding:22px;display:flex;flex-direction:column;transition:border-color .18s,transform .18s,box-shadow .18s}
+.trading-workflow-card:hover{border-color:#65b1f8;transform:translateY(-2px);box-shadow:0 18px 38px rgba(0,0,0,.18)}
+.trading-card-top{display:flex;justify-content:space-between;align-items:center;gap:10px;color:#80bcf5;font:800 9px ui-monospace,monospace;letter-spacing:.07em;text-transform:uppercase}
+.education-badge{display:inline-flex;align-items:center;width:max-content;border:1px solid rgba(83,184,255,.42);border-radius:999px;padding:6px 9px;background:rgba(42,137,214,.12);color:#9bd3ff;font:800 9px ui-monospace,monospace;letter-spacing:.06em;text-transform:uppercase}
+.trading-workflow-card h3{margin:20px 0 9px;font-size:24px;line-height:1.08;letter-spacing:-.035em;color:#f4f8fc}
+.trading-workflow-card p{margin:0;color:#aebbc8;font-size:12px;line-height:1.65}
+.trading-workflow-card button{min-height:46px;border:1px solid #3b566f;border-radius:10px;background:#1b2a37;color:#eef7ff;padding:0 14px;display:flex;align-items:center;justify-content:space-between;font-weight:800;cursor:pointer}
+.trading-workflow-card button:hover,.trading-workflow-card button:focus-visible{border-color:#63b3ff;background:#176fbe;outline:3px solid rgba(74,166,255,.18)}
+.cheatcode-detail[data-trading-detail] .workflow-header{background:linear-gradient(180deg,#fafdff,#f3f8fc)}
+.cheatcode-detail[data-trading-detail] .workflow-header .education-badge{margin-bottom:8px;background:#e8f4ff;color:#1769a8;border-color:#b8d9f3}
+@media(max-width:980px){.trading-workflow-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:760px){.workflow-filters{overflow-x:auto;flex-wrap:nowrap;padding-bottom:4px}.workflow-filters button{flex:0 0 auto}.trading-group-head{display:block}.trading-group-head p{margin-top:10px}.trading-workflow-grid{grid-template-columns:1fr}.trading-workflow-card{min-height:320px}}
