@@ -33,7 +33,7 @@ test.describe('samson.web.id current frontend', () => {
     expect(commands).toHaveLength(200);
     expect(categories).toHaveLength(20);
     expect(examples).toHaveLength(200);
-    expect(cheatcodes).toHaveLength(1);
+    expect(cheatcodes).toHaveLength(6);
     expect(cheatcodes[0].id).toBe('build-website');
     expect(cheatcodes[0].steps).toHaveLength(8);
     expect(new Set(commands.map((command) => command.id)).size).toBe(200);
@@ -141,9 +141,12 @@ test.describe('samson.web.id current frontend', () => {
   test('homepage positions Cheatcodes first while preserving Prompt Library', async ({ page }) => {
     await page.goto(BASE_URL, { waitUntil: 'networkidle' });
 
-    await expect(page.getByRole('heading', { name: 'What do you want to create?' })).toBeVisible();
-    await expect(page.getByRole('heading', { name: 'Build a Website' })).toBeVisible();
-    await expect(page.getByRole('heading', { name: 'Prompt Library' })).toBeVisible();
+    await expect(page.getByRole('heading', { name: 'Bagaimana Anda ingin bekerja?' })).toBeVisible();
+    await expect(page.locator('.choice-card')).toHaveCount(2);
+    await expect(page.getByRole('heading', { name: 'Pilih pekerjaan yang ingin diselesaikan' })).toBeVisible();
+    await expect(page.getByRole('heading', { name: 'Temukan satu prompt spesifik' })).toBeVisible();
+    await expect(page.getByRole('button', { name: /Lihat 6 Workflow/ })).toBeVisible();
+    await expect(page.getByRole('button', { name: /Buka Prompt Library/ })).toBeVisible();
     await expect(page.locator('#nav-cheatcodes')).toHaveText('Cheatcodes');
     await expect(page.locator('#nav-recent')).toHaveText('Prompt Library');
     await expect(page.locator('#nav-categories')).toHaveText('Categories');
@@ -151,7 +154,10 @@ test.describe('samson.web.id current frontend', () => {
 
   test('Build Website runs as an eight-step workflow with local progress', async ({ page }) => {
     await page.goto(BASE_URL, { waitUntil: 'networkidle' });
-    await page.getByRole('button', { name: /Start Workflow/ }).click();
+    await page.getByRole('button', { name: /Lihat 6 Workflow/ }).click();
+    await expect(page.locator('.workflow-catalog-card')).toHaveCount(6);
+    const websiteCard = page.locator('.workflow-catalog-card').filter({ hasText: 'Build a Website' });
+    await websiteCard.getByRole('button', { name: 'Mulai Build a Website' }).click();
 
     const detail = page.locator('#cheatcode-detail');
     await expect(detail).toBeVisible();
@@ -170,12 +176,30 @@ test.describe('samson.web.id current frontend', () => {
     await expect(page.locator('#cheatcode-detail .workflow-progress-label')).toContainText('1/8');
   });
 
-  test('task paths route users into filtered Prompt Library results', async ({ page }) => {
+  test('users can choose from six outcome-based workflows', async ({ page }) => {
     await page.goto(BASE_URL, { waitUntil: 'networkidle' });
-    await page.getByRole('button', { name: /Debug Code/ }).click();
-    await expect(page.locator('#category-filter')).toHaveValue('coding');
+    await page.getByRole('button', { name: /Lihat 6 Workflow/ }).click();
+    const catalog = page.locator('#workflow-catalog');
+    await expect(catalog).toBeVisible();
+    await expect(catalog.locator('.workflow-catalog-card')).toHaveCount(6);
+    for (const title of ['Build a SaaS', 'Launch a Marketing Campaign', 'Create SEO Content', 'Run a Research Project', 'Automate a Task']) {
+      await expect(catalog).toContainText(title);
+    }
+    const marketingCard = catalog.locator('.workflow-catalog-card').filter({ hasText: 'Launch a Marketing Campaign' });
+    await marketingCard.getByRole('button', { name: 'Mulai Launch a Marketing Campaign' }).click();
+    await expect(page).toHaveURL(/#cheatcodes\/marketing-campaign\/step-1$/);
+    await expect(page.locator('#cheatcode-detail .workflow-step-tab')).toHaveCount(8);
+    await expect(page.locator('#cheatcode-detail')).toContainText('Segment the Audience');
+    await expect(page.getByRole('button', { name: 'Copy prompt /segmentation' })).toBeVisible();
+  });
+
+  test('Prompt Library choice routes users to the searchable library', async ({ page }) => {
+    await page.goto(BASE_URL, { waitUntil: 'networkidle' });
+    await page.getByRole('button', { name: /Buka Prompt Library/ }).click();
     await expect(page).toHaveURL(/#prompts$/);
-    await expect(page.locator('.nft-card code', { hasText: '/debug' })).toBeVisible();
+    await expect(page.locator('#search')).toBeVisible();
+    await expect(page.locator('#category-filter')).toBeVisible();
+    await expect(page.locator('.results-count')).toContainText('OF 200 COMMANDS');
   });
 
   test('category select filters the command grid', async ({ page }) => {

@@ -81,27 +81,46 @@
   };
 
   const renderFeatured = () => {
-    const card = document.querySelector('#featured-cheatcode');
-    const cheatcode = cheatcodes.find((item) => item.status === 'active');
-    if (!card || !cheatcode) return;
-    const done = completedSteps(cheatcode.id).size;
+    const card = document.querySelector('#workflow-choice');
+    const activeWorkflows = cheatcodes.filter((item) => item.status === 'active');
+    if (!card || !activeWorkflows.length) return;
+    const started = activeWorkflows.filter((item) => completedSteps(item.id).size > 0).length;
     card.innerHTML = `
-      <div class="featured-cheatcode-copy">
-        <div class="cheatcode-meta">
-          <span>${escapeHtml(cheatcode.difficulty)}</span>
-          <span>${cheatcode.steps.length} STEPS</span>
-          <span>${escapeHtml(cheatcode.estimatedTime)}</span>
-        </div>
-        <h3>${escapeHtml(cheatcode.title)}</h3>
-        <p>${escapeHtml(cheatcode.description)}</p>
-        <button class="cheatcode-primary" type="button" data-open-cheatcode="${escapeHtml(cheatcode.id)}">${done ? 'Continue Workflow' : 'Start Workflow'} →</button>
-        <button class="cheatcode-secondary" type="button" data-route-prompts>Browse Prompts</button>
-      </div>
-      <div class="cheatcode-map" aria-label="Workflow steps">
-        <ol>${cheatcode.steps.map((step) => `<li>${escapeHtml(step.title)}</li>`).join('')}</ol>
-      </div>`;
+      <div class="choice-card-topline"><span class="choice-number" aria-hidden="true">01</span><span class="choice-badge">RECOMMENDED</span></div>
+      <span class="choice-eyebrow">GUIDED WORKFLOWS</span>
+      <h3 id="workflow-choice-title">Pilih pekerjaan yang ingin diselesaikan</h3>
+      <p>Jelajahi workflow berdasarkan tujuan, lalu ikuti langkah dan prompt yang sudah disusun dari awal sampai hasil akhir.</p>
+      <div class="choice-feature"><strong>${activeWorkflows.length} Ready-to-run Workflows</strong><span>${started ? `${started} sudah dimulai` : 'Web · SaaS · Marketing · Content · Research · Automation'}</span></div>
+      <ul class="choice-benefits" aria-label="Workflow benefits"><li>Pilih workflow berdasarkan tujuan</li><li>Progress setiap workflow tersimpan</li><li>Prompt tersedia pada setiap tahap</li></ul>
+      <button class="choice-action choice-action-primary" type="button" data-show-workflows>Lihat ${activeWorkflows.length} Workflow <span aria-hidden="true">→</span></button>`;
   };
 
+  const renderCatalog = () => {
+    const grid = document.querySelector('#workflow-catalog-grid');
+    if (!grid) return;
+    grid.innerHTML = cheatcodes.filter((item) => item.status === 'active').map((cheatcode) => {
+      const done = completedSteps(cheatcode.id).size;
+      const progress = Math.round((done / cheatcode.steps.length) * 100);
+      const action = done ? 'Lanjutkan' : 'Mulai';
+      return `<article class="workflow-catalog-card">
+        <div class="catalog-card-meta"><span>${escapeHtml(cheatcode.category || 'Workflow')}</span><span>${escapeHtml(cheatcode.difficulty)}</span></div>
+        <h3>${escapeHtml(cheatcode.title)}</h3><p>${escapeHtml(cheatcode.description)}</p>
+        <div class="catalog-card-stats"><span><strong>${cheatcode.steps.length}</strong> langkah</span><span><strong>${escapeHtml(cheatcode.estimatedTime)}</strong></span></div>
+        <div class="catalog-progress" aria-label="Progress ${escapeHtml(cheatcode.title)} ${progress}%"><span style="width:${progress}%"></span></div>
+        <button type="button" data-open-cheatcode="${escapeHtml(cheatcode.id)}" aria-label="${action} ${escapeHtml(cheatcode.title)}">${action} Workflow <span aria-hidden="true">→</span></button>
+      </article>`;
+    }).join('');
+  };
+
+  const showWorkflowCatalog = (options = {}) => {
+    const catalog = document.querySelector('#workflow-catalog');
+    if (!catalog) return;
+    catalog.hidden = false;
+    renderCatalog();
+    if (options.updateHash !== false) history.replaceState(null, '', '#workflows');
+    if (options.scroll !== false) catalog.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    requestAnimationFrame(() => catalog.querySelector('h2')?.focus({ preventScroll: true }));
+  };
   const renderWorkflow = () => {
     const detail = document.querySelector('#cheatcode-detail');
     if (!detail || !activeCheatcode) return;
@@ -124,7 +143,7 @@
         </div>
       </div>
       <div class="workflow-layout">
-        <nav class="workflow-steps" aria-label="Build Website steps">
+        <nav class="workflow-steps" aria-label="${escapeHtml(activeCheatcode.title)} steps">
           ${activeCheatcode.steps.map((item, index) => `
             <button class="workflow-step-tab" type="button" data-workflow-step="${index}" ${index === activeStepIndex ? 'aria-current="step"' : ''}>
               <span class="workflow-step-number">${String(item.number).padStart(2, '0')}</span>
@@ -158,6 +177,7 @@
   const openCheatcode = (id, options = {}) => {
     const next = cheatcodes.find((item) => item.id === id);
     if (!next) return;
+    showWorkflowCatalog({ updateHash: false, scroll: false });
     activeCheatcode = next;
     const completed = completedSteps(id);
     const firstIncomplete = next.steps.findIndex((step) => !completed.has(step.number));
@@ -194,9 +214,10 @@
       document.querySelector('.workflow-content')?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
     } else {
       renderWorkflow();
-      showNotice('Build Website workflow selesai');
+      showNotice(`${activeCheatcode.title} workflow selesai`);
     }
     renderFeatured();
+    renderCatalog();
   };
 
   const resetWorkflow = () => {
@@ -206,6 +227,7 @@
     writeProgress(progress);
     activeStepIndex = 0;
     renderFeatured();
+    renderCatalog();
     renderWorkflow();
     showNotice('Progress workflow direset');
   };
@@ -242,42 +264,62 @@
     const heroCopy = document.querySelector('.hero-copy');
     if (heroCopy) heroCopy.innerHTML = `
       <div class="eyebrow">⚡ AI CHEATCODES FOR REAL WORK</div>
-      <h1>Complex work.<br><span>Simple steps.</span></h1>
-      <p>Ready-to-use AI workflows and prompts for ChatGPT, Gemini, Claude, and the tools you already use.</p>
+      <h1>Satu tujuan.<br><span>Dua cara memulai.</span></h1>
+      <p>Pilih workflow terpandu untuk pekerjaan kompleks, atau temukan satu prompt untuk kebutuhan yang spesifik.</p>
       <div class="hero-actions">
-        <button id="hero-cheatcodes" type="button">Explore Cheatcodes <span>↗</span></button>
-        <button class="ghost" id="hero-prompts" type="button">Browse Prompt Library</button>
+        <button id="hero-cheatcodes" type="button">Pilih cara kerja <span>↓</span></button>
       </div>
-      <div class="hero-stats"><span><b>1</b> WORKFLOW</span><span><b>200</b> PROMPTS</span><span><b>20</b> CATEGORIES</span></div>`;
+      <div class="hero-stats"><span><b>6</b> WORKFLOWS</span><span><b>200</b> PROMPTS</span><span><b>20</b> CATEGORIES</span></div>`;
 
     const heroCard = document.querySelector('.hero-card');
     if (heroCard) heroCard.innerHTML = `
-      <span class="tag">CHEATCODE 001</span>
-      <div class="hero-card-icon">⚡</div>
-      <h3>BUILD<br>WEBSITE</h3>
-      <p>IDEA // BUILD // TEST // DEPLOY</p>
-      <div class="hero-card-footer"><span>8 STEP WORKFLOW</span></div>`;
-
+      <span class="tag">SAMSON V1.5</span>
+      <div class="hero-card-icon">↗</div>
+      <h3>CHOOSE<br>YOUR PATH</h3>
+      <p>WORKFLOW // PROMPT LIBRARY</p>
+      <div class="hero-card-footer"><span>START WITH YOUR INTENT</span></div>`;
     featured.insertAdjacentHTML('beforebegin', `
-      <section class="cheatcodes-section" id="cheatcodes" aria-labelledby="cheatcodes-title">
+      <section class="cheatcodes-section" id="cheatcodes" aria-labelledby="work-mode-title">
         <div class="cheatcodes-inner">
           <div class="cheatcodes-heading">
-            <div><span class="cheatcodes-eyebrow">⚡ START WITH THE OUTCOME</span><h2 id="cheatcodes-title">What do you want to create?</h2></div>
-            <p>Choose a complete workflow or jump directly into the Prompt Library for one specific task.</p>
+            <div>
+              <span class="cheatcodes-eyebrow">START WITH YOUR INTENT</span>
+              <h2 id="work-mode-title">Bagaimana Anda ingin bekerja?</h2>
+            </div>
+            <p>Pilih berdasarkan ukuran pekerjaan. Anda dapat berpindah jalur kapan saja tanpa kehilangan akses ke Prompt Library.</p>
           </div>
-          <div class="task-paths" aria-label="Task paths">
-            <button class="task-path is-primary" type="button" data-open-cheatcode="build-website">Build a Website<span>8-step cheatcode</span></button>
-            <button class="task-path" type="button" data-prompt-category="marketing">Create Content<span>Marketing prompts</span></button>
-            <button class="task-path" type="button" data-prompt-category="marketing">Write Marketing Copy<span>Copywriting prompts</span></button>
-            <button class="task-path" type="button" data-prompt-category="produktivitas">Research Something<span>Research prompts</span></button>
-            <button class="task-path" type="button" data-prompt-category="coding">Debug Code<span>Coding prompts</span></button>
-            <button class="task-path" type="button" data-prompt-category="sistem">Automate a Task<span>System prompts</span></button>
+          <div class="choice-grid" aria-label="Pilihan cara kerja">
+            <article class="choice-card choice-card-workflow" id="workflow-choice" aria-labelledby="workflow-choice-title" aria-live="polite">
+              <p>Memuat workflow…</p>
+            </article>
+            <article class="choice-card choice-card-prompts" aria-labelledby="prompt-choice-title">
+              <div class="choice-card-topline">
+                <span class="choice-number" aria-hidden="true">02</span>
+                <span class="choice-badge choice-badge-neutral">QUICK ACCESS</span>
+              </div>
+              <span class="choice-eyebrow">PROMPT LIBRARY</span>
+              <h3 id="prompt-choice-title">Temukan satu prompt spesifik</h3>
+              <p>Cocok saat Anda sudah tahu apa yang dibutuhkan dan ingin langsung mencari, memfilter, menyalin, atau menyimpan prompt.</p>
+              <div class="choice-feature choice-feature-light">
+                <strong>200 Ready-to-use Prompts</strong>
+                <span>20 kategori · Search · Favorites</span>
+              </div>
+              <ul class="choice-benefits" aria-label="Prompt Library benefits">
+                <li>Cari berdasarkan kebutuhan</li>
+                <li>Filter berdasarkan kategori</li>
+                <li>Simpan prompt favorit</li>
+              </ul>
+              <button class="choice-action choice-action-secondary" type="button" data-route-prompts>Buka Prompt Library <span aria-hidden="true">→</span></button>
+            </article>
           </div>
-          <article class="featured-cheatcode" id="featured-cheatcode" aria-live="polite"><div class="featured-cheatcode-copy"><p>Loading workflow…</p></div></article>
+          <p class="choice-help"><strong>Belum yakin?</strong> Pilih Workflow untuk pekerjaan besar. Pilih Prompt Library untuk satu tugas cepat.</p>
+          <section class="workflow-catalog" id="workflow-catalog" hidden aria-labelledby="workflow-catalog-title">
+            <div class="workflow-catalog-header"><div><span class="cheatcodes-eyebrow">WORKFLOW CATALOG</span><h2 id="workflow-catalog-title" tabindex="-1">Pilih hasil yang ingin Anda capai</h2></div><p>Setiap workflow menggabungkan beberapa prompt menjadi proses yang runtut dan dapat dilanjutkan kapan saja.</p></div>
+            <div class="workflow-catalog-grid" id="workflow-catalog-grid"></div>
+          </section>
           <section class="cheatcode-detail" id="cheatcode-detail" hidden aria-label="Cheatcode detail"></section>
         </div>
       </section>`);
-
     const featuredEyebrow = featured.querySelector('.section-head .eyebrow');
     const featuredTitle = featured.querySelector('.section-head h2');
     if (featuredEyebrow) featuredEyebrow.textContent = '200 READY-TO-USE PROMPTS';
@@ -306,10 +348,11 @@
       cheatcodes = loadedCheatcodes;
       commandsById = new Map([...commands, ...extraCommands].map((command) => [Number(command.id), command]));
       renderFeatured();
+      renderCatalog();
       routeFromHash();
     } catch (error) {
       console.error(error);
-      const card = document.querySelector('#featured-cheatcode');
+      const card = document.querySelector('#workflow-choice');
       if (card) card.innerHTML = '<div class="featured-cheatcode-copy"><h3>Workflow unavailable</h3><p>Prompt Library tetap dapat digunakan sementara data Cheatcodes diperiksa.</p></div>';
     }
   };
@@ -319,6 +362,8 @@
     if (match) {
       const stepIndex = Math.max(0, Number(match[2] || 1) - 1);
       openCheatcode(match[1], { stepIndex, updateHash: false });
+    } else if (location.hash === '#workflows') {
+      showWorkflowCatalog({ updateHash: false });
     } else if (location.hash === '#prompts') {
       document.querySelector('#featured')?.scrollIntoView({ block: 'start' });
     }
@@ -326,6 +371,10 @@
 
   const bindEvents = () => {
     document.addEventListener('click', (event) => {
+      if (event.target.closest('[data-show-workflows]')) {
+        showWorkflowCatalog();
+        return;
+      }
       const open = event.target.closest('[data-open-cheatcode]');
       if (open) {
         openCheatcode(open.dataset.openCheatcode);

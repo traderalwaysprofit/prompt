@@ -131,8 +131,12 @@ jobs:
                       failures.append(f"{name} expected 20 categories, got {len(categories)}")
                   if len(examples) != 200:
                       failures.append(f"{name} expected 200 examples, got {len(examples)}")
-                  if not cheatcodes or cheatcodes[0].get("id") != "build-website" or len(cheatcodes[0].get("steps", [])) != 8:
-                      failures.append(f"{name} Build Website cheatcode contract invalid")
+                  workflow_ids = {item.get("id") for item in cheatcodes}
+                  required_workflows = {"build-website", "build-saas", "marketing-campaign", "seo-content", "research-project", "automate-task"}
+                  if len(cheatcodes) != 6 or workflow_ids != required_workflows:
+                      failures.append(f"{name} workflow catalog contract invalid: {sorted(workflow_ids)}")
+                  if cheatcodes[0].get("id") != "build-website" or len(cheatcodes[0].get("steps", [])) != 8:
+                      failures.append(f"{name} Build Website workflow contract invalid")
               except Exception as error:
                   failures.append(f"{name} validation error: {error}")
 

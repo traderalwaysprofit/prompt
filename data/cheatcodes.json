@@ -12,56 +12,505 @@
         "title": "Define the Idea",
         "description": "Tetapkan masalah, target pengguna, dan nilai utama website.",
         "output": "Ringkasan ide dan model bisnis",
-        "promptIds": [90]
+        "promptIds": [
+          90
+        ]
       },
       {
         "number": 2,
         "title": "Research the Audience",
         "description": "Pahami kebutuhan, hambatan, dan perilaku calon pengguna.",
         "output": "Temuan riset dan profil pengguna",
-        "promptIds": [135]
+        "promptIds": [
+          135
+        ]
       },
       {
         "number": 3,
         "title": "Define Requirements",
         "description": "Ubah ide menjadi kebutuhan, fitur, batasan, dan kriteria keberhasilan.",
         "output": "PRD ringkas yang siap dikerjakan",
-        "promptIds": [140]
+        "promptIds": [
+          140
+        ]
       },
       {
         "number": 4,
         "title": "Create the Structure",
         "description": "Susun arsitektur informasi, halaman, komponen, dan alur pengguna.",
         "output": "Arsitektur dan wireframe website",
-        "promptIds": [40, 41]
+        "promptIds": [
+          40,
+          41
+        ]
       },
       {
         "number": 5,
         "title": "Generate the Interface",
         "description": "Bangun antarmuka dari brief dan struktur yang sudah disepakati.",
         "output": "Implementasi frontend awal",
-        "promptIds": [194]
+        "promptIds": [
+          194
+        ]
       },
       {
         "number": 6,
         "title": "Test and Debug",
         "description": "Temukan error, regresi, dan masalah perilaku pada perangkat berbeda.",
         "output": "Daftar masalah dan perbaikan terverifikasi",
-        "promptIds": [148]
+        "promptIds": [
+          148
+        ]
       },
       {
         "number": 7,
         "title": "Security Review",
         "description": "Periksa dependency, konfigurasi, akses, data, dan jalur deployment.",
         "output": "Checklist keamanan sebelum rilis",
-        "promptIds": [155]
+        "promptIds": [
+          155
+        ]
       },
       {
         "number": 8,
         "title": "Deploy and Maintain",
         "description": "Rilis melalui GitHub dan Cloudflare dengan workflow yang dapat diaudit.",
         "output": "Website live dan workflow maintenance",
-        "promptIds": [197, 198]
+        "promptIds": [
+          197,
+          198
+        ]
+      }
+    ],
+    "category": "Web Development"
+  },
+  {
+    "id": "build-saas",
+    "title": "Build a SaaS",
+    "category": "Product",
+    "description": "Validasi ide, rancang produk, bangun fondasi teknis, lalu siapkan SaaS untuk dirilis.",
+    "difficulty": "Intermediate",
+    "estimatedTime": "90–180 min",
+    "status": "active",
+    "steps": [
+      {
+        "number": 1,
+        "title": "Validate the Business Model",
+        "description": "Tetapkan masalah, pelanggan, value proposition, dan model bisnis.",
+        "output": "Business model tervalidasi",
+        "promptIds": [
+          90
+        ]
+      },
+      {
+        "number": 2,
+        "title": "Research Users",
+        "description": "Temukan kebutuhan dan perilaku calon pengguna.",
+        "output": "User research dan personas",
+        "promptIds": [
+          135,
+          136
+        ]
+      },
+      {
+        "number": 3,
+        "title": "Analyze the Market",
+        "description": "Petakan kompetitor, diferensiasi, dan peluang pasar.",
+        "output": "Market positioning",
+        "promptIds": [
+          164,
+          44
+        ]
+      },
+      {
+        "number": 4,
+        "title": "Write Product Requirements",
+        "description": "Susun scope MVP, fitur, batasan, dan indikator keberhasilan.",
+        "output": "PRD dan feature specification",
+        "promptIds": [
+          140,
+          139
+        ]
+      },
+      {
+        "number": 5,
+        "title": "Choose the Tech Stack",
+        "description": "Pilih stack berdasarkan performa, keamanan, DX, dan biaya.",
+        "output": "Tech stack decision",
+        "promptIds": [
+          154
+        ]
+      },
+      {
+        "number": 6,
+        "title": "Design the Architecture",
+        "description": "Rancang arsitektur aplikasi, API, dan database.",
+        "output": "Technical blueprint",
+        "promptIds": [
+          40,
+          151,
+          152
+        ]
+      },
+      {
+        "number": 7,
+        "title": "Prototype and Build",
+        "description": "Buat alur, prototype, dan implementasi awal.",
+        "output": "MVP prototype",
+        "promptIds": [
+          41,
+          43,
+          194
+        ]
+      },
+      {
+        "number": 8,
+        "title": "Test and Secure",
+        "description": "Temukan bug, review kode, dan audit keamanan.",
+        "output": "Tested and secured build",
+        "promptIds": [
+          148,
+          149,
+          155
+        ]
+      },
+      {
+        "number": 9,
+        "title": "Release and Maintain",
+        "description": "Siapkan Git workflow, deployment, dokumentasi, dan changelog.",
+        "output": "Release-ready SaaS",
+        "promptIds": [
+          153,
+          150,
+          141,
+          197,
+          198
+        ]
+      }
+    ]
+  },
+  {
+    "id": "marketing-campaign",
+    "title": "Launch a Marketing Campaign",
+    "category": "Marketing",
+    "description": "Dari target pasar hingga kampanye multi-channel yang terukur dan siap dioptimasi.",
+    "difficulty": "Beginner",
+    "estimatedTime": "60–120 min",
+    "status": "active",
+    "steps": [
+      {
+        "number": 1,
+        "title": "Segment the Audience",
+        "description": "Tentukan segmen dan target pelanggan utama.",
+        "output": "Audience segments",
+        "promptIds": [
+          160
+        ]
+      },
+      {
+        "number": 2,
+        "title": "Analyze Competitors",
+        "description": "Pelajari pesan, kanal, dan celah strategi kompetitor.",
+        "output": "Competitive insights",
+        "promptIds": [
+          164
+        ]
+      },
+      {
+        "number": 3,
+        "title": "Define the Brand Message",
+        "description": "Tetapkan positioning, value proposition, dan pesan inti.",
+        "output": "Brand message",
+        "promptIds": [
+          159
+        ]
+      },
+      {
+        "number": 4,
+        "title": "Design the Funnel",
+        "description": "Susun perjalanan audiens dari awareness sampai retention.",
+        "output": "Marketing funnel",
+        "promptIds": [
+          158
+        ]
+      },
+      {
+        "number": 5,
+        "title": "Plan the Content",
+        "description": "Tentukan tema, format, channel, dan kalender konten.",
+        "output": "Content strategy",
+        "promptIds": [
+          156
+        ]
+      },
+      {
+        "number": 6,
+        "title": "Write Campaign Copy",
+        "description": "Buat copy iklan, landing page, email, dan CTA.",
+        "output": "Campaign copy",
+        "promptIds": [
+          157,
+          101
+        ]
+      },
+      {
+        "number": 7,
+        "title": "Launch Across Channels",
+        "description": "Satukan pesan, aset, channel, dan timeline eksekusi.",
+        "output": "Campaign plan",
+        "promptIds": [
+          163
+        ]
+      },
+      {
+        "number": 8,
+        "title": "Measure and Optimize",
+        "description": "Tetapkan KPI dan eksperimen peningkatan hasil.",
+        "output": "Measurement plan",
+        "promptIds": [
+          127,
+          128
+        ]
+      }
+    ]
+  },
+  {
+    "id": "seo-content",
+    "title": "Create SEO Content",
+    "category": "Content",
+    "description": "Riset topik, susun strategi, tulis konten, lalu validasi kualitas dan kredibilitasnya.",
+    "difficulty": "Beginner",
+    "estimatedTime": "45–90 min",
+    "status": "active",
+    "steps": [
+      {
+        "number": 1,
+        "title": "Research the Topic",
+        "description": "Petakan kebutuhan audiens dan sudut bahasan.",
+        "output": "Research brief",
+        "promptIds": [
+          93
+        ]
+      },
+      {
+        "number": 2,
+        "title": "Collect Reliable Sources",
+        "description": "Temukan sumber primer untuk mendukung klaim.",
+        "output": "Verified sources",
+        "promptIds": [
+          94
+        ]
+      },
+      {
+        "number": 3,
+        "title": "Define Search Strategy",
+        "description": "Susun target pencarian, cluster, dan tujuan organik.",
+        "output": "SEO strategy",
+        "promptIds": [
+          162
+        ]
+      },
+      {
+        "number": 4,
+        "title": "Build the Structure",
+        "description": "Ubah temuan menjadi outline yang runtut.",
+        "output": "Content outline",
+        "promptIds": [
+          100
+        ]
+      },
+      {
+        "number": 5,
+        "title": "Write the Draft",
+        "description": "Tulis konten yang natural dan sesuai intent.",
+        "output": "Article draft",
+        "promptIds": [
+          105,
+          157
+        ]
+      },
+      {
+        "number": 6,
+        "title": "Fact-check the Content",
+        "description": "Periksa klaim, angka, dan sumber.",
+        "output": "Verified draft",
+        "promptIds": [
+          69
+        ]
+      },
+      {
+        "number": 7,
+        "title": "Extract and Repurpose",
+        "description": "Ubah artikel menjadi ringkasan dan aset lain.",
+        "output": "Repurposing package",
+        "promptIds": [
+          95,
+          96,
+          97
+        ]
+      }
+    ]
+  },
+  {
+    "id": "research-project",
+    "title": "Run a Research Project",
+    "category": "Research",
+    "description": "Mulai dari pertanyaan yang tepat hingga insight dan rekomendasi yang dapat dipertanggungjawabkan.",
+    "difficulty": "Intermediate",
+    "estimatedTime": "60–120 min",
+    "status": "active",
+    "steps": [
+      {
+        "number": 1,
+        "title": "Frame the Research Question",
+        "description": "Perjelas masalah, scope, dan hasil yang dibutuhkan.",
+        "output": "Research scope",
+        "promptIds": [
+          57,
+          93
+        ]
+      },
+      {
+        "number": 2,
+        "title": "Gather Credible Sources",
+        "description": "Cari sumber primer dan bukti relevan.",
+        "output": "Source library",
+        "promptIds": [
+          94
+        ]
+      },
+      {
+        "number": 3,
+        "title": "Extract Key Evidence",
+        "description": "Ambil fakta dan temuan secara terstruktur.",
+        "output": "Evidence table",
+        "promptIds": [
+          96,
+          97
+        ]
+      },
+      {
+        "number": 4,
+        "title": "Compare the Findings",
+        "description": "Bandingkan hasil, kelebihan, dan keterbatasan.",
+        "output": "Comparison",
+        "promptIds": [
+          20,
+          30
+        ]
+      },
+      {
+        "number": 5,
+        "title": "Verify Claims",
+        "description": "Uji konsistensi sumber dan klaim utama.",
+        "output": "Fact-check report",
+        "promptIds": [
+          69
+        ]
+      },
+      {
+        "number": 6,
+        "title": "Synthesize Insights",
+        "description": "Gabungkan bukti menjadi pola dan insight.",
+        "output": "Research insights",
+        "promptIds": [
+          86
+        ]
+      },
+      {
+        "number": 7,
+        "title": "Make a Decision",
+        "description": "Susun rekomendasi dan keputusan berbobot.",
+        "output": "Decision matrix",
+        "promptIds": [
+          87,
+          77
+        ]
+      }
+    ]
+  },
+  {
+    "id": "automate-task",
+    "title": "Automate a Task",
+    "category": "Automation",
+    "description": "Petakan proses manual, desain alur AI, uji risiko, dan ukur hasil otomatisasi.",
+    "difficulty": "Advanced",
+    "estimatedTime": "60–120 min",
+    "status": "active",
+    "steps": [
+      {
+        "number": 1,
+        "title": "Map the Current Process",
+        "description": "Dokumentasikan input, langkah, aktor, dan output.",
+        "output": "Current process map",
+        "promptIds": [
+          33,
+          32
+        ]
+      },
+      {
+        "number": 2,
+        "title": "Find the Bottleneck",
+        "description": "Temukan aktivitas berulang dan akar masalah.",
+        "output": "Automation opportunities",
+        "promptIds": [
+          75,
+          76
+        ]
+      },
+      {
+        "number": 3,
+        "title": "Design the Future Workflow",
+        "description": "Susun alur baru dan prioritas implementasi.",
+        "output": "Future workflow",
+        "promptIds": [
+          6,
+          100
+        ]
+      },
+      {
+        "number": 4,
+        "title": "Create AI Instructions",
+        "description": "Bangun system prompt, persona, batasan, dan contoh.",
+        "output": "Prompt system",
+        "promptIds": [
+          117,
+          120,
+          119,
+          118
+        ]
+      },
+      {
+        "number": 5,
+        "title": "Connect the Steps",
+        "description": "Rantai prompt menjadi alur multi-step.",
+        "output": "Prompt chain",
+        "promptIds": [
+          116,
+          121
+        ]
+      },
+      {
+        "number": 6,
+        "title": "Stress-test the Automation",
+        "description": "Uji failure mode, keamanan, dan fallback manusia.",
+        "output": "Risk report",
+        "promptIds": [
+          78,
+          79,
+          155
+        ]
+      },
+      {
+        "number": 7,
+        "title": "Measure and Improve",
+        "description": "Tetapkan KPI, dashboard, dan evaluasi.",
+        "output": "KPI dashboard",
+        "promptIds": [
+          127,
+          36,
+          34
+        ]
       }
     ]
   }
