@@ -4,8 +4,12 @@ import { appendFileSync, readFileSync } from 'node:fs';
 const baseRef = process.argv[2];
 const readJson = (path) => JSON.parse(readFileSync(path, 'utf8'));
 const commands = [...readJson('data/commands.json'), ...readJson('data/commands-extra.json')];
-const cheatcodes = readJson('data/cheatcodes.json');
-const referencedIds = new Set(cheatcodes.flatMap((workflow) => workflow.steps.flatMap((step) => step.promptIds)));
+const workflows = [
+  ...readJson('data/cheatcodes.json'),
+  ...readJson('data/workflows-trading.json'),
+  ...readJson('data/workflows-wordpress.json')
+];
+const referencedIds = new Set(workflows.flatMap((workflow) => workflow.steps.flatMap((step) => step.promptIds)));
 const unreferenced = commands.filter((command) => !referencedIds.has(command.id));
 
 let newCommands = [];
@@ -21,7 +25,7 @@ if (baseRef) {
 }
 
 const suggestions = {
-  coding: 'build-website or build-saas',
+  coding: 'Build / WordPress workflow review',
   produk: 'build-saas',
   marketing: 'marketing-campaign',
   kreatif: 'marketing-campaign',
@@ -31,13 +35,15 @@ const suggestions = {
   kritis: 'research-project',
   data: 'research-project',
   ai: 'automate-task',
-  sistem: 'automate-task'
+  sistem: 'automate-task',
+  trading: 'Trading workflow review'
 };
 
 const lines = [
   '## Prompt coverage',
   '',
   `- Runtime prompts: ${commands.length}`,
+  `- Runtime workflows: ${workflows.length}`,
   `- Referenced by workflows: ${referencedIds.size}`,
   `- Prompt Library only: ${unreferenced.length}`,
   `- New prompts in this change: ${newCommands.length}`
