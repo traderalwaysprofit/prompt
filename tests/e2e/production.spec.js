@@ -141,9 +141,12 @@ test.describe('samson.web.id current frontend', () => {
   test('homepage positions Cheatcodes first while preserving Prompt Library', async ({ page }) => {
     await page.goto(BASE_URL, { waitUntil: 'networkidle' });
 
-    await expect(page.getByRole('heading', { name: 'What do you want to create?' })).toBeVisible();
-    await expect(page.getByRole('heading', { name: 'Build a Website' })).toBeVisible();
-    await expect(page.getByRole('heading', { name: 'Prompt Library' })).toBeVisible();
+    await expect(page.getByRole('heading', { name: 'Bagaimana Anda ingin bekerja?' })).toBeVisible();
+    await expect(page.locator('.choice-card')).toHaveCount(2);
+    await expect(page.getByRole('heading', { name: 'Selesaikan pekerjaan bertahap' })).toBeVisible();
+    await expect(page.getByRole('heading', { name: 'Temukan satu prompt spesifik' })).toBeVisible();
+    await expect(page.getByRole('button', { name: /Mulai Workflow/ })).toBeVisible();
+    await expect(page.getByRole('button', { name: /Buka Prompt Library/ })).toBeVisible();
     await expect(page.locator('#nav-cheatcodes')).toHaveText('Cheatcodes');
     await expect(page.locator('#nav-recent')).toHaveText('Prompt Library');
     await expect(page.locator('#nav-categories')).toHaveText('Categories');
@@ -151,7 +154,7 @@ test.describe('samson.web.id current frontend', () => {
 
   test('Build Website runs as an eight-step workflow with local progress', async ({ page }) => {
     await page.goto(BASE_URL, { waitUntil: 'networkidle' });
-    await page.getByRole('button', { name: /Start Workflow/ }).click();
+    await page.getByRole('button', { name: /Mulai Workflow/ }).click();
 
     const detail = page.locator('#cheatcode-detail');
     await expect(detail).toBeVisible();
@@ -170,12 +173,13 @@ test.describe('samson.web.id current frontend', () => {
     await expect(page.locator('#cheatcode-detail .workflow-progress-label')).toContainText('1/8');
   });
 
-  test('task paths route users into filtered Prompt Library results', async ({ page }) => {
+  test('Prompt Library choice routes users to the searchable library', async ({ page }) => {
     await page.goto(BASE_URL, { waitUntil: 'networkidle' });
-    await page.getByRole('button', { name: /Debug Code/ }).click();
-    await expect(page.locator('#category-filter')).toHaveValue('coding');
+    await page.getByRole('button', { name: /Buka Prompt Library/ }).click();
     await expect(page).toHaveURL(/#prompts$/);
-    await expect(page.locator('.nft-card code', { hasText: '/debug' })).toBeVisible();
+    await expect(page.locator('#search')).toBeVisible();
+    await expect(page.locator('#category-filter')).toBeVisible();
+    await expect(page.locator('.results-count')).toContainText('OF 200 COMMANDS');
   });
 
   test('category select filters the command grid', async ({ page }) => {
