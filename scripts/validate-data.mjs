@@ -1,17 +1,19 @@
 import { readFile } from 'node:fs/promises';
 
 const readJson = async (path) => JSON.parse(await readFile(path, 'utf8'));
-const [baseCommands, extraCommands, categories, baseExamples, extraExamples, cheatcodes] = await Promise.all([
+const [baseCommands, extraCommands, categories, baseExamples, extraExamples, cheatcodes, tradingWorkflows] = await Promise.all([
   readJson('data/commands.json'),
   readJson('data/commands-extra.json'),
   readJson('data/categories.json'),
   readJson('data/examples.json'),
   readJson('data/examples-extra.json'),
-  readJson('data/cheatcodes.json')
+  readJson('data/cheatcodes.json'),
+  readJson('data/workflows-trading.json')
 ]);
 
 const commands = [...baseCommands, ...extraCommands];
 const examples = [...baseExamples, ...extraExamples];
+const workflows = [...cheatcodes, ...tradingWorkflows];
 const errors = [];
 const warnings = [];
 const categoryIds = new Set(categories.map((item) => item.id));
@@ -23,15 +25,15 @@ if (extraCommands.length < 7) errors.push(`Expected at least 7 extra commands, g
 if (commands.length < 197) errors.push(`Expected at least 197 runtime commands, got ${commands.length}`);
 if (categories.length < 19) errors.push(`Expected at least 19 categories, got ${categories.length}`);
 if (examples.length !== commands.length) errors.push(`Expected one example per command (${commands.length}), got ${examples.length}`);
-if (!Array.isArray(cheatcodes) || cheatcodes.length < 1) errors.push('Expected at least one cheatcode');
+if (!Array.isArray(cheatcodes) || cheatcodes.length !== 6) errors.push(`Expected 6 core workflows, got ${cheatcodes?.length}`);
+if (!Array.isArray(tradingWorkflows) || tradingWorkflows.length !== 3) errors.push(`Expected 3 trading workflows, got ${tradingWorkflows?.length}`);
+if (workflows.length !== 9) errors.push(`Expected 9 total workflows, got ${workflows.length}`);
 
 for (const command of commands) {
   if (!Number.isInteger(command.id) || command.id < 1) errors.push(`Invalid command id: ${command.id}`);
   if (retiredCommandIds.has(command.id)) errors.push(`Retired command id reused: ${command.id}`);
   for (const field of ['name', 'categoryId', 'description', 'template']) {
-    if (typeof command[field] !== 'string' || command[field].trim() === '') {
-      errors.push(`Missing required field: ${field} in command ${command.id}`);
-    }
+    if (typeof command[field] !== 'string' || command[field].trim() === '') errors.push(`Missing required field: ${field} in command ${command.id}`);
   }
   if (!categoryIds.has(command.categoryId)) errors.push(`Invalid category reference: ${command.name}`);
 }
@@ -57,38 +59,37 @@ const exampleIdSet = new Set(exampleIds);
 for (const id of commandIdSet) if (!exampleIdSet.has(id)) errors.push(`Missing example for command id: ${id}`);
 for (const id of exampleIdSet) if (!commandIdSet.has(id)) errors.push(`Orphan example id: ${id}`);
 
-const cheatcodeIds = [];
-for (const cheatcode of cheatcodes) {
-  if (typeof cheatcode.id !== 'string' || !cheatcode.id.trim()) errors.push('Cheatcode id must be a non-empty string');
-  else cheatcodeIds.push(cheatcode.id);
+const workflowIds = [];
+for (const workflow of workflows) {
+  if (typeof workflow.id !== 'string' || !workflow.id.trim()) errors.push('Workflow id must be a non-empty string');
+  else workflowIds.push(workflow.id);
   for (const field of ['title', 'description', 'difficulty', 'estimatedTime', 'status']) {
-    if (typeof cheatcode[field] !== 'string' || !cheatcode[field].trim()) {
-      errors.push(`Missing cheatcode field ${field}: ${cheatcode.id}`);
-    }
+    if (typeof workflow[field] !== 'string' || !workflow[field].trim()) errors.push(`Missing workflow field ${field}: ${workflow.id}`);
   }
-  if (!Array.isArray(cheatcode.steps) || cheatcode.steps.length < 2) {
-    errors.push(`Cheatcode must contain at least two steps: ${cheatcode.id}`);
+  if (!Array.isArray(workflow.steps) || workflow.steps.length < 2) {
+    errors.push(`Workflow must contain at least two steps: ${workflow.id}`);
     continue;
   }
+  if (tradingWorkflows.includes(workflow)) {
+    if (workflow.group !== 'Trading') errors.push(`Trading workflow must use Trading group: ${workflow.id}`);
+    if (workflow.badge !== 'EDUCATIONAL ANALYSIS') errors.push(`Trading workflow badge must be EDUCATIONAL ANALYSIS: ${workflow.id}`);
+    if (workflow.steps.length !== 8) errors.push(`Trading workflow must contain 8 steps: ${workflow.id}`);
+  }
   const stepNumbers = [];
-  for (const step of cheatcode.steps) {
+  for (const step of workflow.steps) {
     stepNumbers.push(step.number);
     for (const field of ['title', 'description', 'output']) {
-      if (typeof step[field] !== 'string' || !step[field].trim()) {
-        errors.push(`Missing step field ${field}: ${cheatcode.id} step ${step.number}`);
-      }
+      if (typeof step[field] !== 'string' || !step[field].trim()) errors.push(`Missing step field ${field}: ${workflow.id} step ${step.number}`);
     }
     if (!Array.isArray(step.promptIds) || step.promptIds.length < 1) {
-      errors.push(`Step has no prompt references: ${cheatcode.id} step ${step.number}`);
+      errors.push(`Step has no prompt references: ${workflow.id} step ${step.number}`);
     } else {
-      for (const promptId of step.promptIds) {
-        if (!commandIdSet.has(promptId)) errors.push(`Invalid prompt reference ${promptId}: ${cheatcode.id} step ${step.number}`);
-      }
+      for (const promptId of step.promptIds) if (!commandIdSet.has(promptId)) errors.push(`Invalid prompt reference ${promptId}: ${workflow.id} step ${step.number}`);
     }
   }
-  for (const number of duplicateValues(stepNumbers)) errors.push(`Duplicate step number ${number}: ${cheatcode.id}`);
+  for (const number of duplicateValues(stepNumbers)) errors.push(`Duplicate step number ${number}: ${workflow.id}`);
 }
-for (const id of duplicateValues(cheatcodeIds)) errors.push(`Duplicate cheatcode id: ${id}`);
+for (const id of duplicateValues(workflowIds)) errors.push(`Duplicate workflow id: ${id}`);
 
 console.log(JSON.stringify({
   status: errors.length ? 'FAIL' : 'PASS',
@@ -97,7 +98,9 @@ console.log(JSON.stringify({
   runtimeCommands: commands.length,
   categories: categories.length,
   examples: examples.length,
-  cheatcodes: cheatcodes.length,
+  coreWorkflows: cheatcodes.length,
+  tradingWorkflows: tradingWorkflows.length,
+  workflows: workflows.length,
   warnings,
   errors
 }, null, 2));
