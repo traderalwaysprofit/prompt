@@ -4,6 +4,7 @@
   const STORAGE_KEY = 'samsonCheatcodeProgress';
   let cheatcodes = [];
   let commandsById = new Map();
+  let categoryCount = 0;
   let activeCheatcode = null;
   let activeStepIndex = 0;
 
@@ -28,6 +29,25 @@
   const completedSteps = (id) => {
     const stored = readProgress()[id];
     return new Set(Array.isArray(stored) ? stored.map(Number) : []);
+  };
+
+  const renderCatalogStats = () => {
+    const stats = {
+      workflows: cheatcodes.filter((item) => item.status === 'active').length,
+      prompts: commandsById.size,
+      categories: categoryCount
+    };
+    for (const [name, value] of Object.entries(stats)) {
+      document.querySelectorAll(`[data-catalog-stat="${name}"]`).forEach((element) => {
+        element.textContent = String(value);
+      });
+    }
+    const promptFeature = document.querySelector('[data-prompt-library-count]');
+    if (promptFeature) promptFeature.textContent = `${stats.prompts} Ready-to-use Prompts`;
+    const categoryFeature = document.querySelector('[data-prompt-category-count]');
+    if (categoryFeature) categoryFeature.textContent = `${stats.categories} kategori · Search · Favorites`;
+    const eyebrow = document.querySelector('[data-prompt-library-eyebrow]');
+    if (eyebrow) eyebrow.textContent = `${stats.prompts} READY-TO-USE PROMPTS`;
   };
 
   const showNotice = (message) => {
@@ -269,7 +289,7 @@
       <div class="hero-actions">
         <button id="hero-cheatcodes" type="button">Pilih cara kerja <span>↓</span></button>
       </div>
-      <div class="hero-stats"><span><b>6</b> WORKFLOWS</span><span><b>200</b> PROMPTS</span><span><b>20</b> CATEGORIES</span></div>`;
+      <div class="hero-stats"><span><b data-catalog-stat="workflows">—</b> WORKFLOWS</span><span><b data-catalog-stat="prompts">—</b> PROMPTS</span><span><b data-catalog-stat="categories">—</b> CATEGORIES</span></div>`;
 
     const heroCard = document.querySelector('.hero-card');
     if (heroCard) heroCard.innerHTML = `
@@ -301,8 +321,8 @@
               <h3 id="prompt-choice-title">Temukan satu prompt spesifik</h3>
               <p>Cocok saat Anda sudah tahu apa yang dibutuhkan dan ingin langsung mencari, memfilter, menyalin, atau menyimpan prompt.</p>
               <div class="choice-feature choice-feature-light">
-                <strong>200 Ready-to-use Prompts</strong>
-                <span>20 kategori · Search · Favorites</span>
+                <strong data-prompt-library-count>Memuat Prompt Library…</strong>
+                <span data-prompt-category-count>Search · Favorites</span>
               </div>
               <ul class="choice-benefits" aria-label="Prompt Library benefits">
                 <li>Cari berdasarkan kebutuhan</li>
@@ -322,7 +342,10 @@
       </section>`);
     const featuredEyebrow = featured.querySelector('.section-head .eyebrow');
     const featuredTitle = featured.querySelector('.section-head h2');
-    if (featuredEyebrow) featuredEyebrow.textContent = '200 READY-TO-USE PROMPTS';
+    if (featuredEyebrow) {
+      featuredEyebrow.dataset.promptLibraryEyebrow = '';
+      featuredEyebrow.textContent = 'READY-TO-USE PROMPTS';
+    }
     if (featuredTitle) featuredTitle.textContent = 'Prompt Library';
 
     const creator = document.querySelector('.creator-spot');
@@ -334,19 +357,23 @@
 
   const loadData = async () => {
     try {
-      const [cheatcodesResponse, commandsResponse, extraResponse] = await Promise.all([
+      const [cheatcodesResponse, commandsResponse, extraResponse, categoriesResponse] = await Promise.all([
         fetch('/data/cheatcodes.json', { cache: 'no-store' }),
         fetch('/data/commands.json', { cache: 'no-store' }),
-        fetch('/data/commands-extra.json', { cache: 'no-store' })
+        fetch('/data/commands-extra.json', { cache: 'no-store' }),
+        fetch('/data/categories.json', { cache: 'no-store' })
       ]);
-      if (!cheatcodesResponse.ok || !commandsResponse.ok || !extraResponse.ok) throw new Error('Cheatcode data unavailable');
-      const [loadedCheatcodes, commands, extraCommands] = await Promise.all([
+      if (!cheatcodesResponse.ok || !commandsResponse.ok || !extraResponse.ok || !categoriesResponse.ok) throw new Error('Cheatcode data unavailable');
+      const [loadedCheatcodes, commands, extraCommands, categories] = await Promise.all([
         cheatcodesResponse.json(),
         commandsResponse.json(),
-        extraResponse.json()
+        extraResponse.json(),
+        categoriesResponse.json()
       ]);
       cheatcodes = loadedCheatcodes;
       commandsById = new Map([...commands, ...extraCommands].map((command) => [Number(command.id), command]));
+      categoryCount = categories.length;
+      renderCatalogStats();
       renderFeatured();
       renderCatalog();
       routeFromHash();

@@ -5,6 +5,44 @@ on:
     branches: [main]
   pull_request:
   workflow_dispatch:
+    inputs:
+      prompt_name:
+        description: "Alias prompt, contoh: /landing-audit"
+        required: false
+        type: string
+      category_id:
+        description: "Category ID dari data/categories.json, contoh: coding"
+        required: false
+        type: string
+      description:
+        description: "Deskripsi singkat prompt"
+        required: false
+        type: string
+      template:
+        description: "Isi template prompt; gunakan [TOPIK] untuk variabel"
+        required: false
+        type: string
+      example:
+        description: "Contoh perintah lengkap untuk pengguna"
+        required: false
+        type: string
+      workflow_id:
+        description: "Opsional: tambahkan referensi prompt ke workflow"
+        required: false
+        default: none
+        type: choice
+        options:
+          - none
+          - build-website
+          - build-saas
+          - marketing-campaign
+          - seo-content
+          - research-project
+          - automate-task
+      workflow_step:
+        description: "Nomor step jika workflow dipilih"
+        required: false
+        type: string
 
 permissions:
   contents: read
@@ -46,6 +84,9 @@ jobs:
           fi
           npm run validate:regression -- "$BASELINE_REF"
 
+      - name: Report prompt workflow coverage
+        run: npm run report:prompt-coverage -- "${{ github.event_name == 'pull_request' && format('origin/{0}', github.base_ref) || 'HEAD^' }}"
+
       - name: Build production output
         run: npm run build
 
@@ -77,15 +118,16 @@ jobs:
             echo "## Validate"
             echo ""
             echo "- Locked install: npm ci"
-            echo "- Runtime contract: 200 commands, 20 categories, 200 examples, active cheatcodes"
-            echo "- Regression protection: command/category deletion blocked"
+            echo "- Runtime contract: minimum 200 prompts, examples 1:1, active cheatcodes"
+            echo "- Dynamic catalog counts: prompts, categories, and workflows"
+            echo "- Regression protection: prompt/example/category deletion blocked"
             echo "- Build contract: static assets + version metadata"
             echo "- Security policy: strict CSP and required response headers"
           } >> "$GITHUB_STEP_SUMMARY"
 
   extract-via-pr:
     name: extract-via-pr
-    if: github.event_name != 'pull_request'
+    if: github.event_name == 'push'
     runs-on: ubuntu-latest
     timeout-minutes: 10
     permissions:
@@ -164,4 +206,94 @@ jobs:
             else
               echo "- Generated changes: none"
             fi
+          } >> "$GITHUB_STEP_SUMMARY"
+
+  add-prompt-via-pr:
+    name: add-prompt-via-pr
+    if: github.event_name == 'workflow_dispatch' && inputs.prompt_name != ''
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: write
+      pull-requests: write
+    steps:
+      - name: Checkout main
+        uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444 # v5
+        with:
+          node-version: 24
+          cache: npm
+
+      - name: Install locked dependencies
+        run: npm ci --no-audit --no-fund
+
+      - name: Add prompt and optional workflow reference
+        id: prompt
+        env:
+          PROMPT_NAME: ${{ inputs.prompt_name }}
+          PROMPT_CATEGORY_ID: ${{ inputs.category_id }}
+          PROMPT_DESCRIPTION: ${{ inputs.description }}
+          PROMPT_TEMPLATE: ${{ inputs.template }}
+          PROMPT_EXAMPLE: ${{ inputs.example }}
+          PROMPT_WORKFLOW_ID: ${{ inputs.workflow_id }}
+          PROMPT_WORKFLOW_STEP: ${{ inputs.workflow_step }}
+        run: npm run add:prompt
+
+      - name: Validate generated prompt
+        run: |
+          npm run validate:data
+          npm run validate:regression -- HEAD
+          npm run report:prompt-coverage -- HEAD
+          npm run build
+
+      - name: Commit generated branch
+        id: commit
+        env:
+          UPDATE_BRANCH: automation/add-prompt-${{ github.run_id }}-${{ github.run_attempt }}
+          PROMPT_NAME: ${{ steps.prompt.outputs.prompt_name }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git switch -c "$UPDATE_BRANCH"
+          git add data/commands-extra.json data/examples-extra.json data/cheatcodes.json
+          git commit -m "content: add $PROMPT_NAME prompt"
+          git push --set-upstream origin "$UPDATE_BRANCH"
+          echo "branch=$UPDATE_BRANCH" >> "$GITHUB_OUTPUT"
+
+      - name: Open prompt pull request
+        id: pull-request
+        env:
+          GH_TOKEN: ${{ github.token }}
+          UPDATE_BRANCH: ${{ steps.commit.outputs.branch }}
+          PROMPT_ID: ${{ steps.prompt.outputs.prompt_id }}
+          PROMPT_NAME: ${{ steps.prompt.outputs.prompt_name }}
+          WORKFLOW_REFERENCE: ${{ steps.prompt.outputs.workflow_reference }}
+        run: |
+          PR_URL="$(gh pr create \
+            --base main \
+            --head "$UPDATE_BRANCH" \
+            --title "Add $PROMPT_NAME prompt" \
+            --body "Adds prompt #$PROMPT_ID ($PROMPT_NAME) through the validated prompt intake. Workflow reference: $WORKFLOW_REFERENCE. Counts update automatically after this protected PR is approved and merged.")"
+          echo "url=$PR_URL" >> "$GITHUB_OUTPUT"
+
+      - name: Prompt intake summary
+        if: always()
+        env:
+          PROMPT_ID: ${{ steps.prompt.outputs.prompt_id }}
+          PROMPT_NAME: ${{ steps.prompt.outputs.prompt_name }}
+          WORKFLOW_REFERENCE: ${{ steps.prompt.outputs.workflow_reference }}
+          PR_URL: ${{ steps.pull-request.outputs.url }}
+        run: |
+          {
+            echo "## Add prompt via pull request"
+            echo ""
+            echo "- Prompt: $PROMPT_NAME (#$PROMPT_ID)"
+            echo "- Workflow reference: $WORKFLOW_REFERENCE"
+            echo "- Direct push to main: blocked"
+            echo "- Pull request: $PR_URL"
           } >> "$GITHUB_STEP_SUMMARY"

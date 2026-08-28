@@ -6,6 +6,8 @@
   "type": "module",
   "scripts": {
     "build": "node scripts/build-static.mjs",
+    "add:prompt": "node scripts/add-prompt.mjs",
+    "report:prompt-coverage": "node scripts/report-prompt-coverage.mjs",
     "validate:data": "node scripts/validate-data.mjs",
     "test:e2e": "playwright test",
     "validate:security-headers": "node scripts/validate-security-headers.mjs",

@@ -125,12 +125,18 @@ jobs:
                   categories = json.loads(categories_body)
                   examples = json.loads(examples_body) + json.loads(extra_examples_body)
                   cheatcodes = json.loads(cheatcodes_body)
-                  if len(commands) != 200:
-                      failures.append(f"{name} expected 200 commands, got {len(commands)}")
-                  if len(categories) != 20:
-                      failures.append(f"{name} expected 20 categories, got {len(categories)}")
-                  if len(examples) != 200:
-                      failures.append(f"{name} expected 200 examples, got {len(examples)}")
+                  if len(commands) < 200:
+                      failures.append(f"{name} expected at least 200 commands, got {len(commands)}")
+                  if len(categories) < 20:
+                      failures.append(f"{name} expected at least 20 categories, got {len(categories)}")
+                  if len(examples) != len(commands):
+                      failures.append(f"{name} expected one example per command, got {len(examples)} examples for {len(commands)} commands")
+                  command_ids = [item.get("id") for item in commands]
+                  example_ids = [item.get("id") for item in examples]
+                  if len(set(command_ids)) != len(commands):
+                      failures.append(f"{name} duplicate command IDs detected")
+                  if set(example_ids) != set(command_ids):
+                      failures.append(f"{name} example IDs do not match command IDs")
                   workflow_ids = {item.get("id") for item in cheatcodes}
                   required_workflows = {"build-website", "build-saas", "marketing-campaign", "seo-content", "research-project", "automate-task"}
                   if len(cheatcodes) != 6 or workflow_ids != required_workflows:

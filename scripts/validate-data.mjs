@@ -18,10 +18,10 @@ const categoryIds = new Set(categories.map((item) => item.id));
 const duplicateValues = (values) => [...new Set(values.filter((value, index) => values.indexOf(value) !== index))];
 
 if (baseCommands.length !== 193) errors.push(`Expected 193 base commands, got ${baseCommands.length}`);
-if (extraCommands.length !== 7) errors.push(`Expected 7 extra commands, got ${extraCommands.length}`);
-if (commands.length !== 200) errors.push(`Expected 200 runtime commands, got ${commands.length}`);
-if (categories.length !== 20) errors.push(`Expected 20 categories, got ${categories.length}`);
-if (examples.length !== 200) errors.push(`Expected 200 runtime examples, got ${examples.length}`);
+if (extraCommands.length < 7) errors.push(`Expected at least 7 extra commands, got ${extraCommands.length}`);
+if (commands.length < 200) errors.push(`Expected at least 200 runtime commands, got ${commands.length}`);
+if (categories.length < 20) errors.push(`Expected at least 20 categories, got ${categories.length}`);
+if (examples.length !== commands.length) errors.push(`Expected one example per command (${commands.length}), got ${examples.length}`);
 if (!Array.isArray(cheatcodes) || cheatcodes.length < 1) errors.push('Expected at least one cheatcode');
 
 for (const command of commands) {
@@ -45,6 +45,10 @@ const exampleIds = examples.map((item) => item.id);
 for (const id of duplicateValues(commandIds)) errors.push(`Duplicate command id: ${id}`);
 for (const name of duplicateValues(commandNames)) warnings.push(`Duplicate command alias: ${name}`);
 for (const id of duplicateValues(exampleIds)) errors.push(`Duplicate example id: ${id}`);
+for (const example of examples) {
+  if (!Number.isInteger(example.id) || example.id < 1) errors.push(`Invalid example id: ${example.id}`);
+  if (typeof example.example !== 'string' || !example.example.trim()) errors.push(`Missing example text for command id: ${example.id}`);
+}
 
 const commandIdSet = new Set(commandIds);
 const exampleIdSet = new Set(exampleIds);

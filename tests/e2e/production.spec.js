@@ -12,7 +12,6 @@ test.describe('samson.web.id current frontend', () => {
     await expect(page).toHaveTitle(/AI Cheatcodes for Real Work/);
     await expect(page.locator('label[for="search"]')).toHaveClass(/sr-only/);
     await expect(page.locator('.nft-card')).toHaveCount(20);
-    await expect(page.locator('.results-count')).toContainText('OF 200 COMMANDS');
 
     const responses = await Promise.all([
       page.request.get(BASE_URL + '/data/commands.json'),
@@ -30,13 +29,17 @@ test.describe('samson.web.id current frontend', () => {
     const examples = [...await responses[3].json(), ...await responses[4].json()];
     const cheatcodes = await responses[5].json();
 
-    expect(commands).toHaveLength(200);
-    expect(categories).toHaveLength(20);
-    expect(examples).toHaveLength(200);
+    expect(commands.length).toBeGreaterThanOrEqual(200);
+    expect(categories.length).toBeGreaterThanOrEqual(20);
+    expect(examples).toHaveLength(commands.length);
     expect(cheatcodes).toHaveLength(6);
     expect(cheatcodes[0].id).toBe('build-website');
     expect(cheatcodes[0].steps).toHaveLength(8);
-    expect(new Set(commands.map((command) => command.id)).size).toBe(200);
+    expect(new Set(commands.map((command) => command.id)).size).toBe(commands.length);
+    expect(new Set(examples.map((example) => example.id))).toEqual(new Set(commands.map((command) => command.id)));
+    await expect(page.locator('.results-count')).toContainText(`OF ${commands.length} COMMANDS`);
+    await expect(page.locator('[data-catalog-stat="prompts"]')).toHaveText(String(commands.length));
+    await expect(page.locator('[data-catalog-stat="categories"]')).toHaveText(String(categories.length));
     expect(commands.every((command) => command.name && command.categoryId && command.description && command.template)).toBeTruthy();
     expect(errors).toEqual([]);
   });
@@ -104,6 +107,10 @@ test.describe('samson.web.id current frontend', () => {
   test('pagination exposes page numbers, smart ellipsis, and accessible controls', async ({ page }) => {
     await page.emulateMedia({ reducedMotion: 'reduce' });
     await page.goto(BASE_URL, { waitUntil: 'networkidle' });
+    const commands = [
+      ...await (await page.request.get(BASE_URL + '/data/commands.json')).json(),
+      ...await (await page.request.get(BASE_URL + '/data/commands-extra.json')).json()
+    ];
 
     const pagination = page.locator('nav.pagination[role="navigation"][aria-label="Pagination"]');
     await expect(pagination).toBeVisible();
@@ -119,7 +126,7 @@ test.describe('samson.web.id current frontend', () => {
     await next.focus();
     await page.keyboard.press('Enter');
     await expect(page.getByRole('button', { name: 'Go to page 2' })).toHaveAttribute('aria-current', 'page');
-    await expect(page.locator('.results-count')).toContainText('SHOWING 21-40 OF 200 COMMANDS');
+    await expect(page.locator('.results-count')).toContainText(`SHOWING 21-40 OF ${commands.length} COMMANDS`);
 
     await page.getByRole('button', { name: 'Go to page 4' }).click();
     await page.getByRole('button', { name: 'Go to page 5' }).click();
@@ -195,11 +202,13 @@ test.describe('samson.web.id current frontend', () => {
 
   test('Prompt Library choice routes users to the searchable library', async ({ page }) => {
     await page.goto(BASE_URL, { waitUntil: 'networkidle' });
+    const promptCount = (await (await page.request.get(BASE_URL + '/data/commands.json')).json()).length
+      + (await (await page.request.get(BASE_URL + '/data/commands-extra.json')).json()).length;
     await page.getByRole('button', { name: /Buka Prompt Library/ }).click();
     await expect(page).toHaveURL(/#prompts$/);
     await expect(page.locator('#search')).toBeVisible();
     await expect(page.locator('#category-filter')).toBeVisible();
-    await expect(page.locator('.results-count')).toContainText('OF 200 COMMANDS');
+    await expect(page.locator('.results-count')).toContainText(`OF ${promptCount} COMMANDS`);
   });
 
   test('category select filters the command grid', async ({ page }) => {
