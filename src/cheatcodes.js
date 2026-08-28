@@ -106,7 +106,7 @@
       <button class="choice-action choice-action-primary" type="button" data-open-cheatcode="${escapeHtml(cheatcode.id)}">${done ? 'Lanjutkan Workflow' : 'Mulai Workflow'} <span aria-hidden="true">→</span></button>`;
   };
 
-  const renderWorkflow  const renderWorkflow = () => {
+  const renderWorkflow = () => {
     const detail = document.querySelector('#cheatcode-detail');
     if (!detail || !activeCheatcode) return;
     const completed = completedSteps(activeCheatcode.id);
@@ -298,7 +298,7 @@
           <section class="cheatcode-detail" id="cheatcode-detail" hidden aria-label="Cheatcode detail"></section>
         </div>
       </section>`);
-    const featuredEyebrow    const featuredEyebrow = featured.querySelector('.section-head .eyebrow');
+    const featuredEyebrow = featured.querySelector('.section-head .eyebrow');
     const featuredTitle = featured.querySelector('.section-head h2');
     if (featuredEyebrow) featuredEyebrow.textContent = '200 READY-TO-USE PROMPTS';
     if (featuredTitle) featuredTitle.textContent = 'Prompt Library';
