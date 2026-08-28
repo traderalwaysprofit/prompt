@@ -40,6 +40,7 @@ test.describe('samson.web.id current frontend', () => {
     await expect(page.locator('.results-count')).toContainText(`OF ${commands.length} COMMANDS`);
     await expect(page.locator('[data-catalog-stat="prompts"]')).toHaveText(String(commands.length));
     await expect(page.locator('[data-catalog-stat="categories"]')).toHaveText(String(categories.length));
+    await expect(page.locator('[data-runtime-command-count]')).toHaveText(String(commands.length));
     expect(commands.every((command) => command.name && command.categoryId && command.description && command.template)).toBeTruthy();
     expect(errors).toEqual([]);
   });

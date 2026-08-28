@@ -5,5 +5,6 @@
   {"id":197,"example":"/cloudflare audit project ini lalu optimalkan untuk Cloudflare dan siapkan production deployment dengan performance dan security terbaik."},
   {"id":198,"example":"/github audit repository ini, perbaiki struktur kode, buat commit plan, testing, dan siapkan pull request untuk production."},
   {"id":199,"example":"/aiaudit audit seluruh website ini dari sisi UI, UX, SEO, performance, security, accessibility, architecture, dan AI readiness."},
-  {"id":200,"example":"/autopilot dari brief ini lakukan research → planning → coding → audit → optimization → testing → deployment, lalu verifikasi hasil akhir."}
+  {"id":200,"example":"/autopilot dari brief ini lakukan research → planning → coding → audit → optimization → testing → deployment, lalu verifikasi hasil akhir."},
+  {"id":201,"example":"/sourceradar cari referensi terbaru mengenai praktik keamanan GitHub Actions, pinning action ke commit SHA, Dependabot, dan perlindungan branch main."}
 ]
