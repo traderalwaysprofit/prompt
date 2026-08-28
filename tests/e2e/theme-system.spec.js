@@ -28,6 +28,8 @@ test.describe('SAMSON adaptive UI system', () => {
   test('theme mutation preserves prompt search behavior', async ({ page }) => {
     await page.goto(BASE_URL, { waitUntil: 'networkidle' });
     await page.evaluate(() => window.SamsonTheme.set('developer'));
+    await page.getByRole('button', { name: /Buka Prompt Library/ }).click();
+    await expect(page.locator('#featured')).toBeVisible();
 
     const search = page.locator('#search');
     await search.fill('/xauanalysis');
