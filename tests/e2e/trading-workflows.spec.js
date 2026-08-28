@@ -23,29 +23,31 @@ test.describe('SAMSON trading workflows', () => {
     }
   });
 
-  test('catalog reports nine workflows and exposes group filters', async ({ page }) => {
+  test('catalog reports twelve workflows and exposes domain filters', async ({ page }) => {
     await page.goto(BASE_URL, { waitUntil: 'networkidle' });
 
-    await expect(page.locator('[data-catalog-stat="workflows"]')).toHaveText('9');
-    await expect(page.locator('#workflow-choice .choice-feature strong')).toHaveText('9 Ready-to-run Workflows');
-    await expect(page.getByRole('button', { name: /Lihat 6 Workflow \+ 3 Trading/ })).toBeVisible();
+    await expect(page.locator('[data-catalog-stat="workflows"]')).toHaveText('12');
+    await expect(page.locator('#workflow-choice .choice-feature strong')).toHaveText('12 Ready-to-run Workflows');
+    await expect(page.getByRole('button', { name: /Lihat 6 Workflow \+ 3 Trading \+ 3 WordPress/ })).toBeVisible();
 
-    await page.getByRole('button', { name: /Lihat 6 Workflow \+ 3 Trading/ }).click();
+    await page.getByRole('button', { name: /Lihat 6 Workflow \+ 3 Trading \+ 3 WordPress/ }).click();
     await expect(page.locator('.workflow-filters')).toBeVisible();
-    await expect(page.locator('[data-workflow-filter]')).toHaveCount(7);
+    await expect(page.locator('[data-workflow-filter]')).toHaveCount(8);
     await expect(page.locator('.workflow-catalog-card')).toHaveCount(6);
     await expect(page.locator('.trading-workflow-card')).toHaveCount(3);
+    await expect(page.locator('.wordpress-workflow-card')).toHaveCount(3);
 
     await page.locator('[data-workflow-filter="trading"]').click();
     await expect(page.locator('#workflow-catalog-grid')).toBeHidden();
     await expect(page.locator('#trading-workflow-group')).toBeVisible();
+    await expect(page.locator('#wordpress-workflow-group')).toBeHidden();
     await expect(page.locator('.trading-workflow-card')).toHaveCount(3);
-    await expect(page.locator('.education-badge')).toContainText('EDUCATIONAL ANALYSIS');
+    await expect(page.locator('.trading-workflow-card .education-badge').first()).toContainText('EDUCATIONAL ANALYSIS');
   });
 
   test('Analyze XAU/USD runs as an eight-step educational decision-support workflow', async ({ page }) => {
     await page.goto(BASE_URL, { waitUntil: 'networkidle' });
-    await page.getByRole('button', { name: /Lihat 6 Workflow \+ 3 Trading/ }).click();
+    await page.getByRole('button', { name: /Lihat 6 Workflow/ }).click();
     await page.locator('[data-workflow-filter="trading"]').click();
 
     const xauCard = page.locator('.trading-workflow-card').filter({ hasText: 'Analyze XAU/USD' });
@@ -67,7 +69,7 @@ test.describe('SAMSON trading workflows', () => {
 
   test('Forex and Trading System workflows are available from Trading filter', async ({ page }) => {
     await page.goto(BASE_URL, { waitUntil: 'networkidle' });
-    await page.getByRole('button', { name: /Lihat 6 Workflow \+ 3 Trading/ }).click();
+    await page.getByRole('button', { name: /Lihat 6 Workflow/ }).click();
     await page.locator('[data-workflow-filter="trading"]').click();
 
     await expect(page.locator('.trading-workflow-card').filter({ hasText: 'Analyze Forex Market' })).toBeVisible();
