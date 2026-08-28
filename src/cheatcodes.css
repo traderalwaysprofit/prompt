@@ -34,6 +34,24 @@
 .choice-action-secondary:hover,.choice-action-secondary:focus-visible{background:#167cf5;border-color:#167cf5;outline:3px solid rgba(22,124,245,.2)}
 .choice-help{margin:20px auto 0;text-align:center;color:#98a6b5;font-size:12px}
 .choice-help strong{color:#dce5ef}
+.workflow-catalog{margin-top:34px;padding-top:34px;border-top:1px solid #2e3946}
+.workflow-catalog[hidden]{display:none}
+.workflow-catalog-header{display:flex;justify-content:space-between;align-items:end;gap:28px;margin-bottom:24px}
+.workflow-catalog-header h2{margin:7px 0 0;font-size:clamp(27px,3.4vw,42px);letter-spacing:-.04em;outline:none}
+.workflow-catalog-header p{max-width:470px;margin:0;color:#a9b5c2;font-size:13px;line-height:1.7}
+.workflow-catalog-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+.workflow-catalog-card{min-width:0;min-height:350px;border:1px solid #303c4b;border-radius:18px;background:#19212b;padding:22px;display:flex;flex-direction:column;transition:border-color .18s,transform .18s}
+.workflow-catalog-card:hover{border-color:#4b94df;transform:translateY(-2px)}
+.catalog-card-meta{display:flex;justify-content:space-between;gap:10px;color:#82bdff;font:800 9px ui-monospace,monospace;letter-spacing:.06em;text-transform:uppercase}
+.catalog-card-meta span:last-child{color:#8f9dac}
+.workflow-catalog-card h3{margin:18px 0 9px;font-size:23px;line-height:1.1;letter-spacing:-.035em}
+.workflow-catalog-card p{margin:0;color:#aeb9c5;font-size:12px;line-height:1.65}
+.catalog-card-stats{display:flex;justify-content:space-between;gap:12px;margin-top:auto;padding-top:20px;color:#8f9dab;font:700 10px ui-monospace,monospace}
+.catalog-card-stats strong{color:#e8f0f8}
+.catalog-progress{height:5px;margin:12px 0 16px;border-radius:999px;background:#303b47;overflow:hidden}
+.catalog-progress span{display:block;height:100%;border-radius:inherit;background:linear-gradient(90deg,#167cf5,#4db6ff)}
+.workflow-catalog-card button{min-height:46px;border:1px solid #3c4a59;border-radius:10px;background:#222d39;color:#eef5fc;padding:0 14px;display:flex;align-items:center;justify-content:space-between;font-weight:800;cursor:pointer}
+.workflow-catalog-card button:hover,.workflow-catalog-card button:focus-visible{border-color:#63b3ff;background:#167cf5;outline:3px solid rgba(74,166,255,.2)}
 .cheatcode-detail{margin-top:26px;border:1px solid #303c4b;border-radius:24px;background:#f7f9fc;color:#17202b;overflow:hidden}
 .cheatcode-detail[hidden]{display:none}
 .workflow-header{display:grid;grid-template-columns:1fr auto;gap:24px;padding:28px 30px;border-bottom:1px solid #dfe5ec;background:white}
@@ -70,6 +88,6 @@
 .workflow-next:hover,.workflow-next:focus-visible{background:#0d64c9;outline:3px solid rgba(22,124,245,.2)}
 .cheatcode-notice{position:fixed;left:50%;bottom:24px;z-index:700;transform:translateX(-50%);background:#101820;color:white;border-radius:999px;padding:11px 17px;font-size:12px;box-shadow:0 14px 35px rgba(0,0,0,.28)}
 @media(prefers-reduced-motion:reduce){.workflow-progress-bar{transition:none}}
-@media(max-width:980px){.choice-card{padding:28px}.workflow-layout{grid-template-columns:220px 1fr}}
-@media(max-width:760px){.cheatcodes-section{padding:52px 16px}.cheatcodes-heading{display:block}.cheatcodes-heading p{margin-top:14px}.choice-grid{grid-template-columns:1fr}.choice-card{min-height:0;padding:25px}.workflow-header{grid-template-columns:1fr;padding:23px 20px}.workflow-progress{min-width:0}.workflow-layout{display:block}.workflow-steps{display:flex;overflow-x:auto;border-right:0;border-bottom:1px solid #dfe5ec;padding:12px}.workflow-step-tab{min-width:170px}.workflow-content{padding:23px 20px}.workflow-actions{align-items:stretch;flex-direction:column-reverse}.workflow-reset,.workflow-next{min-height:44px;width:100%}}
+@media(max-width:980px){.choice-card{padding:28px}.workflow-catalog-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.workflow-layout{grid-template-columns:220px 1fr}}
+@media(max-width:760px){.cheatcodes-section{padding:52px 16px}.cheatcodes-heading{display:block}.cheatcodes-heading p{margin-top:14px}.choice-grid{grid-template-columns:1fr}.choice-card{min-height:0;padding:25px}.workflow-catalog-header{display:block}.workflow-catalog-header p{margin-top:12px}.workflow-catalog-grid{grid-template-columns:1fr}.workflow-catalog-card{min-height:320px}.workflow-header{grid-template-columns:1fr;padding:23px 20px}.workflow-progress{min-width:0}.workflow-layout{display:block}.workflow-steps{display:flex;overflow-x:auto;border-right:0;border-bottom:1px solid #dfe5ec;padding:12px}.workflow-step-tab{min-width:170px}.workflow-content{padding:23px 20px}.workflow-actions{align-items:stretch;flex-direction:column-reverse}.workflow-reset,.workflow-next{min-height:44px;width:100%}}
 @media(max-width:430px){.choice-card{padding:22px}.choice-card-topline{margin-bottom:24px}.workflow-prompt-header{align-items:flex-start;flex-direction:column}.workflow-copy{width:100%}}
