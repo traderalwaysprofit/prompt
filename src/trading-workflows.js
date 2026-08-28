@@ -58,7 +58,7 @@
       detail.textContent = 'Web · SaaS · Marketing · Content · Research · Automation · Trading · WordPress';
     }
     const button = document.querySelector('#workflow-choice [data-show-workflows]');
-    if (button) button.innerHTML = 'Lihat 6 Workflow + 3 Trading + 3 WordPress <span aria-hidden="true">→</span>';
+    if (button) button.innerHTML = `Lihat ${total} Workflow <span aria-hidden="true">→</span>`;
   };
 
   const annotateCoreCards = () => {
