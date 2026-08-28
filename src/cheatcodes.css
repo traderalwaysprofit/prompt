@@ -1,0 +1,68 @@
+.cheatcodes-section{padding:76px 24px 68px;background:#11171f;color:#f7f9fc;position:relative;overflow:hidden}
+.cheatcodes-section::before{content:"";position:absolute;inset:-30% 45% 40% -15%;background:radial-gradient(circle,rgba(55,143,255,.2),transparent 65%);pointer-events:none}
+.cheatcodes-inner{position:relative;max-width:1180px;margin:0 auto}
+.cheatcodes-heading{display:flex;justify-content:space-between;align-items:end;gap:30px;margin-bottom:28px}
+.cheatcodes-heading h2{font-size:clamp(30px,4vw,54px);line-height:1.02;letter-spacing:-.045em;margin:7px 0 0}
+.cheatcodes-heading p{max-width:500px;margin:0;color:#b9c3d0;font-size:15px;line-height:1.7}
+.cheatcodes-eyebrow{display:inline-flex;align-items:center;gap:8px;color:#78b8ff;font:800 12px ui-monospace,monospace;letter-spacing:.12em}
+.task-paths{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:9px;margin:0 0 28px}
+.task-path{min-height:78px;border:1px solid #2b3644;border-radius:14px;background:#19212c;color:#dce5ef;padding:13px;text-align:left;font:700 12px/1.35 system-ui,sans-serif;cursor:pointer;transition:border-color .18s,background .18s,transform .18s}
+.task-path span{display:block;color:#7f8b99;font:700 10px ui-monospace,monospace;margin-top:7px}
+.task-path:hover,.task-path:focus-visible{border-color:#4a9eff;background:#202b38;transform:translateY(-2px);outline:none}
+.task-path.is-primary{background:linear-gradient(135deg,#1778f2,#2f9cff);border-color:#55acff;color:white}
+.task-path.is-primary span{color:#d8ecff}
+.featured-cheatcode{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(320px,.8fr);border:1px solid #303c4b;border-radius:24px;background:linear-gradient(135deg,#18212c,#121922);overflow:hidden;box-shadow:0 28px 70px rgba(0,0,0,.24)}
+.featured-cheatcode-copy{padding:34px}
+.cheatcode-meta{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:22px}
+.cheatcode-meta span{border:1px solid #344254;border-radius:999px;padding:7px 10px;color:#b8c4d1;font:700 10px ui-monospace,monospace;letter-spacing:.06em}
+.featured-cheatcode h3{margin:0 0 10px;font-size:clamp(29px,3.8vw,46px);letter-spacing:-.035em}
+.featured-cheatcode p{max-width:620px;color:#b8c2ce;font-size:14px;line-height:1.75;margin:0 0 24px}
+.cheatcode-primary,.cheatcode-secondary{min-height:46px;border-radius:11px;padding:0 17px;font-weight:800;cursor:pointer}
+.cheatcode-primary{border:0;background:#f4f8fd;color:#131a23}
+.cheatcode-secondary{border:1px solid #3b4858;background:transparent;color:#edf4fb;margin-left:8px}
+.cheatcode-primary:hover,.cheatcode-primary:focus-visible{background:#8bc6ff;outline:3px solid rgba(117,185,255,.25)}
+.cheatcode-secondary:hover,.cheatcode-secondary:focus-visible{border-color:#8bc6ff;outline:none}
+.cheatcode-map{padding:28px;background:rgba(7,11,16,.32);display:flex;flex-direction:column;justify-content:center}
+.cheatcode-map ol{list-style:none;margin:0;padding:0;counter-reset:workflow}
+.cheatcode-map li{counter-increment:workflow;display:flex;align-items:center;gap:12px;min-height:39px;color:#c1ccd8;font-size:12px;border-bottom:1px solid rgba(255,255,255,.06)}
+.cheatcode-map li::before{content:counter(workflow,decimal-leading-zero);color:#5caaff;font:800 10px ui-monospace,monospace}
+.cheatcode-map li:last-child{border:0}
+.cheatcode-detail{margin-top:26px;border:1px solid #303c4b;border-radius:24px;background:#f7f9fc;color:#17202b;overflow:hidden}
+.cheatcode-detail[hidden]{display:none}
+.workflow-header{display:grid;grid-template-columns:1fr auto;gap:24px;padding:28px 30px;border-bottom:1px solid #dfe5ec;background:white}
+.workflow-header h2{margin:5px 0 7px;font-size:30px;letter-spacing:-.035em}
+.workflow-header p{margin:0;color:#5d6875;font-size:13px}
+.workflow-progress{min-width:220px;align-self:center}
+.workflow-progress-label{display:flex;justify-content:space-between;color:#687482;font:800 10px ui-monospace,monospace;margin-bottom:8px}
+.workflow-progress-track{height:8px;border-radius:999px;background:#e2e8ef;overflow:hidden}
+.workflow-progress-bar{height:100%;width:0;background:linear-gradient(90deg,#1679f5,#31a7ff);border-radius:inherit;transition:width .35s cubic-bezier(.2,.8,.2,1)}
+.workflow-layout{display:grid;grid-template-columns:280px 1fr;min-height:510px}
+.workflow-steps{padding:18px;border-right:1px solid #dfe5ec;background:#f0f4f8}
+.workflow-step-tab{width:100%;display:grid;grid-template-columns:34px 1fr 18px;align-items:center;gap:10px;border:0;border-radius:11px;background:transparent;color:#46515e;padding:10px;text-align:left;cursor:pointer}
+.workflow-step-tab:hover,.workflow-step-tab:focus-visible{background:#e4ebf3;outline:none}
+.workflow-step-tab[aria-current="step"]{background:#17212c;color:white}
+.workflow-step-number{display:grid;place-items:center;width:32px;height:32px;border:1px solid #c9d2dc;border-radius:9px;font:800 10px ui-monospace,monospace}
+.workflow-step-tab[aria-current="step"] .workflow-step-number{border-color:#4da4ff;color:#7fc0ff}
+.workflow-step-title{font-size:12px;font-weight:750}
+.workflow-step-state{color:#168052;font-weight:900}
+.workflow-content{padding:32px;min-width:0}
+.workflow-content h3{font-size:28px;letter-spacing:-.03em;margin:5px 0 8px}
+.workflow-description{color:#5c6774;line-height:1.7;margin:0 0 17px}
+.workflow-output{display:flex;gap:10px;border:1px solid #dce4ec;background:#f4f8fb;border-radius:12px;padding:12px 14px;color:#40505f;font-size:12px;margin-bottom:22px}
+.workflow-output strong{color:#1677e8;white-space:nowrap}
+.workflow-prompts{display:grid;gap:12px}
+.workflow-prompt{border:1px solid #dce3eb;border-radius:14px;background:white;overflow:hidden}
+.workflow-prompt-header{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:13px 15px;border-bottom:1px solid #e7ebf0}
+.workflow-prompt-header code{font-size:13px;font-weight:800;color:#192431}
+.workflow-copy{min-height:44px;border:0;border-radius:8px;background:#17212c;color:white;padding:0 13px;font:800 10px ui-monospace,monospace;cursor:pointer}
+.workflow-copy:hover,.workflow-copy:focus-visible{background:#167cf5;outline:3px solid rgba(22,124,245,.18)}
+.workflow-prompt p{margin:0;padding:12px 15px;color:#65717e;font-size:12px;line-height:1.6}
+.workflow-actions{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-top:24px}
+.workflow-reset{min-height:44px;border:0;background:transparent;color:#6a7480;text-decoration:underline;cursor:pointer}
+.workflow-next{min-height:46px;border:0;border-radius:10px;background:#167cf5;color:white;padding:0 18px;font-weight:800;cursor:pointer}
+.workflow-next:hover,.workflow-next:focus-visible{background:#0d64c9;outline:3px solid rgba(22,124,245,.2)}
+.cheatcode-notice{position:fixed;left:50%;bottom:24px;z-index:700;transform:translateX(-50%);background:#101820;color:white;border-radius:999px;padding:11px 17px;font-size:12px;box-shadow:0 14px 35px rgba(0,0,0,.28)}
+@media(prefers-reduced-motion:reduce){.task-path,.workflow-progress-bar{transition:none}}
+@media(max-width:980px){.task-paths{grid-template-columns:repeat(3,1fr)}.featured-cheatcode{grid-template-columns:1fr}.cheatcode-map ol{display:grid;grid-template-columns:1fr 1fr;column-gap:20px}.workflow-layout{grid-template-columns:220px 1fr}}
+@media(max-width:700px){.cheatcodes-section{padding:52px 16px}.cheatcodes-heading{display:block}.cheatcodes-heading p{margin-top:14px}.task-paths{grid-template-columns:1fr 1fr}.featured-cheatcode-copy{padding:24px}.cheatcode-map{padding:21px}.workflow-header{grid-template-columns:1fr;padding:23px 20px}.workflow-progress{min-width:0}.workflow-layout{display:block}.workflow-steps{display:flex;overflow-x:auto;border-right:0;border-bottom:1px solid #dfe5ec;padding:12px}.workflow-step-tab{min-width:170px}.workflow-content{padding:23px 20px}.workflow-actions{align-items:stretch;flex-direction:column-reverse}.workflow-reset,.workflow-next{min-height:44px;width:100%}}
+@media(max-width:430px){.task-paths{grid-template-columns:1fr}.cheatcode-map ol{display:block}.cheatcode-primary,.cheatcode-secondary{width:100%;margin:8px 0 0}.cheatcode-primary{margin-top:0}.workflow-prompt-header{align-items:flex-start;flex-direction:column}.workflow-copy{width:100%}}

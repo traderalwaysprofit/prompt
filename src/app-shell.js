@@ -32,10 +32,10 @@
     if (!header || !nav || header.dataset.enhanced === 'true') return;
 
     header.dataset.enhanced = 'true';
-    document.title = 'SAMSON PROMPT Library';
+    document.title = 'SAMSON — AI Cheatcodes for Real Work';
 
     const subtitle = header.querySelector('.logo-text span');
-    if (subtitle) subtitle.textContent = 'AI COMMAND LIBRARY';
+    if (subtitle) subtitle.textContent = 'AI CHEATCODES & PROMPTS';
 
     const logoMark = header.querySelector('.logo-mark');
     if (logoMark) {
@@ -68,7 +68,7 @@
     panel.id = 'mobile-menu-panel';
     panel.className = 'mobile-menu-panel';
     panel.setAttribute('aria-hidden', 'true');
-    panel.innerHTML = '<div class="mobile-menu-title">SAMSON PROMPT</div><button type="button" data-mobile-nav="explore">Explore</button><button type="button" data-mobile-nav="recent">Recently Used</button><button type="button" data-mobile-nav="favorites">Favorites</button><button type="button" data-mobile-nav="onboarding">Onboarding AI</button>';
+    panel.innerHTML = '<div class="mobile-menu-title">SAMSON</div><button type="button" data-mobile-nav="cheatcodes">Cheatcodes</button><button type="button" data-mobile-nav="prompts">Prompt Library</button><button type="button" data-mobile-nav="categories">Categories</button><button type="button" data-mobile-nav="favorites">Favorites</button><button type="button" data-mobile-nav="onboarding">Onboarding AI</button>';
 
     header.appendChild(toggle);
     header.insertAdjacentElement('afterend', panel);
@@ -87,8 +87,9 @@
       if (!item) return;
 
       const targets = {
-        explore: nav.querySelector('.nav-link.active') || nav.querySelector('.nav-link'),
-        recent: nav.querySelector('#nav-recent'),
+        cheatcodes: nav.querySelector('#nav-cheatcodes') || nav.querySelector('.nav-link.active'),
+        prompts: nav.querySelector('#nav-recent'),
+        categories: nav.querySelector('#nav-categories'),
         favorites: nav.querySelector('#nav-favorites'),
         onboarding
       };

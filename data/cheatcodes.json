@@ -1,0 +1,68 @@
+[
+  {
+    "id": "build-website",
+    "title": "Build a Website",
+    "description": "Dari ide hingga website production-ready dalam delapan langkah terpandu.",
+    "difficulty": "Beginner",
+    "estimatedTime": "45–90 min",
+    "status": "active",
+    "steps": [
+      {
+        "number": 1,
+        "title": "Define the Idea",
+        "description": "Tetapkan masalah, target pengguna, dan nilai utama website.",
+        "output": "Ringkasan ide dan model bisnis",
+        "promptIds": [90]
+      },
+      {
+        "number": 2,
+        "title": "Research the Audience",
+        "description": "Pahami kebutuhan, hambatan, dan perilaku calon pengguna.",
+        "output": "Temuan riset dan profil pengguna",
+        "promptIds": [135]
+      },
+      {
+        "number": 3,
+        "title": "Define Requirements",
+        "description": "Ubah ide menjadi kebutuhan, fitur, batasan, dan kriteria keberhasilan.",
+        "output": "PRD ringkas yang siap dikerjakan",
+        "promptIds": [140]
+      },
+      {
+        "number": 4,
+        "title": "Create the Structure",
+        "description": "Susun arsitektur informasi, halaman, komponen, dan alur pengguna.",
+        "output": "Arsitektur dan wireframe website",
+        "promptIds": [40, 41]
+      },
+      {
+        "number": 5,
+        "title": "Generate the Interface",
+        "description": "Bangun antarmuka dari brief dan struktur yang sudah disepakati.",
+        "output": "Implementasi frontend awal",
+        "promptIds": [194]
+      },
+      {
+        "number": 6,
+        "title": "Test and Debug",
+        "description": "Temukan error, regresi, dan masalah perilaku pada perangkat berbeda.",
+        "output": "Daftar masalah dan perbaikan terverifikasi",
+        "promptIds": [148]
+      },
+      {
+        "number": 7,
+        "title": "Security Review",
+        "description": "Periksa dependency, konfigurasi, akses, data, dan jalur deployment.",
+        "output": "Checklist keamanan sebelum rilis",
+        "promptIds": [155]
+      },
+      {
+        "number": 8,
+        "title": "Deploy and Maintain",
+        "description": "Rilis melalui GitHub dan Cloudflare dengan workflow yang dapat diaudit.",
+        "output": "Website live dan workflow maintenance",
+        "promptIds": [197, 198]
+      }
+    ]
+  }
+]
