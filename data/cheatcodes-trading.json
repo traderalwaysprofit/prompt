@@ -1,0 +1,62 @@
+[
+  {
+    "id": "xau-analysis",
+    "title": "Analyze XAU/USD",
+    "category": "Trading",
+    "badge": "EDUCATIONAL ANALYSIS",
+    "description": "Build a structured Gold trading plan from market context to risk management.",
+    "difficulty": "Intermediate",
+    "estimatedTime": "20–40 min",
+    "status": "active",
+    "steps": [
+      {"number":1,"title":"Market Context","description":"Identifikasi apakah XAU/USD sedang trending, ranging, atau transisi sebelum mencari setup.","output":"Market regime dan konteks utama","promptIds":[175]},
+      {"number":2,"title":"Higher Timeframe Bias","description":"Bangun directional bias dari H4 dan H1 tanpa memaksakan prediksi.","output":"Bias H4/H1 beserta invalidation","promptIds":[175]},
+      {"number":3,"title":"Key Levels","description":"Petakan support, resistance, supply, demand, dan area reaksi yang relevan.","output":"Peta level teknikal utama","promptIds":[176,175]},
+      {"number":4,"title":"Market Structure","description":"Baca HH, HL, LH, LL, breakout, retest, rejection, dan perubahan struktur.","output":"Struktur pasar dan skenario valid","promptIds":[175]},
+      {"number":5,"title":"Entry Scenario","description":"Susun skenario bullish dan bearish berbasis kondisi, bukan signal tunggal.","output":"Skenario entry bersyarat","promptIds":[175,176]},
+      {"number":6,"title":"Risk Plan","description":"Tetapkan invalidation, stop-loss, risk-reward, dan batas risiko sebelum eksekusi.","output":"Risk plan dengan RR yang terukur","promptIds":[177]},
+      {"number":7,"title":"Execution Plan","description":"Turunkan skenario ke M15/M5 dan definisikan trigger yang harus muncul sebelum entry.","output":"Checklist execution M15/M5","promptIds":[175,177]},
+      {"number":8,"title":"Post-Trade Review","description":"Evaluasi eksekusi, hasil, kesalahan, dan pelajaran untuk memperbaiki proses berikutnya.","output":"Jurnal dan review pasca-trade","promptIds":[178]}
+    ]
+  },
+  {
+    "id": "forex-analysis",
+    "title": "Analyze Forex Market",
+    "category": "Trading",
+    "badge": "EDUCATIONAL ANALYSIS",
+    "description": "Analyze currency pairs using market structure, key levels, scenarios, and disciplined risk management.",
+    "difficulty": "Intermediate",
+    "estimatedTime": "20–40 min",
+    "status": "active",
+    "steps": [
+      {"number":1,"title":"Select Pair","description":"Pilih pair yang dianalisis dan jelaskan alasan fokus pada pair tersebut.","output":"Pair dan objective analisis","promptIds":[174]},
+      {"number":2,"title":"Market Session","description":"Identifikasi sesi Asia, London, atau New York serta implikasinya terhadap likuiditas dan volatilitas.","output":"Session context","promptIds":[174]},
+      {"number":3,"title":"Macro Context","description":"Catat konteks fundamental yang relevan tanpa menjadikannya prediksi pasti.","output":"Macro context ringkas","promptIds":[174]},
+      {"number":4,"title":"Higher Timeframe Bias","description":"Bangun bias dari timeframe tinggi dan tandai kondisi yang membatalkannya.","output":"HTF bias dan invalidation","promptIds":[174]},
+      {"number":5,"title":"Support & Resistance","description":"Petakan level support/resistance utama dan zona reaksi harga.","output":"Key-level map","promptIds":[176,174]},
+      {"number":6,"title":"Entry Scenarios","description":"Susun skenario bullish dan bearish dengan trigger yang dapat diverifikasi.","output":"Conditional entry scenarios","promptIds":[174,176]},
+      {"number":7,"title":"Risk & Position Plan","description":"Tentukan stop-loss, risk-reward, position sizing, dan batas risiko.","output":"Risk and position plan","promptIds":[177]},
+      {"number":8,"title":"Review & Journal","description":"Dokumentasikan hasil analisis dan trade untuk evaluasi berulang.","output":"Trading journal entry","promptIds":[178]}
+    ]
+  },
+  {
+    "id": "build-trading-system",
+    "title": "Build a Trading System",
+    "category": "Trading",
+    "badge": "EDUCATIONAL ANALYSIS",
+    "description": "Turn trading ideas into repeatable rules, risk controls, testing, and continuous improvement.",
+    "difficulty": "Advanced",
+    "estimatedTime": "45–90 min",
+    "status": "active",
+    "steps": [
+      {"number":1,"title":"Define Trading Profile","description":"Tetapkan instrument, timeframe, session, style trading, dan toleransi risiko.","output":"Trading profile yang eksplisit","promptIds":[174,175]},
+      {"number":2,"title":"Define Market Conditions","description":"Tentukan kondisi pasar saat sistem boleh digunakan: trending, ranging, high volatility, atau low volatility.","output":"Allowed market conditions","promptIds":[174,175]},
+      {"number":3,"title":"Define Setup","description":"Definisikan setup seperti trend continuation, pullback, breakout, rejection, dan level yang diperlukan.","output":"Setup specification","promptIds":[176,174,175]},
+      {"number":4,"title":"Entry Rules","description":"Ubah setup menjadi aturan IF/AND/THEN yang objektif dan dapat diuji ulang.","output":"Objective entry rules","promptIds":[174,175]},
+      {"number":5,"title":"Exit Rules","description":"Definisikan stop-loss, take-profit, invalidation, dan trailing condition.","output":"Exit rule set","promptIds":[177]},
+      {"number":6,"title":"Risk Management","description":"Tetapkan risk per trade, minimum RR, maximum trades per day, dan maximum daily loss.","output":"Risk management policy","promptIds":[177]},
+      {"number":7,"title":"Backtest & Journal","description":"Uji aturan secara historis dan catat setup, entry, SL, TP, hasil, kesalahan, serta lesson learned.","output":"Backtest log dan journal template","promptIds":[178]},
+      {"number":8,"title":"Improve System","description":"Cari pola kemenangan, kerugian, overtrading, poor RR, session mismatch, dan execution error untuk iterasi sistem.","output":"System improvement backlog","promptIds":[178,177]}
+    ]
+  }
+]
