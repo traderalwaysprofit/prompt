@@ -2,6 +2,16 @@ import { test, expect } from '@playwright/test';
 
 const BASE_URL = process.env.PROD_URL || 'https://samson.web.id';
 
+const returnToChooser = async (page) => {
+  if ((page.viewportSize()?.width || 1280) <= 700) {
+    await page.locator('#mobile-menu-toggle').click();
+    await expect(page.locator('#mobile-menu-panel')).toHaveClass(/is-open/);
+    await page.locator('[data-mobile-nav="cheatcodes"]').click();
+  } else {
+    await page.locator('#nav-cheatcodes').click();
+  }
+};
+
 test.describe('SAMSON entry choice', () => {
   test('hides Prompt Library until the user chooses it', async ({ page }) => {
     await page.goto(BASE_URL, { waitUntil: 'networkidle' });
@@ -24,7 +34,7 @@ test.describe('SAMSON entry choice', () => {
     await expect(page.locator('#workflow-catalog')).toBeVisible();
     await expect(page.locator('#featured')).toBeHidden();
 
-    await page.locator('#nav-cheatcodes').click();
+    await returnToChooser(page);
     await expect(page.locator('html')).toHaveAttribute('data-entry-mode', 'chooser');
     await expect(page.locator('#workflow-catalog')).toBeHidden();
     await expect(page.locator('#featured')).toBeHidden();
