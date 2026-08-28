@@ -143,7 +143,7 @@
         </div>
       </div>
       <div class="workflow-layout">
-        <nav class="workflow-steps" aria-label="Build Website steps">
+        <nav class="workflow-steps" aria-label="${escapeHtml(activeCheatcode.title)} steps">
           ${activeCheatcode.steps.map((item, index) => `
             <button class="workflow-step-tab" type="button" data-workflow-step="${index}" ${index === activeStepIndex ? 'aria-current="step"' : ''}>
               <span class="workflow-step-number">${String(item.number).padStart(2, '0')}</span>
@@ -214,7 +214,7 @@
       document.querySelector('.workflow-content')?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
     } else {
       renderWorkflow();
-      showNotice('Build Website workflow selesai');
+      showNotice(`${activeCheatcode.title} workflow selesai`);
     }
     renderFeatured();
     renderCatalog();
@@ -227,6 +227,7 @@
     writeProgress(progress);
     activeStepIndex = 0;
     renderFeatured();
+    renderCatalog();
     renderWorkflow();
     showNotice('Progress workflow direset');
   };
@@ -351,7 +352,7 @@
       routeFromHash();
     } catch (error) {
       console.error(error);
-      const card = document.querySelector('#featured-cheatcode');
+      const card = document.querySelector('#workflow-choice');
       if (card) card.innerHTML = '<div class="featured-cheatcode-copy"><h3>Workflow unavailable</h3><p>Prompt Library tetap dapat digunakan sementara data Cheatcodes diperiksa.</p></div>';
     }
   };
