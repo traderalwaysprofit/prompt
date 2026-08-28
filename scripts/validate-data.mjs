@@ -15,17 +15,19 @@ const examples = [...baseExamples, ...extraExamples];
 const errors = [];
 const warnings = [];
 const categoryIds = new Set(categories.map((item) => item.id));
+const retiredCommandIds = new Set([47, 48, 50, 52]);
 const duplicateValues = (values) => [...new Set(values.filter((value, index) => values.indexOf(value) !== index))];
 
-if (baseCommands.length !== 193) errors.push(`Expected 193 base commands, got ${baseCommands.length}`);
+if (baseCommands.length !== 189) errors.push(`Expected 189 base commands, got ${baseCommands.length}`);
 if (extraCommands.length < 7) errors.push(`Expected at least 7 extra commands, got ${extraCommands.length}`);
-if (commands.length < 200) errors.push(`Expected at least 200 runtime commands, got ${commands.length}`);
-if (categories.length < 20) errors.push(`Expected at least 20 categories, got ${categories.length}`);
+if (commands.length < 197) errors.push(`Expected at least 197 runtime commands, got ${commands.length}`);
+if (categories.length < 19) errors.push(`Expected at least 19 categories, got ${categories.length}`);
 if (examples.length !== commands.length) errors.push(`Expected one example per command (${commands.length}), got ${examples.length}`);
 if (!Array.isArray(cheatcodes) || cheatcodes.length < 1) errors.push('Expected at least one cheatcode');
 
 for (const command of commands) {
   if (!Number.isInteger(command.id) || command.id < 1) errors.push(`Invalid command id: ${command.id}`);
+  if (retiredCommandIds.has(command.id)) errors.push(`Retired command id reused: ${command.id}`);
   for (const field of ['name', 'categoryId', 'description', 'template']) {
     if (typeof command[field] !== 'string' || command[field].trim() === '') {
       errors.push(`Missing required field: ${field} in command ${command.id}`);
