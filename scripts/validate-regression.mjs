@@ -31,6 +31,13 @@ const removedCategories = baselineCategories.filter((item) => !currentCategoryId
 const baselineCommandIds = new Set(baselineCommands.map((item) => item.id));
 const addedCommands = currentCommands.filter((item) => !baselineCommandIds.has(item.id));
 const changedFields = [];
+const retiredCommands = new Map([
+  [47, '/poster'],
+  [48, '/cover'],
+  [50, '/thumbnail'],
+  [52, '/socialvisual']
+]);
+const retiredCategories = new Map([['kreatif', 'Desain Kreatif & Pemasaran']]);
 
 for (const oldItem of baselineCommands) {
   const newItem = currentCommandsById.get(oldItem.id);
@@ -39,6 +46,10 @@ for (const oldItem of baselineCommands) {
     if (oldItem[field] !== newItem[field]) changedFields.push({ id: oldItem.id, field });
   }
 }
+
+const unexpectedRemovedCommands = removedCommands.filter((item) => retiredCommands.get(item.id) !== item.name);
+const unexpectedRemovedExamples = removedExamples.filter((item) => !retiredCommands.has(item.id));
+const unexpectedRemovedCategories = removedCategories.filter((item) => retiredCategories.get(item.id) !== item.name);
 
 console.log(`Baseline commands:   ${baselineCommands.length}`);
 console.log(`Current commands:    ${currentCommands.length}`);
@@ -50,11 +61,17 @@ console.log(`Baseline categories: ${baselineCategories.length}`);
 console.log(`Current categories:  ${currentCategories.length}`);
 console.log(`Removed categories:  ${removedCategories.length}`);
 for (const item of addedCommands) console.log(`Added command: ${item.id} (${item.name})`);
+for (const item of removedCommands.filter((item) => retiredCommands.get(item.id) === item.name)) {
+  console.log(`Retired command: ${item.id} (${item.name})`);
+}
+for (const item of removedCategories.filter((item) => retiredCategories.get(item.id) === item.name)) {
+  console.log(`Retired category: ${item.id} (${item.name})`);
+}
 
-if (removedCommands.length || removedExamples.length || removedCategories.length) {
-  for (const item of removedCommands) console.error(`Removed command: ${item.id} (${item.name})`);
-  for (const item of removedExamples) console.error(`Removed example: ${item.id}`);
-  for (const item of removedCategories) console.error(`Removed category: ${item.id} (${item.name})`);
+if (unexpectedRemovedCommands.length || unexpectedRemovedExamples.length || unexpectedRemovedCategories.length) {
+  for (const item of unexpectedRemovedCommands) console.error(`Removed command: ${item.id} (${item.name})`);
+  for (const item of unexpectedRemovedExamples) console.error(`Removed example: ${item.id}`);
+  for (const item of unexpectedRemovedCategories) console.error(`Removed category: ${item.id} (${item.name})`);
   process.exit(1);
 }
 

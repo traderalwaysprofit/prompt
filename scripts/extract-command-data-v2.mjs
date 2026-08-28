@@ -32,8 +32,8 @@ const commands = sourceCommands.map((c) => {
   };
 });
 
-if (commands.length !== 193) {
-  throw new Error(`Expected 193 commands, extracted ${commands.length}`);
+if (commands.length !== 189) {
+  throw new Error(`Expected 189 commands, extracted ${commands.length}`);
 }
 
 fs.mkdirSync('data', { recursive: true });

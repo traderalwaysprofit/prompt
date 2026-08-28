@@ -310,70 +310,42 @@
   {
     "id": 45,
     "name": "/storyboard",
-    "categoryId": "kreatif",
+    "categoryId": "design",
     "description": "Papan cerita adegan demi adegan",
     "template": "Create a structured papan cerita adegan demi adegan."
   },
   {
     "id": 46,
     "name": "/comic",
-    "categoryId": "kreatif",
+    "categoryId": "design",
     "description": "Panel komik",
     "template": "Create a structured panel komik."
   },
   {
-    "id": 47,
-    "name": "/poster",
-    "categoryId": "kreatif",
-    "description": "Desain poster",
-    "template": "Create a structured desain poster."
-  },
-  {
-    "id": 48,
-    "name": "/cover",
-    "categoryId": "kreatif",
-    "description": "Sampul buku/laporan",
-    "template": "Create a structured sampul buku/laporan."
-  },
-  {
     "id": 49,
     "name": "/adcreative",
-    "categoryId": "kreatif",
+    "categoryId": "design",
     "description": "Konsep kreatif iklan",
     "template": "Create a structured konsep kreatif iklan."
   },
   {
-    "id": 50,
-    "name": "/thumbnail",
-    "categoryId": "kreatif",
-    "description": "Thumbnail YouTube",
-    "template": "Create a structured thumbnail youtube."
-  },
-  {
     "id": 51,
     "name": "/carousel",
-    "categoryId": "kreatif",
+    "categoryId": "design",
     "description": "Carousel Instagram/LinkedIn",
     "template": "Create a structured carousel instagram/linkedin."
   },
   {
-    "id": 52,
-    "name": "/socialvisual",
-    "categoryId": "kreatif",
-    "description": "Grafik media sosial",
-    "template": "Create a structured grafik media sosial."
-  },
-  {
     "id": 53,
     "name": "/quotevisual",
-    "categoryId": "kreatif",
+    "categoryId": "design",
     "description": "Kutipan sebagai visual",
     "template": "Create a structured kutipan sebagai visual."
   },
   {
     "id": 54,
     "name": "/pitch",
-    "categoryId": "kreatif",
+    "categoryId": "design",
     "description": "Presentasi singkat untuk investor",
     "template": "Create a structured presentasi singkat untuk investor."
   },

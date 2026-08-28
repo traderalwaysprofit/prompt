@@ -29,8 +29,8 @@ test.describe('samson.web.id current frontend', () => {
     const examples = [...await responses[3].json(), ...await responses[4].json()];
     const cheatcodes = await responses[5].json();
 
-    expect(commands.length).toBeGreaterThanOrEqual(200);
-    expect(categories.length).toBeGreaterThanOrEqual(20);
+    expect(commands.length).toBeGreaterThanOrEqual(197);
+    expect(categories.length).toBeGreaterThanOrEqual(19);
     expect(examples).toHaveLength(commands.length);
     expect(cheatcodes).toHaveLength(6);
     expect(cheatcodes[0].id).toBe('build-website');

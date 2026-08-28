@@ -1,10 +1,10 @@
 # Frontend Architecture V1 — Current Implementation
 
-**Status:** current-state documentation, updated 26 August 2026.
+**Status:** current-state documentation, updated 28 August 2026.
 
 ## 1. Objective
 
-SAMSON Prompt is a static-first prompt explorer for `samson.web.id`. The current runtime contains 200 commands without a frontend framework or backend dependency.
+SAMSON Prompt is a static-first prompt explorer for `samson.web.id`. The current runtime contains 197 commands without a frontend framework or backend dependency.
 
 ## 2. Runtime architecture
 
@@ -35,12 +35,13 @@ The shell is rendered by `main.js`, which emits `samson:shell-ready`. The app-sh
 
 The browser loads and merges:
 
-- `data/commands.json`: 193 base commands;
-- `data/commands-extra.json`: 7 additional commands;
-- `data/examples.json` + `data/examples-extra.json`: 200 examples total;
-- `data/categories.json`: 20 categories.
+- `data/commands.json`: 189 base commands;
+- `data/commands-extra.json`: 8 additional commands;
+- `data/examples.json` + `data/examples-extra.json`: 197 examples total;
+- `data/categories.json`: 19 categories.
 
 A command uses the fields `id`, `name`, `categoryId`, `description`, and `template`. The old `cmd/category` field names are not part of the current contract.
+Command IDs 47, 48, 50, and 52 are retired and reserved; validation rejects future reuse.
 
 ## 5. Interaction model
 
@@ -48,7 +49,7 @@ A command uses the fields `id`, `name`, `categoryId`, `description`, and `templa
 2. Emit `samson:shell-ready` for targeted enhancement.
 3. Load the five JSON data files in parallel.
 4. Merge base and extra commands/examples.
-5. Validate the expected 200-command/200-example totals.
+5. Validate the expected 197-command/197-example totals.
 6. Search and filter locally.
 7. Persist favorites and recent commands in `localStorage`.
 8. Render explicit offline/error UI when the data pipeline fails.
@@ -61,7 +62,7 @@ No legacy generated command module or unused visual patch is shipped.
 
 ## 7. Validation layers
 
-- `npm run validate:data`: validates the complete 200-command runtime contract, categories, examples, unique IDs, and cross-references.
+- `npm run validate:data`: validates the complete 197-command runtime contract, categories, examples, unique IDs, and cross-references.
 - Baseline build: verifies static output.
 - Browser E2E on push/PR: builds and tests the current branch locally.
 - Browser E2E after deployment: tests `samson.web.id`.

@@ -9,7 +9,7 @@ Coverage:
 
 - page load without browser errors;
 - built and served `favicon.svg`;
-- complete runtime contract: 193 base + 7 extra = 200 commands, 20 categories, and 200 examples;
+- complete runtime contract: 189 base + 8 extra = 197 commands, 19 categories, and 197 examples;
 - current search input and smart result grid;
 - category `select` filtering;
 - command modal open/close;
