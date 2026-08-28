@@ -1,19 +1,20 @@
 import { readFile } from 'node:fs/promises';
 
 const readJson = async (path) => JSON.parse(await readFile(path, 'utf8'));
-const [baseCommands, extraCommands, categories, baseExamples, extraExamples, cheatcodes, tradingWorkflows] = await Promise.all([
+const [baseCommands, extraCommands, categories, baseExamples, extraExamples, cheatcodes, tradingWorkflows, wordpressWorkflows] = await Promise.all([
   readJson('data/commands.json'),
   readJson('data/commands-extra.json'),
   readJson('data/categories.json'),
   readJson('data/examples.json'),
   readJson('data/examples-extra.json'),
   readJson('data/cheatcodes.json'),
-  readJson('data/workflows-trading.json')
+  readJson('data/workflows-trading.json'),
+  readJson('data/workflows-wordpress.json')
 ]);
 
 const commands = [...baseCommands, ...extraCommands];
 const examples = [...baseExamples, ...extraExamples];
-const workflows = [...cheatcodes, ...tradingWorkflows];
+const workflows = [...cheatcodes, ...tradingWorkflows, ...wordpressWorkflows];
 const errors = [];
 const warnings = [];
 const categoryIds = new Set(categories.map((item) => item.id));
@@ -21,13 +22,14 @@ const retiredCommandIds = new Set([47, 48, 50, 52]);
 const duplicateValues = (values) => [...new Set(values.filter((value, index) => values.indexOf(value) !== index))];
 
 if (baseCommands.length !== 189) errors.push(`Expected 189 base commands, got ${baseCommands.length}`);
-if (extraCommands.length < 7) errors.push(`Expected at least 7 extra commands, got ${extraCommands.length}`);
-if (commands.length < 197) errors.push(`Expected at least 197 runtime commands, got ${commands.length}`);
+if (extraCommands.length < 10) errors.push(`Expected at least 10 extra commands, got ${extraCommands.length}`);
+if (commands.length < 200) errors.push(`Expected at least 200 runtime commands, got ${commands.length}`);
 if (categories.length < 19) errors.push(`Expected at least 19 categories, got ${categories.length}`);
 if (examples.length !== commands.length) errors.push(`Expected one example per command (${commands.length}), got ${examples.length}`);
 if (!Array.isArray(cheatcodes) || cheatcodes.length !== 6) errors.push(`Expected 6 core workflows, got ${cheatcodes?.length}`);
 if (!Array.isArray(tradingWorkflows) || tradingWorkflows.length !== 3) errors.push(`Expected 3 trading workflows, got ${tradingWorkflows?.length}`);
-if (workflows.length !== 9) errors.push(`Expected 9 total workflows, got ${workflows.length}`);
+if (!Array.isArray(wordpressWorkflows) || wordpressWorkflows.length !== 3) errors.push(`Expected 3 WordPress workflows, got ${wordpressWorkflows?.length}`);
+if (workflows.length !== 12) errors.push(`Expected 12 total workflows, got ${workflows.length}`);
 
 for (const command of commands) {
   if (!Number.isInteger(command.id) || command.id < 1) errors.push(`Invalid command id: ${command.id}`);
@@ -75,6 +77,11 @@ for (const workflow of workflows) {
     if (workflow.badge !== 'EDUCATIONAL ANALYSIS') errors.push(`Trading workflow badge must be EDUCATIONAL ANALYSIS: ${workflow.id}`);
     if (workflow.steps.length !== 8) errors.push(`Trading workflow must contain 8 steps: ${workflow.id}`);
   }
+  if (wordpressWorkflows.includes(workflow)) {
+    if (workflow.group !== 'WordPress') errors.push(`WordPress workflow must use WordPress group: ${workflow.id}`);
+    if (typeof workflow.badge !== 'string' || !workflow.badge.trim()) errors.push(`WordPress workflow badge is required: ${workflow.id}`);
+    if (workflow.steps.length !== 8) errors.push(`WordPress workflow must contain 8 steps: ${workflow.id}`);
+  }
   const stepNumbers = [];
   for (const step of workflow.steps) {
     stepNumbers.push(step.number);
@@ -91,6 +98,11 @@ for (const workflow of workflows) {
 }
 for (const id of duplicateValues(workflowIds)) errors.push(`Duplicate workflow id: ${id}`);
 
+for (const [id, name] of [[203, '/wordpress'], [204, '/woocommerce'], [205, '/wpaudit']]) {
+  const command = commands.find((item) => item.id === id);
+  if (!command || command.name !== name) errors.push(`Required WordPress command missing or changed: ${id} ${name}`);
+}
+
 console.log(JSON.stringify({
   status: errors.length ? 'FAIL' : 'PASS',
   baseCommands: baseCommands.length,
@@ -100,6 +112,7 @@ console.log(JSON.stringify({
   examples: examples.length,
   coreWorkflows: cheatcodes.length,
   tradingWorkflows: tradingWorkflows.length,
+  wordpressWorkflows: wordpressWorkflows.length,
   workflows: workflows.length,
   warnings,
   errors
