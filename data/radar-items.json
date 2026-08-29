@@ -1,0 +1,202 @@
+[
+  {
+    "id": "openai-2026-08-24-codex-mcp-server",
+    "clusterId": "codex-mcp-server-deprecation",
+    "title": "Codex MCP server command deprecated",
+    "source": {
+      "publisher": "OpenAI",
+      "type": "primary",
+      "url": "https://openai.com/products/release-notes/",
+      "publishedAt": "2026-08-24"
+    },
+    "topics": ["coding", "agents", "openai"],
+    "whatChanged": "OpenAI menandai perintah codex mcp-server sebagai deprecated dan mengarahkan integrasi baru ke Codex app server.",
+    "whyItMatters": "Integrasi developer yang masih mengandalkan command lama perlu diperiksa sebelum menjadi technical debt atau berhenti bekerja pada rilis berikutnya.",
+    "scores": {"relevance": 98, "impact": 95, "actionability": 100, "confidence": 100, "novelty": 94, "radar": 98},
+    "samson": {
+      "impact": "high",
+      "relatedPrompts": [{"id": 198, "name": "/github"}, {"id": 194, "name": "/vibecode"}, {"id": 195, "name": "/multimodel"}],
+      "relatedWorkflows": [{"id": "build-saas", "name": "Build a SaaS"}]
+    }
+  },
+  {
+    "id": "openai-2026-08-21-plugin-discovery",
+    "clusterId": "chatgpt-plugin-discovery-ranking",
+    "title": "ChatGPT improves plugin discovery",
+    "source": {
+      "publisher": "OpenAI",
+      "type": "primary",
+      "url": "https://openai.com/products/release-notes/",
+      "publishedAt": "2026-08-21"
+    },
+    "topics": ["ai-product", "plugins", "openai"],
+    "whatChanged": "ChatGPT memperbarui rekomendasi plugin agar discovery lebih memprioritaskan plugin yang terus digunakan setelah instalasi.",
+    "whyItMatters": "Retention dan repeat-use semakin penting untuk distribusi plugin; ini relevan untuk keputusan produk SAMSON ketika integrasi plugin menjadi bagian funnel penggunaan.",
+    "scores": {"relevance": 72, "impact": 70, "actionability": 78, "confidence": 100, "novelty": 72, "radar": 77},
+    "samson": {
+      "impact": "medium",
+      "relatedPrompts": [{"id": 195, "name": "/multimodel"}, {"id": 200, "name": "/autopilot"}],
+      "relatedWorkflows": []
+    }
+  },
+  {
+    "id": "anthropic-2026-08-27-model-hardware-standard",
+    "clusterId": "anthropic-model-hardware-standard",
+    "title": "Anthropic previews a Model Hardware Standard",
+    "source": {
+      "publisher": "Anthropic",
+      "type": "primary",
+      "url": "https://www.anthropic.com/news",
+      "publishedAt": "2026-08-27"
+    },
+    "topics": ["agents", "standards", "anthropic"],
+    "whatChanged": "Anthropic membuka research preview Model Hardware Standard, sebuah spesifikasi bersama untuk membantu AI agents mengoperasikan perangkat fisik dengan lebih aman.",
+    "whyItMatters": "Standarisasi tool-use agent dapat memengaruhi cara workflow masa depan mendeskripsikan capability, permission, dan safety boundary.",
+    "scores": {"relevance": 70, "impact": 88, "actionability": 65, "confidence": 100, "novelty": 100, "radar": 81},
+    "samson": {
+      "impact": "medium",
+      "relatedPrompts": [{"id": 195, "name": "/multimodel"}, {"id": 200, "name": "/autopilot"}],
+      "relatedWorkflows": [{"id": "build-saas", "name": "Build a SaaS"}]
+    }
+  },
+  {
+    "id": "anthropic-2026-08-14-claude-watermark",
+    "clusterId": "claude-text-watermark",
+    "title": "Anthropic explains Claude text watermarking",
+    "source": {
+      "publisher": "Anthropic",
+      "type": "primary",
+      "url": "https://www.anthropic.com/news/claude-text-watermark",
+      "publishedAt": "2026-08-14"
+    },
+    "topics": ["governance", "content", "anthropic"],
+    "whatChanged": "Anthropic menjelaskan pendekatan watermarking untuk teks yang akan dihasilkan model Claude di masa depan, termasuk karakteristik teknis dan batasannya.",
+    "whyItMatters": "Produk yang memproses atau mengevaluasi output AI perlu membedakan provenance, verifikasi, dan klaim deteksi dari kualitas isi itu sendiri.",
+    "scores": {"relevance": 62, "impact": 78, "actionability": 58, "confidence": 100, "novelty": 90, "radar": 74},
+    "samson": {
+      "impact": "medium",
+      "relatedPrompts": [{"id": 201, "name": "/sourceradar"}, {"id": 199, "name": "/aiaudit"}],
+      "relatedWorkflows": []
+    }
+  },
+  {
+    "id": "github-2026-08-21-copilot-slack",
+    "clusterId": "github-copilot-slack-agentic-work",
+    "title": "GitHub Copilot expands agentic work into Slack",
+    "source": {
+      "publisher": "GitHub",
+      "type": "primary",
+      "url": "https://github.blog/changelog/?label=copilot",
+      "publishedAt": "2026-08-21"
+    },
+    "topics": ["github", "agents", "collaboration"],
+    "whatChanged": "GitHub mengumumkan pengalaman Copilot baru di Slack, memperluas agentic work ke kanal kolaborasi tim.",
+    "whyItMatters": "AI workflow semakin bergerak dari chat individual ke konteks kerja tim; ini menjadi sinyal penting untuk roadmap Team Workspace SAMSON.",
+    "scores": {"relevance": 82, "impact": 80, "actionability": 88, "confidence": 100, "novelty": 86, "radar": 86},
+    "samson": {
+      "impact": "high",
+      "relatedPrompts": [{"id": 198, "name": "/github"}, {"id": 200, "name": "/autopilot"}],
+      "relatedWorkflows": []
+    }
+  },
+  {
+    "id": "github-2026-08-12-agent-plugins-1",
+    "clusterId": "github-agent-plugins-portable",
+    "title": "Agent Plugins 1.0 become portable across GitHub agent tools",
+    "source": {
+      "publisher": "GitHub",
+      "type": "primary",
+      "url": "https://github.blog/changelog/?label=copilot",
+      "publishedAt": "2026-08-12"
+    },
+    "topics": ["github", "agents", "plugins", "coding"],
+    "whatChanged": "GitHub merilis Agent Plugins 1.0 untuk digunakan lintas VS Code, Copilot CLI, GitHub Copilot SDK, dan aplikasi Copilot yang kompatibel.",
+    "whyItMatters": "Portable agent capabilities menguatkan arah arsitektur SAMSON agar skill/workflow tidak terkunci ke satu model atau satu antarmuka.",
+    "scores": {"relevance": 96, "impact": 94, "actionability": 98, "confidence": 100, "novelty": 98, "radar": 97},
+    "samson": {
+      "impact": "high",
+      "relatedPrompts": [{"id": 198, "name": "/github"}, {"id": 200, "name": "/autopilot"}, {"id": 195, "name": "/multimodel"}],
+      "relatedWorkflows": [{"id": "build-saas", "name": "Build a SaaS"}]
+    }
+  },
+  {
+    "id": "github-2026-08-03-comment-automations",
+    "clusterId": "github-copilot-comment-automations",
+    "title": "GitHub Copilot automations can be triggered by comments",
+    "source": {
+      "publisher": "GitHub",
+      "type": "primary",
+      "url": "https://github.blog/changelog/2026-08-03-trigger-copilot-automations-with-comments/",
+      "publishedAt": "2026-08-03"
+    },
+    "topics": ["github", "automation", "agents"],
+    "whatChanged": "Copilot cloud agent automations kini dapat dipicu oleh komentar pada issue atau pull request.",
+    "whyItMatters": "Pola event-driven seperti ini sangat dekat dengan workflow SAMSON: insight dapat menjadi action, lalu action dapat memicu pekerjaan terstruktur tanpa membuka tool terpisah.",
+    "scores": {"relevance": 99, "impact": 94, "actionability": 100, "confidence": 100, "novelty": 96, "radar": 98},
+    "samson": {
+      "impact": "high",
+      "relatedPrompts": [{"id": 198, "name": "/github"}, {"id": 200, "name": "/autopilot"}],
+      "relatedWorkflows": []
+    }
+  },
+  {
+    "id": "github-2026-08-03-reasoning-level",
+    "clusterId": "github-copilot-reasoning-level",
+    "title": "Copilot cloud agent adds configurable reasoning levels",
+    "source": {
+      "publisher": "GitHub",
+      "type": "primary",
+      "url": "https://github.blog/changelog/2026-08-03-customize-the-reasoning-level-for-copilot-cloud-agent/",
+      "publishedAt": "2026-08-03"
+    },
+    "topics": ["github", "reasoning", "agents", "coding"],
+    "whatChanged": "GitHub Copilot cloud agent kini memungkinkan user memilih reasoning level untuk model yang mendukungnya.",
+    "whyItMatters": "Ini mendukung prinsip model-routing SAMSON: tingkat reasoning seharusnya dipilih berdasarkan kompleksitas task, bukan selalu memakai mode termahal.",
+    "scores": {"relevance": 91, "impact": 86, "actionability": 94, "confidence": 100, "novelty": 88, "radar": 91},
+    "samson": {
+      "impact": "high",
+      "relatedPrompts": [{"id": 195, "name": "/multimodel"}, {"id": 198, "name": "/github"}],
+      "relatedWorkflows": [{"id": "build-saas", "name": "Build a SaaS"}]
+    }
+  },
+  {
+    "id": "github-2026-08-07-agent-metrics-api",
+    "clusterId": "github-copilot-agent-usage-metrics",
+    "title": "Copilot usage metrics API adds third-party agent activity",
+    "source": {
+      "publisher": "GitHub",
+      "type": "primary",
+      "url": "https://github.blog/changelog/2026-08-07-copilot-usage-metrics-api-adds-agent-app-activity/",
+      "publishedAt": "2026-08-07"
+    },
+    "topics": ["github", "agents", "analytics"],
+    "whatChanged": "GitHub menambahkan aktivitas third-party agent app ke Copilot usage metrics API dengan breakdown per agent.",
+    "whyItMatters": "Pengukuran penggunaan per agent memberi referensi bagus untuk future SAMSON Pro: model atau agent tidak cukup tersedia, tetapi harus dapat dievaluasi berdasarkan penggunaan dan hasil.",
+    "scores": {"relevance": 83, "impact": 82, "actionability": 88, "confidence": 100, "novelty": 84, "radar": 86},
+    "samson": {
+      "impact": "high",
+      "relatedPrompts": [{"id": 198, "name": "/github"}, {"id": 199, "name": "/aiaudit"}],
+      "relatedWorkflows": []
+    }
+  },
+  {
+    "id": "google-2026-08-12-gemini-connected-apps",
+    "clusterId": "gemini-connected-apps-expansion",
+    "title": "Gemini expands connected apps and services",
+    "source": {
+      "publisher": "Google",
+      "type": "primary",
+      "url": "https://blog.google/innovation-and-ai/products/gemini-app/new-connected-apps-services-gemini-august-2026/",
+      "publishedAt": "2026-08-12"
+    },
+    "topics": ["gemini", "plugins", "automation", "ai-product"],
+    "whatChanged": "Google mengumumkan perluasan connected apps untuk Gemini di berbagai kategori produktivitas, kreativitas, layanan lokal, dan aktivitas sehari-hari.",
+    "whyItMatters": "AI assistant semakin menjadi orchestration surface. SAMSON sebaiknya menjaga workflow dan context agar portable ke model serta tool yang berbeda.",
+    "scores": {"relevance": 74, "impact": 82, "actionability": 80, "confidence": 100, "novelty": 90, "radar": 83},
+    "samson": {
+      "impact": "medium",
+      "relatedPrompts": [{"id": 195, "name": "/multimodel"}, {"id": 200, "name": "/autopilot"}],
+      "relatedWorkflows": []
+    }
+  }
+]
