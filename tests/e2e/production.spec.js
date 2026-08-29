@@ -1,6 +1,7 @@
 import { test, expect } from '@playwright/test';
 
 const BASE_URL = process.env.PROD_URL || 'https://samson.web.id';
+const workflowChoiceButton = (page) => page.locator('#workflow-choice [data-show-workflows]');
 
 const openPromptLibrary = async (page) => {
   await page.getByRole('button', { name: /Buka Prompt Library/ }).click();
@@ -161,7 +162,8 @@ test.describe('samson.web.id current frontend', () => {
     await expect(page.locator('.choice-card')).toHaveCount(2);
     await expect(page.getByRole('heading', { name: 'Pilih pekerjaan yang ingin diselesaikan' })).toBeVisible();
     await expect(page.getByRole('heading', { name: 'Temukan satu prompt spesifik' })).toBeVisible();
-    await expect(page.getByRole('button', { name: /Lihat 6 Workflow/ })).toBeVisible();
+    await expect(workflowChoiceButton(page)).toBeVisible();
+    await expect(workflowChoiceButton(page)).toContainText('Lihat 12 Workflow');
     await expect(page.getByRole('button', { name: /Buka Prompt Library/ })).toBeVisible();
     await expect(page.locator('#featured')).toBeHidden();
     await expect(page.locator('#workflow-catalog')).toBeHidden();
@@ -172,7 +174,7 @@ test.describe('samson.web.id current frontend', () => {
 
   test('Build Website runs as an eight-step workflow with local progress', async ({ page }) => {
     await page.goto(BASE_URL, { waitUntil: 'networkidle' });
-    await page.getByRole('button', { name: /Lihat 6 Workflow/ }).click();
+    await workflowChoiceButton(page).click();
     await expect(page.locator('.workflow-catalog-card')).toHaveCount(6);
     const websiteCard = page.locator('.workflow-catalog-card').filter({ hasText: 'Build a Website' });
     await websiteCard.getByRole('button', { name: 'Mulai Build a Website' }).click();
@@ -194,9 +196,9 @@ test.describe('samson.web.id current frontend', () => {
     await expect(page.locator('#cheatcode-detail .workflow-progress-label')).toContainText('1/8');
   });
 
-  test('users can choose from six outcome-based workflows', async ({ page }) => {
+  test('users can choose from six core outcome-based workflows', async ({ page }) => {
     await page.goto(BASE_URL, { waitUntil: 'networkidle' });
-    await page.getByRole('button', { name: /Lihat 6 Workflow/ }).click();
+    await workflowChoiceButton(page).click();
     const catalog = page.locator('#workflow-catalog');
     await expect(catalog).toBeVisible();
     await expect(catalog.locator('.workflow-catalog-card')).toHaveCount(6);
