@@ -133,13 +133,21 @@
   }
 }
 
-/* Wide desktop: allow four columns only after the shell itself gets wider. */
+/* Wide desktop: four columns only after the prompt section has enough usable width. */
 @media (min-width:1280px){
   html[data-theme="pixel"] .pixel-wire-chrome,
-  html[data-theme="pixel"] main,
   html[data-theme="pixel"] .site-header>*,
   html[data-theme="pixel"] footer>*{
     max-width:1180px!important;
+  }
+
+  /* Base .section uses 5vw side padding. At 1440px that consumed 144px and
+     left four Pixel cards at only ~251px. Keep the retro shell narrow but
+     reclaim usable grid width with a fixed desktop gutter. */
+  html[data-theme="pixel"] .section{
+    max-width:1180px!important;
+    padding-left:24px!important;
+    padding-right:24px!important;
   }
 
   html[data-theme="pixel"] .nft-grid{
