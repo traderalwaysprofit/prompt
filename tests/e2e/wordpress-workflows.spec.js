@@ -1,6 +1,7 @@
 import { test, expect } from '@playwright/test';
 
 const BASE_URL = process.env.PROD_URL || 'https://samson.web.id';
+const workflowChoiceButton = (page) => page.locator('#workflow-choice [data-show-workflows]');
 
 test.describe('SAMSON WordPress workflows', () => {
   test('publishes three WordPress workflows with eight steps each', async ({ page }) => {
@@ -24,7 +25,7 @@ test.describe('SAMSON WordPress workflows', () => {
 
   test('WordPress filter isolates three production workflows', async ({ page }) => {
     await page.goto(BASE_URL, { waitUntil: 'networkidle' });
-    await page.getByRole('button', { name: /Lihat 6 Workflow/ }).click();
+    await workflowChoiceButton(page).click();
     await page.locator('[data-workflow-filter="wordpress"]').click();
 
     await expect(page.locator('#workflow-catalog-grid')).toBeHidden();
@@ -38,7 +39,7 @@ test.describe('SAMSON WordPress workflows', () => {
 
   test('Build a WordPress Website connects to /wordpress and persists progress', async ({ page }) => {
     await page.goto(BASE_URL, { waitUntil: 'networkidle' });
-    await page.getByRole('button', { name: /Lihat 6 Workflow/ }).click();
+    await workflowChoiceButton(page).click();
     await page.locator('[data-workflow-filter="wordpress"]').click();
 
     const card = page.locator('.wordpress-workflow-card').filter({ hasText: 'Build a WordPress Website' });
@@ -63,7 +64,7 @@ test.describe('SAMSON WordPress workflows', () => {
 
   test('WooCommerce and WordPress audit use dedicated commands', async ({ page }) => {
     await page.goto(BASE_URL, { waitUntil: 'networkidle' });
-    await page.getByRole('button', { name: /Lihat 6 Workflow/ }).click();
+    await workflowChoiceButton(page).click();
     await page.locator('[data-workflow-filter="wordpress"]').click();
 
     const woo = page.locator('.wordpress-workflow-card').filter({ hasText: 'Build a WooCommerce Store' });
