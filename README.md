@@ -1,31 +1,34 @@
 # SAMSON Prompt
 
-Prompt library dan guided workflow berbasis web untuk membantu pengguna memilih, memahami, dan menyalin prompt AI dengan cepat.
+AI cheatcodes, guided workflows, dan personal intelligence berbasis web untuk membantu pengguna mengubah kebutuhan kerja menjadi prompt, workflow, dan tindakan yang dapat digunakan kembali.
 
 **Live:** [samson.web.id](https://samson.web.id)
 
 ## Ringkasan
 
-SAMSON Prompt adalah aplikasi static-first tanpa backend dan tanpa frontend framework. Seluruh katalog dimuat dari file JSON saat runtime, lalu pencarian, filter, favorit, riwayat penggunaan, pagination, serta detail prompt dijalankan langsung di browser.
+SAMSON adalah aplikasi static-first tanpa backend dan tanpa frontend framework. Katalog utama dimuat dari file JSON saat runtime, sedangkan pencarian, filter, favorit, riwayat penggunaan, workflow progress, dan state Personal AI Radar dijalankan langsung di browser.
 
 Kondisi runtime saat ini:
 
 | Komponen | Jumlah |
 |---|---:|
-| Prompt | 197 |
-| Contoh penggunaan | 197 |
+| Prompt | 201 |
+| Contoh penggunaan | 201 |
 | Kategori | 19 |
-| Guided workflow | 6 |
+| Guided workflow | 12 |
+| Personal AI Radar | Personal Beta |
 
 ## Fitur utama
 
-- Prompt Library dengan pencarian, filter kategori, dan pagination responsif.
-- Guided Workflow untuk website, SaaS, marketing campaign, SEO content, research project, dan task automation.
-- Detail prompt berisi deskripsi, contoh penggunaan, template siap salin, dan kontrol favorit.
-- Favorites dan recently used disimpan secara lokal melalui `localStorage`.
+- Prompt Library dengan pencarian, filter kategori, pagination responsif, favorites, dan recently used.
+- 12 Guided Workflows: 6 core, 3 Trading educational-analysis, dan 3 WordPress.
+- Personal AI Radar dengan pola `Know → Decide → Apply`: trusted source, topic, relevance/impact/actionability/confidence/novelty score, Save, Testing, Applied, dan Create Action.
+- Radar personal state disimpan melalui `localStorage`; source signal tetap berasal dari data terkurasi dan tidak menyimpan preferensi personal di repository.
+- Adaptive UI dengan empat personality: Samson Default, Developer, Swiss, dan Pixel.
+- Anti-Slop quality layer untuk menjaga consistency dan distinctiveness UI.
 - Runtime statistics berasal dari data aktual, bukan angka statis di antarmuka.
 - Error state eksplisit ketika pipeline data tidak dapat dimuat.
-- CI untuk validasi data, build, security headers, regression, dan browser E2E.
+- CI untuk validasi data, Radar contract, build, security headers, regression, dan browser E2E.
 
 ## Menjalankan secara lokal
 
@@ -49,7 +52,7 @@ npm run test:e2e
 | Perintah | Fungsi |
 |---|---|
 | `npm run build` | Membangun aset statis ke `dist/` |
-| `npm run validate:data` | Memvalidasi schema, ID, kategori, contoh, dan referensi workflow |
+| `npm run validate:data` | Memvalidasi prompt/workflow data sekaligus Personal AI Radar contract |
 | `npm run validate:regression` | Mendeteksi penghapusan atau perubahan data yang tidak disetujui |
 | `npm run validate:security-headers` | Memastikan header keamanan wajib tersedia |
 | `npm run report:prompt-coverage` | Melaporkan cakupan prompt pada guided workflow |
@@ -61,7 +64,7 @@ npm run test:e2e
 ```text
 .
 ├── .github/workflows/     # CI, browser E2E, dan verifikasi produksi
-├── data/                  # Commands, examples, categories, dan workflows
+├── data/                  # Commands, examples, categories, workflows, radar signals
 ├── docs/                  # Dokumentasi produk dan teknis
 ├── scripts/               # Build, validasi, coverage, dan tooling data
 ├── src/                   # JavaScript dan CSS aplikasi
@@ -73,13 +76,16 @@ npm run test:e2e
 
 ## Kontrak data
 
-Browser menggabungkan lima sumber utama:
+Browser memuat data utama berikut:
 
 - `data/commands.json` — 189 prompt dasar;
-- `data/commands-extra.json` — 8 prompt tambahan;
+- `data/commands-extra.json` — prompt tambahan yang terus berkembang;
 - `data/examples.json` dan `data/examples-extra.json` — satu contoh untuk setiap prompt;
-- `data/categories.json` — 19 kategori;
-- `data/cheatcodes.json` — 6 guided workflow.
+- `data/categories.json` — kategori canonical;
+- `data/cheatcodes.json` — 6 core guided workflows;
+- `data/workflows-trading.json` — 3 Trading workflows;
+- `data/workflows-wordpress.json` — 3 WordPress workflows;
+- `data/radar-items.json` — trusted-source Personal AI Radar signals.
 
 Setiap command wajib memiliki struktur berikut:
 
@@ -94,6 +100,16 @@ Setiap command wajib memiliki struktur berikut:
 ```
 
 ID command harus unik dan tidak boleh digunakan ulang. ID `47`, `48`, `50`, dan `52` telah dipensiunkan secara permanen setelah deduplikasi kategori desain.
+
+## Personal AI Radar R1
+
+Radar mengikuti SAMSON Intelligence Loop:
+
+```text
+OBSERVE → UNDERSTAND → DECIDE → ACT → VERIFY → LEARN
+```
+
+R1 sengaja tidak memiliki account, database, AI API, cron ingestion, atau public SEO layer. Signal terkurasi berada di `data/radar-items.json`; state `Read`, `Save`, `Testing`, `Applied`, dan action queue hanya disimpan pada browser pengguna. Data Radar divalidasi untuk source provenance, HTTPS source URL, score 0–100, weighted Radar score, related prompt references, dan related workflow references.
 
 ## Menambahkan prompt
 
