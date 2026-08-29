@@ -81,6 +81,39 @@ html[data-theme="pixel"] .nft-info p{
   font-family:var(--ui-font-body);
 }
 
+/* accessibility.css intentionally pins light-theme secondary text with !important. */
+html[data-theme="pixel"] .logo-text span,
+html[data-theme="pixel"] .nav-link,
+html[data-theme="pixel"] .eyebrow,
+html[data-theme="pixel"] .hero p,
+html[data-theme="pixel"] .hero-stats span,
+html[data-theme="pixel"] .tag,
+html[data-theme="pixel"] .hero-card p,
+html[data-theme="pixel"] .hero-card-footer,
+html[data-theme="pixel"] .view-all,
+html[data-theme="pixel"] .market-search .svg-icon,
+html[data-theme="pixel"] .nft-art>span,
+html[data-theme="pixel"] .nft-art small,
+html[data-theme="pixel"] .nft-info p,
+html[data-theme="pixel"] .results-count,
+html[data-theme="pixel"] .creator-spot h2 span,
+html[data-theme="pixel"] .creator-spot p,
+html[data-theme="pixel"] .creator-card span,
+html[data-theme="pixel"] footer,
+html[data-theme="pixel"] .modal header small,
+html[data-theme="pixel"] .modal-body label,
+html[data-theme="pixel"] .modal-body p,
+html[data-theme="pixel"] .smart-result,
+html[data-theme="pixel"] .smart-result span,
+html[data-theme="pixel"] .smart-result small,
+html[data-theme="pixel"] .market-search input::placeholder,
+html[data-theme="pixel"] .onboarding-option small,
+html[data-theme="pixel"] .onboarding-option p,
+html[data-theme="pixel"] .mobile-menu-title,
+html[data-theme="pixel"] .mobile-menu-panel button{
+  color:var(--ui-text-secondary)!important;
+}
+
 /* Solid, square surfaces: no glass and no decorative gradients. */
 html[data-theme="pixel"] .hero-card,
 html[data-theme="pixel"] .choice-card,
