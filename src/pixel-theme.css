@@ -1,166 +1,170 @@
-/* SAMSON Pixel personality — adapted from the supplied retro arcade reference.
-   Keeps SAMSON behavior intact while applying Press Start 2P, neon arcade colors,
-   CRT scanlines, vignette, hard pixel borders, and tactile 3D button states. */
+/* SAMSON Pixel personality — retro web editorial/newswire style.
+   Adapted from the user-supplied reference: Silkscreen chrome, Verdana body,
+   dense black/charcoal panels, yellow/amber status accents, flat 1px rules. */
 html[data-theme="pixel"]{
   color-scheme:dark;
-  --ui-font-body:"Press Start 2P",ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace;
-  --ui-font-display:"Press Start 2P",ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace;
+  --ui-font-body:Verdana,Tahoma,Geneva,sans-serif;
+  --ui-font-display:"Silkscreen",ui-monospace,Menlo,Consolas,monospace;
   --ui-bg:#000000;
-  --ui-bg-elevated:#000000;
-  --ui-bg-muted:#090909;
-  --ui-surface:#000000;
-  --ui-surface-soft:#050505;
-  --ui-surface-strong:#ffffff;
-  --ui-text:#ffffff;
-  --ui-text-secondary:#d1d5db;
+  --ui-bg-elevated:#0c0c0c;
+  --ui-bg-muted:#151515;
+  --ui-surface:#0c0c0c;
+  --ui-surface-soft:#151515;
+  --ui-surface-strong:#e6e6e6;
+  --ui-text:#b4b4b4;
+  --ui-text-secondary:#7e7e7e;
   --ui-text-inverse:#000000;
-  --ui-border:#00ffff;
-  --ui-border-strong:#ffffff;
-  --ui-accent:#00ffff;
+  --ui-border:#303030;
+  --ui-border-strong:#4a4a4a;
+  --ui-accent:#ffcc00;
   --ui-accent-contrast:#000000;
-  --ui-success:#00ff00;
-  --ui-danger:#ff315f;
+  --ui-success:#9acd00;
+  --ui-danger:#e06246;
   --ui-radius-control:0px;
   --ui-radius-card:0px;
   --ui-radius-panel:0px;
   --ui-radius-modal:0px;
-  --ui-shadow-1:3px 3px 0 #00ffff;
-  --ui-shadow-2:4px 4px 0 #00ffff;
-  --ui-shadow-3:0 0 20px #ff00ff;
-  --ui-grid-line:rgba(0,255,255,.08);
-  --ui-art-a:#000000;
-  --ui-art-b:#050505;
-  --pixel-pink:#ff00ff;
-  --pixel-cyan:#00ffff;
-  --pixel-yellow:#ffff00;
-  --pixel-green:#00ff00;
-  --pixel-black:#000000;
+  --ui-shadow-1:none;
+  --ui-shadow-2:none;
+  --ui-shadow-3:none;
+  --pixel-void:#000000;
+  --pixel-panel:#0c0c0c;
+  --pixel-inset:#151515;
+  --pixel-line:#303030;
+  --pixel-line-hi:#4a4a4a;
+  --pixel-dim:#7e7e7e;
+  --pixel-body:#b4b4b4;
+  --pixel-bright:#e6e6e6;
+  --pixel-yellow:#ffcc00;
+  --pixel-yellow-dk:#8a6e00;
+  --pixel-amber:#ff9900;
+  --pixel-green:#9acd00;
 }
 
 html[data-theme="pixel"],
 html[data-theme="pixel"] body,
 html[data-theme="pixel"] .app{
-  background:#000!important;
-  color:#fff;
+  background:var(--pixel-void)!important;
+  color:var(--pixel-body)!important;
 }
 
 html[data-theme="pixel"] body{
-  font-family:var(--ui-font-body);
-  text-rendering:geometricPrecision;
+  font-family:var(--ui-font-body)!important;
+  font-size:12px;
+  line-height:1.5;
+  overflow-x:clip;
 }
 
-/* The reference used overflow:hidden for a single arcade screen. SAMSON remains scrollable. */
-html[data-theme="pixel"] body.pixel-arcade-active{
-  overflow-x:hidden;
-}
+html[data-theme="pixel"] *{box-shadow:none}
+html[data-theme="pixel"] body.pixel-wire-active{overflow-x:clip}
 
-/* CRT scanlines and RGB phosphor mask, mounted by pixel-theme.js. */
-.pixel-crt-overlay,
-.pixel-vignette,
-.pixel-boot-message{
-  display:none;
-}
-
-html[data-theme="pixel"] .pixel-crt-overlay{
+/* Theme-only newswire strips mounted by pixel-theme.js. */
+.pixel-wire-chrome{display:none}
+html[data-theme="pixel"] .pixel-wire-chrome{
   display:block;
-  position:fixed;
-  inset:0;
-  z-index:9998;
-  pointer-events:none;
-  background:
-    linear-gradient(rgba(18,16,16,0) 50%,rgba(0,0,0,.25) 50%),
-    linear-gradient(90deg,rgba(255,0,0,.06),rgba(0,255,0,.02),rgba(0,0,255,.06));
-  background-size:100% 2px,3px 100%;
-}
-
-html[data-theme="pixel"] .pixel-vignette{
-  display:block;
-  position:fixed;
-  inset:0;
-  z-index:9997;
-  pointer-events:none;
-  box-shadow:0 0 150px rgba(0,0,0,.9) inset;
-}
-
-html[data-theme="pixel"] .pixel-boot-message{
-  display:block;
-  position:fixed;
-  left:50%;
-  bottom:18px;
-  z-index:9999;
-  transform:translateX(-50%);
-  padding:8px 10px;
-  max-width:calc(100vw - 32px);
-  background:#000;
-  color:var(--pixel-yellow);
-  border:2px solid var(--pixel-yellow);
+  max-width:940px;
+  margin:0 auto;
+  padding:8px 8px 0;
   font-family:var(--ui-font-display);
-  font-size:9px;
-  line-height:1.6;
-  text-align:center;
+}
+html[data-theme="pixel"] .pixel-wire-strip{
+  border:1px solid var(--pixel-line);
+  background:var(--pixel-inset);
+  min-height:27px;
+  padding:5px 8px;
+  margin-bottom:4px;
+  color:var(--pixel-yellow-dk);
+  font-size:8px;
+  line-height:1.7;
   text-transform:uppercase;
+  letter-spacing:.08em;
+  overflow:hidden;
   white-space:nowrap;
-  opacity:0;
-  pointer-events:none;
-  text-shadow:0 0 5px var(--pixel-yellow);
-  transition:opacity .08s linear;
 }
-
-html[data-theme="pixel"] .pixel-boot-message.is-visible{
-  opacity:1;
-  animation:pixel-blinker .85s step-start 2;
+html[data-theme="pixel"] .pixel-wire-strip.lead{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  color:var(--pixel-dim);
 }
-
-@keyframes pixel-blinker{
-  50%{opacity:0}
+html[data-theme="pixel"] .pixel-wire-brand{
+  color:var(--pixel-yellow);
+  font-weight:700;
+  letter-spacing:.12em;
 }
+html[data-theme="pixel"] .pixel-wire-title{
+  flex:1;
+  min-width:0;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+html[data-theme="pixel"] .pixel-wire-status{color:var(--pixel-yellow)}
+html[data-theme="pixel"] .pixel-wire-ticker span{
+  display:inline-block;
+  padding-left:100%;
+  animation:pixel-wire-slide 26s linear infinite;
+}
+@keyframes pixel-wire-slide{to{transform:translateX(-100%)}}
 
-html[data-theme="pixel"] .site-header,
-html[data-theme="pixel"] footer,
-html[data-theme="pixel"] .mobile-menu-panel{
-  background:#000!important;
-  border-color:var(--pixel-cyan)!important;
+/* Main shell becomes narrower and denser like the reference. */
+html[data-theme="pixel"] .app,
+html[data-theme="pixel"] .site-header>*,
+html[data-theme="pixel"] main,
+html[data-theme="pixel"] footer>*{
+  max-width:940px;
+}
+html[data-theme="pixel"] .site-header{
+  background:var(--pixel-panel)!important;
+  border-top:1px solid var(--pixel-line)!important;
+  border-bottom:1px solid var(--pixel-line)!important;
   box-shadow:none!important;
 }
-
-/* Neon hierarchy adapted from the reference: pink title, cyan information, yellow status. */
-html[data-theme="pixel"] .hero h1{
-  color:var(--pixel-pink)!important;
+html[data-theme="pixel"] .site-header,
+html[data-theme="pixel"] .mobile-menu-panel,
+html[data-theme="pixel"] footer{
+  color:var(--pixel-body)!important;
+}
+html[data-theme="pixel"] .logo-mark{
+  border-radius:0!important;
+  background:var(--pixel-yellow)!important;
+  color:var(--pixel-void)!important;
+}
+html[data-theme="pixel"] .logo-text strong{
+  color:var(--pixel-yellow)!important;
   font-family:var(--ui-font-display)!important;
-  font-weight:400!important;
-  line-height:1.35!important;
-  letter-spacing:.05em!important;
+  font-size:11px!important;
+  letter-spacing:.12em!important;
   text-transform:uppercase;
-  text-shadow:2px 2px 0 #000,0 0 10px var(--pixel-pink),0 0 20px var(--pixel-pink)!important;
 }
 
-html[data-theme="pixel"] .logo-text strong,
+/* Chrome typography: Silkscreen only for labels/headings. */
+html[data-theme="pixel"] .hero h1,
+html[data-theme="pixel"] .hero-card h3,
 html[data-theme="pixel"] .section-head h2,
 html[data-theme="pixel"] .creator-spot h2,
+html[data-theme="pixel"] .choice-card h3,
 html[data-theme="pixel"] .workflow-catalog-card h3,
 html[data-theme="pixel"] .domain-workflow-card h3,
-html[data-theme="pixel"] .workflow-content h3{
-  color:var(--pixel-cyan)!important;
+html[data-theme="pixel"] .workflow-header h2,
+html[data-theme="pixel"] .workflow-content h3,
+html[data-theme="pixel"] .modal header h2{
   font-family:var(--ui-font-display)!important;
-  font-weight:400!important;
-  letter-spacing:.02em!important;
+  font-weight:700!important;
+  color:var(--pixel-yellow)!important;
   text-transform:uppercase;
-  text-shadow:0 0 5px var(--pixel-cyan);
+  text-shadow:none!important;
 }
-
-html[data-theme="pixel"] .hero-card h3,
-html[data-theme="pixel"] .choice-card h3,
-html[data-theme="pixel"] .modal header h2,
-html[data-theme="pixel"] .workflow-header h2{
-  color:var(--pixel-pink)!important;
-  font-family:var(--ui-font-display)!important;
-  font-weight:400!important;
-  line-height:1.45!important;
-  letter-spacing:.02em!important;
-  text-transform:uppercase;
-  text-shadow:2px 2px 0 #000,0 0 10px var(--pixel-pink);
+html[data-theme="pixel"] .hero h1{
+  font-size:clamp(22px,4vw,36px)!important;
+  line-height:1.25!important;
+  letter-spacing:.04em!important;
 }
-
+html[data-theme="pixel"] .section-head h2,
+html[data-theme="pixel"] .workflow-header h2,
+html[data-theme="pixel"] .modal header h2{
+  font-size:11px!important;
+  letter-spacing:.18em!important;
+}
 html[data-theme="pixel"] .eyebrow,
 html[data-theme="pixel"] .tag,
 html[data-theme="pixel"] .results-count,
@@ -170,43 +174,47 @@ html[data-theme="pixel"] .workflow-group-label,
 html[data-theme="pixel"] .cheatcodes-eyebrow,
 html[data-theme="pixel"] .theme-picker-wrap>span,
 html[data-theme="pixel"] .mobile-theme-picker>span,
-html[data-theme="pixel"] .workflow-progress-label{
-  color:var(--pixel-yellow)!important;
+html[data-theme="pixel"] .workflow-progress-label,
+html[data-theme="pixel"] .catalog-card-stats,
+html[data-theme="pixel"] .hero-stats{
   font-family:var(--ui-font-display)!important;
-  font-weight:400;
-  letter-spacing:.04em;
+  font-size:8px!important;
+  letter-spacing:.06em!important;
   text-transform:uppercase;
-  text-shadow:0 0 5px var(--pixel-yellow);
+  color:var(--pixel-yellow-dk)!important;
+  text-shadow:none!important;
 }
-
 html[data-theme="pixel"] .hero-stats b,
 html[data-theme="pixel"] .catalog-card-stats strong,
 html[data-theme="pixel"] .workflow-step-number{
-  color:var(--pixel-green)!important;
-  text-shadow:0 0 5px var(--pixel-green);
+  color:var(--pixel-yellow)!important;
+  text-shadow:none!important;
 }
 
-/* Keep long text readable even though the chrome uses the authentic pixel font. */
+/* Long-form copy uses compact Verdana like the reference. */
+html[data-theme="pixel"] p,
 html[data-theme="pixel"] .hero p,
-html[data-theme="pixel"] .choice-card>p,
 html[data-theme="pixel"] .choice-feature span,
 html[data-theme="pixel"] .nft-info p,
 html[data-theme="pixel"] .workflow-description,
 html[data-theme="pixel"] .workflow-output span,
 html[data-theme="pixel"] .workflow-prompt p,
+html[data-theme="pixel"] .modal-body,
 html[data-theme="pixel"] .modal-body p,
 html[data-theme="pixel"] .onboarding-option p,
 html[data-theme="pixel"] .trading-group-head>p{
-  font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif!important;
-  color:#d1d5db!important;
+  font-family:var(--ui-font-body)!important;
+  color:var(--pixel-body)!important;
   text-shadow:none!important;
+  line-height:1.55!important;
 }
 
-/* accessibility.css pins light-theme text with !important; restore neon/dark-theme contrast. */
+/* accessibility.css has !important light-theme secondary text. */
 html[data-theme="pixel"] .logo-text span,
 html[data-theme="pixel"] .nav-link,
 html[data-theme="pixel"] .hero p,
 html[data-theme="pixel"] .hero-stats span,
+html[data-theme="pixel"] .tag,
 html[data-theme="pixel"] .hero-card p,
 html[data-theme="pixel"] .hero-card-footer,
 html[data-theme="pixel"] .view-all,
@@ -214,6 +222,7 @@ html[data-theme="pixel"] .market-search .svg-icon,
 html[data-theme="pixel"] .nft-art>span,
 html[data-theme="pixel"] .nft-art small,
 html[data-theme="pixel"] .nft-info p,
+html[data-theme="pixel"] .results-count,
 html[data-theme="pixel"] .creator-spot h2 span,
 html[data-theme="pixel"] .creator-spot p,
 html[data-theme="pixel"] .creator-card span,
@@ -229,10 +238,11 @@ html[data-theme="pixel"] .onboarding-option small,
 html[data-theme="pixel"] .onboarding-option p,
 html[data-theme="pixel"] .mobile-menu-title,
 html[data-theme="pixel"] .mobile-menu-panel button{
-  color:#d1d5db!important;
+  color:var(--pixel-dim)!important;
 }
 
-/* Arcade panels: black, square, explicit borders, no modern glass treatment. */
+/* Flat panel language: 1px rules, inset headers, zero radii, zero elevation. */
+html[data-theme="pixel"] .hero,
 html[data-theme="pixel"] .hero-card,
 html[data-theme="pixel"] .choice-card,
 html[data-theme="pixel"] .nft-card,
@@ -241,61 +251,93 @@ html[data-theme="pixel"] .creator-card,
 html[data-theme="pixel"] .workflow-catalog-card,
 html[data-theme="pixel"] .domain-workflow-card,
 html[data-theme="pixel"] .workflow-content,
+html[data-theme="pixel"] .workflow-steps,
 html[data-theme="pixel"] .modal,
 html[data-theme="pixel"] .onboarding-option,
-html[data-theme="pixel"] .theme-picker{
+html[data-theme="pixel"] .theme-picker,
+html[data-theme="pixel"] .smart-panel{
   border-radius:0!important;
-  background:#000!important;
+  border:1px solid var(--pixel-line)!important;
+  background:var(--pixel-panel)!important;
+  box-shadow:none!important;
   backdrop-filter:none!important;
 }
-
-html[data-theme="pixel"] .hero-card{
-  border:4px solid var(--pixel-pink)!important;
-  box-shadow:0 0 20px rgba(255,0,255,.65)!important;
+html[data-theme="pixel"] .hero{
+  padding:18px 12px!important;
+  margin-bottom:4px!important;
+  position:relative;
 }
-
-html[data-theme="pixel"] #workflow-choice{
-  border:4px solid var(--pixel-cyan)!important;
-  box-shadow:4px 4px 0 var(--pixel-cyan)!important;
+html[data-theme="pixel"] .hero::after,
+html[data-theme="pixel"] .choice-card::after,
+html[data-theme="pixel"] .workflow-catalog-card::after,
+html[data-theme="pixel"] .domain-workflow-card::after{
+  content:"";
+  position:absolute;
+  top:-1px;
+  right:-1px;
+  width:12px;
+  height:12px;
+  border-top:1px solid var(--pixel-line-hi);
+  border-right:1px solid var(--pixel-line-hi);
+  background:linear-gradient(225deg,var(--pixel-yellow-dk) 0 4px,transparent 4px);
+  pointer-events:none;
 }
-
-html[data-theme="pixel"] #prompt-choice{
-  border:4px solid var(--pixel-pink)!important;
-  box-shadow:4px 4px 0 var(--pixel-pink)!important;
-}
-
-html[data-theme="pixel"] .nft-card,
+html[data-theme="pixel"] .choice-card,
 html[data-theme="pixel"] .workflow-catalog-card,
-html[data-theme="pixel"] .domain-workflow-card,
-html[data-theme="pixel"] .creator-card,
-html[data-theme="pixel"] .onboarding-option,
-html[data-theme="pixel"] .workflow-content{
-  border:2px solid var(--pixel-cyan)!important;
-  box-shadow:3px 3px 0 rgba(0,255,255,.7)!important;
+html[data-theme="pixel"] .domain-workflow-card{
+  position:relative;
+  padding:10px!important;
 }
-
-html[data-theme="pixel"] .modal,
-html[data-theme="pixel"] .onboarding-modal{
-  border:4px solid var(--pixel-pink)!important;
-  box-shadow:0 0 20px var(--pixel-pink)!important;
-  background:#000!important;
-}
-
-html[data-theme="pixel"] .nft-art{
-  background:#000!important;
-  border-bottom:2px solid var(--pixel-cyan);
-}
-
-html[data-theme="pixel"] .grid-lines{
-  background-image:
-    linear-gradient(rgba(0,255,255,.09) 1px,transparent 1px),
-    linear-gradient(90deg,rgba(0,255,255,.09) 1px,transparent 1px)!important;
-  background-size:16px 16px!important;
-}
-
 html[data-theme="pixel"] .hero-card:before{display:none!important}
+html[data-theme="pixel"] .nft-card:nth-child(even),
+html[data-theme="pixel"] .workflow-catalog-card:nth-child(even),
+html[data-theme="pixel"] .domain-workflow-card:nth-child(even){
+  background:#0e0e0e!important;
+}
+html[data-theme="pixel"] .nft-art{
+  background:var(--pixel-inset)!important;
+  border-bottom:1px solid var(--pixel-line)!important;
+  min-height:86px!important;
+}
+html[data-theme="pixel"] .grid-lines{display:none!important}
 
-/* Buttons reproduce the supplied arcade-btn behavior. */
+/* Section headings read like panel headers. */
+html[data-theme="pixel"] .section-head,
+html[data-theme="pixel"] .trading-group-head,
+html[data-theme="pixel"] .workflow-header,
+html[data-theme="pixel"] .modal header{
+  background:var(--pixel-inset)!important;
+  border-bottom:1px solid var(--pixel-line)!important;
+  padding:6px 8px!important;
+}
+html[data-theme="pixel"] .section-head h2{
+  flex:1;
+  text-align:center;
+}
+
+/* Inputs and selectors. */
+html[data-theme="pixel"] .market-search,
+html[data-theme="pixel"] .market-search input,
+html[data-theme="pixel"] .market-tools select,
+html[data-theme="pixel"] .theme-picker,
+html[data-theme="pixel"] input,
+html[data-theme="pixel"] select,
+html[data-theme="pixel"] textarea{
+  border-radius:0!important;
+  background:var(--pixel-void)!important;
+  border-color:var(--pixel-line)!important;
+  color:var(--pixel-bright)!important;
+  box-shadow:none!important;
+  font-family:var(--ui-font-body)!important;
+}
+html[data-theme="pixel"] input:focus,
+html[data-theme="pixel"] select:focus,
+html[data-theme="pixel"] textarea:focus{
+  border-color:var(--pixel-yellow)!important;
+  outline:none!important;
+}
+
+/* FWA-style flat yellow buttons. */
 html[data-theme="pixel"] .choice-action,
 html[data-theme="pixel"] .hero-actions button,
 html[data-theme="pixel"] .view-all,
@@ -305,25 +347,21 @@ html[data-theme="pixel"] .modal-fav,
 html[data-theme="pixel"] .close,
 html[data-theme="pixel"] .workflow-start,
 html[data-theme="pixel"] .workflow-complete,
-html[data-theme="pixel"] .workflow-reset,
 html[data-theme="pixel"] .workflow-next,
-html[data-theme="pixel"] .workflow-copy,
-html[data-theme="pixel"] [data-workflow-filter],
-html[data-theme="pixel"] .workflow-step-tab,
-html[data-theme="pixel"] .mobile-menu-toggle,
-html[data-theme="pixel"] .mobile-menu-panel button{
+html[data-theme="pixel"] .workflow-copy{
   border-radius:0!important;
-  border:4px solid #fff!important;
-  background:#000!important;
-  color:#fff!important;
-  box-shadow:4px 4px 0 var(--pixel-cyan)!important;
+  border:0!important;
+  background:var(--pixel-yellow)!important;
+  color:var(--pixel-void)!important;
+  box-shadow:none!important;
   font-family:var(--ui-font-display)!important;
-  font-weight:400!important;
+  font-size:9px!important;
+  letter-spacing:.08em!important;
   text-transform:uppercase;
-  transform:translate(0,0);
-  transition:background-color .1s linear,color .1s linear,box-shadow .1s linear,transform .1s linear!important;
+  padding:7px 10px!important;
+  transform:none!important;
+  transition:background-color .1s linear,color .1s linear!important;
 }
-
 html[data-theme="pixel"] .choice-action:hover,
 html[data-theme="pixel"] .hero-actions button:hover,
 html[data-theme="pixel"] .view-all:hover,
@@ -332,166 +370,155 @@ html[data-theme="pixel"] .copy-section:hover,
 html[data-theme="pixel"] .workflow-start:hover,
 html[data-theme="pixel"] .workflow-complete:hover,
 html[data-theme="pixel"] .workflow-next:hover,
-html[data-theme="pixel"] .workflow-copy:hover,
-html[data-theme="pixel"] [data-workflow-filter]:hover,
-html[data-theme="pixel"] .workflow-step-tab:hover{
-  background:#fff!important;
-  color:#000!important;
+html[data-theme="pixel"] .workflow-copy:hover{
+  background:var(--pixel-amber)!important;
+  color:var(--pixel-void)!important;
 }
 
-html[data-theme="pixel"] .choice-action:active,
-html[data-theme="pixel"] .hero-actions button:active,
-html[data-theme="pixel"] .view-all:active,
-html[data-theme="pixel"] .open-btn:active,
-html[data-theme="pixel"] .copy-section:active,
-html[data-theme="pixel"] .workflow-start:active,
-html[data-theme="pixel"] .workflow-complete:active,
-html[data-theme="pixel"] .workflow-next:active,
-html[data-theme="pixel"] .workflow-copy:active,
-html[data-theme="pixel"] [data-workflow-filter]:active,
-html[data-theme="pixel"] .workflow-step-tab:active{
-  box-shadow:0 0 0 var(--pixel-cyan)!important;
-  transform:translate(4px,4px)!important;
-}
-
-html[data-theme="pixel"] button:focus-visible,
-html[data-theme="pixel"] input:focus-visible,
-html[data-theme="pixel"] select:focus-visible,
-html[data-theme="pixel"] a:focus-visible{
-  outline:3px solid var(--pixel-yellow)!important;
-  outline-offset:4px!important;
-}
-
-html[data-theme="pixel"] .logo-mark,
-html[data-theme="pixel"] .favorite-btn.is-favorite,
-html[data-theme="pixel"] .modal-fav.is-favorite,
-html[data-theme="pixel"] [data-workflow-filter][aria-pressed="true"],
-html[data-theme="pixel"] .workflow-step-tab[aria-current="step"]{
-  background:var(--pixel-yellow)!important;
-  color:#000!important;
-  border-color:#fff!important;
-  box-shadow:4px 4px 0 var(--pixel-pink)!important;
-}
-
-html[data-theme="pixel"] .market-search input,
-html[data-theme="pixel"] .market-tools select,
-html[data-theme="pixel"] .theme-picker{
+/* Filter chips and workflow tabs mirror the reference's bracketed chip grammar. */
+html[data-theme="pixel"] [data-workflow-filter],
+html[data-theme="pixel"] .workflow-step-tab,
+html[data-theme="pixel"] .mobile-menu-toggle,
+html[data-theme="pixel"] .mobile-menu-panel button,
+html[data-theme="pixel"] .workflow-reset{
   border-radius:0!important;
-  background:#000!important;
-  color:var(--pixel-green)!important;
-  border:2px solid var(--pixel-cyan)!important;
-  box-shadow:3px 3px 0 var(--pixel-cyan)!important;
+  border:1px solid var(--pixel-line)!important;
+  background:transparent!important;
+  color:var(--pixel-dim)!important;
+  box-shadow:none!important;
   font-family:var(--ui-font-display)!important;
+  font-size:8px!important;
+  letter-spacing:.06em!important;
+  text-transform:uppercase;
+  transform:none!important;
+}
+html[data-theme="pixel"] [data-workflow-filter]:hover,
+html[data-theme="pixel"] .workflow-step-tab:hover,
+html[data-theme="pixel"] .mobile-menu-panel button:hover,
+html[data-theme="pixel"] .workflow-reset:hover{
+  border-color:var(--pixel-line-hi)!important;
+  color:var(--pixel-yellow)!important;
+}
+html[data-theme="pixel"] [data-workflow-filter][aria-pressed="true"],
+html[data-theme="pixel"] .workflow-step-tab[aria-current="step"],
+html[data-theme="pixel"] .favorite-btn.is-favorite,
+html[data-theme="pixel"] .modal-fav.is-favorite{
+  background:var(--pixel-yellow)!important;
+  border-color:var(--pixel-yellow)!important;
+  color:var(--pixel-void)!important;
 }
 
-html[data-theme="pixel"] .market-search input::placeholder{
-  color:#8a8a8a!important;
+/* Links are amber, then yellow on hover. */
+html[data-theme="pixel"] a:not(.choice-action):not(.view-all),
+html[data-theme="pixel"] .nav-link{
+  color:var(--pixel-amber)!important;
+}
+html[data-theme="pixel"] a:hover,
+html[data-theme="pixel"] .nav-link:hover{
+  color:var(--pixel-yellow)!important;
+}
+html[data-theme="pixel"] button:focus-visible,
+html[data-theme="pixel"] a:focus-visible,
+html[data-theme="pixel"] input:focus-visible,
+html[data-theme="pixel"] select:focus-visible{
+  outline:2px solid var(--pixel-yellow)!important;
+  outline-offset:2px!important;
 }
 
+/* Progress/status are counters, not decorative glowing bars. */
 html[data-theme="pixel"] .catalog-progress,
 html[data-theme="pixel"] .workflow-progress-track{
+  height:5px!important;
   border-radius:0!important;
-  background:#161616!important;
-  border:1px solid var(--pixel-cyan)!important;
+  background:var(--pixel-inset)!important;
+  border:1px solid var(--pixel-line)!important;
 }
-
 html[data-theme="pixel"] .catalog-progress>span,
 html[data-theme="pixel"] .workflow-progress-bar{
   border-radius:0!important;
-  background:var(--pixel-green)!important;
-  box-shadow:0 0 7px var(--pixel-green);
-}
-
-/* Pixel pagination follows the same 4px white border + cyan hard shadow. */
-html[data-theme="pixel"] .pagination .pagination-control,
-html[data-theme="pixel"] .pagination .pagination-page{
-  border-radius:0!important;
-  border:4px solid #fff!important;
-  background:#000!important;
-  color:#fff!important;
-  box-shadow:4px 4px 0 var(--pixel-cyan)!important;
-  font-family:var(--ui-font-display)!important;
-  transition:background-color .1s linear,color .1s linear,box-shadow .1s linear,transform .1s linear!important;
-}
-
-html[data-theme="pixel"] .pagination .pagination-control:hover:not(:disabled),
-html[data-theme="pixel"] .pagination .pagination-page:hover:not([aria-current="page"]){
-  background:#fff!important;
-  color:#000!important;
-  transform:none!important;
-}
-
-html[data-theme="pixel"] .pagination .pagination-control:active:not(:disabled),
-html[data-theme="pixel"] .pagination .pagination-page:active:not([aria-current="page"]){
-  box-shadow:0 0 0 var(--pixel-cyan)!important;
-  transform:translate(4px,4px)!important;
-}
-
-html[data-theme="pixel"] .pagination .pagination-page[aria-current="page"]{
   background:var(--pixel-yellow)!important;
-  color:#000!important;
-  border-color:#fff!important;
-  box-shadow:4px 4px 0 var(--pixel-pink)!important;
 }
-
-html[data-theme="pixel"] .pagination .pagination-page[aria-current="page"]::before{
+html[data-theme="pixel"] .education-badge,
+html[data-theme="pixel"] .smart-badge{
   border-radius:0!important;
-  border:0!important;
-  animation:none!important;
-}
-
-html[data-theme="pixel"] .pagination .pagination-ellipsis{
+  border:1px solid var(--pixel-line)!important;
   background:transparent!important;
   color:var(--pixel-yellow)!important;
-  border:0!important;
+}
+
+/* Pagination becomes a compact retro pager. */
+html[data-theme="pixel"] .pagination{
+  border-top:1px solid var(--pixel-line)!important;
+  padding-top:12px!important;
+  gap:4px!important;
+}
+html[data-theme="pixel"] .pagination .pagination-control,
+html[data-theme="pixel"] .pagination .pagination-page{
+  min-width:32px!important;
+  min-height:32px!important;
+  border-radius:0!important;
+  border:1px solid var(--pixel-line)!important;
+  background:transparent!important;
+  color:var(--pixel-dim)!important;
   box-shadow:none!important;
+  font-family:var(--ui-font-display)!important;
+  font-size:8px!important;
+  text-transform:uppercase;
+  transform:none!important;
+}
+html[data-theme="pixel"] .pagination .pagination-control:hover:not(:disabled),
+html[data-theme="pixel"] .pagination .pagination-page:hover:not([aria-current="page"]){
+  border-color:var(--pixel-line-hi)!important;
+  color:var(--pixel-yellow)!important;
+  background:var(--pixel-inset)!important;
+}
+html[data-theme="pixel"] .pagination .pagination-page[aria-current="page"]{
+  background:var(--pixel-yellow)!important;
+  border-color:var(--pixel-yellow)!important;
+  color:var(--pixel-void)!important;
+}
+html[data-theme="pixel"] .pagination .pagination-ellipsis{
+  color:var(--pixel-line-hi)!important;
+  background:transparent!important;
+}
+
+html[data-theme="pixel"] footer{
+  border-top:1px solid var(--pixel-line)!important;
+  background:var(--pixel-panel)!important;
+  font-family:var(--ui-font-display)!important;
+  font-size:8px!important;
+  text-transform:uppercase;
+  letter-spacing:.08em;
 }
 
 @media(max-width:700px){
-  html[data-theme="pixel"] .hero h1{
-    font-size:clamp(28px,9vw,44px)!important;
-    line-height:1.45!important;
-  }
+  html[data-theme="pixel"] .pixel-wire-chrome{padding:4px 4px 0}
+  html[data-theme="pixel"] .pixel-wire-strip{font-size:7px;padding:5px 6px}
+  html[data-theme="pixel"] .pixel-wire-status{display:none}
+  html[data-theme="pixel"] .hero{padding:12px 8px!important}
+  html[data-theme="pixel"] .hero h1{font-size:clamp(18px,7vw,27px)!important}
+  html[data-theme="pixel"] .choice-card,
+  html[data-theme="pixel"] .workflow-catalog-card,
+  html[data-theme="pixel"] .domain-workflow-card{padding:8px!important}
+  html[data-theme="pixel"] [data-workflow-filter],
+  html[data-theme="pixel"] .workflow-step-tab{min-height:44px!important;padding:7px!important}
+}
 
-  html[data-theme="pixel"] .hero-card h3,
-  html[data-theme="pixel"] .choice-card h3{
-    font-size:clamp(18px,5.6vw,25px)!important;
-    line-height:1.55!important;
-  }
-
-  html[data-theme="pixel"] .pixel-vignette{
-    box-shadow:0 0 90px rgba(0,0,0,.82) inset;
-  }
-
-  html[data-theme="pixel"] .pixel-crt-overlay{
-    opacity:.72;
-  }
-
-  html[data-theme="pixel"] .pixel-boot-message{
-    bottom:10px;
-    font-size:7px;
-    white-space:normal;
-  }
+@media(max-width:460px){
+  html[data-theme="pixel"] .pixel-wire-strip.lead{gap:6px}
+  html[data-theme="pixel"] .pixel-wire-brand{font-size:7px}
+  html[data-theme="pixel"] .pixel-wire-title{font-size:7px}
 }
 
 @media(prefers-reduced-motion:reduce){
-  html[data-theme="pixel"] .pixel-boot-message.is-visible{
-    animation:none!important;
+  html[data-theme="pixel"] .pixel-wire-ticker span{
+    animation:none;
+    padding-left:0;
   }
-
-  html[data-theme="pixel"] .choice-action,
-  html[data-theme="pixel"] .hero-actions button,
-  html[data-theme="pixel"] .view-all,
-  html[data-theme="pixel"] .open-btn,
-  html[data-theme="pixel"] .copy-section,
-  html[data-theme="pixel"] .workflow-start,
-  html[data-theme="pixel"] .workflow-complete,
-  html[data-theme="pixel"] .workflow-next,
-  html[data-theme="pixel"] .workflow-copy,
-  html[data-theme="pixel"] [data-workflow-filter],
-  html[data-theme="pixel"] .workflow-step-tab,
-  html[data-theme="pixel"] .pagination .pagination-control,
-  html[data-theme="pixel"] .pagination .pagination-page{
+  html[data-theme="pixel"] *,
+  html[data-theme="pixel"] *::before,
+  html[data-theme="pixel"] *::after{
+    scroll-behavior:auto!important;
     transition:none!important;
   }
 }
