@@ -30,7 +30,8 @@
     const themes = window.SamsonTheme?.themes || [
       { id: 'default', label: 'Samson Default' },
       { id: 'developer', label: 'Developer' },
-      { id: 'swiss', label: 'Swiss' }
+      { id: 'swiss', label: 'Swiss' },
+      { id: 'pixel', label: 'Pixel' }
     ];
     return themes.map((theme) => `<option value="${theme.id}">${theme.label}</option>`).join('');
   };
@@ -69,6 +70,13 @@
       logoMark.setAttribute('aria-label', 'Cloudflare');
     }
 
+    const radar = document.createElement('button');
+    radar.id = 'nav-radar';
+    radar.className = 'nav-link radar-nav';
+    radar.type = 'button';
+    radar.textContent = 'AI Radar';
+    nav.appendChild(radar);
+
     const onboarding = document.createElement('button');
     onboarding.id = 'nav-onboarding';
     onboarding.className = 'nav-link onboarding-nav';
@@ -93,7 +101,7 @@
     panel.id = 'mobile-menu-panel';
     panel.className = 'mobile-menu-panel';
     panel.setAttribute('aria-hidden', 'true');
-    panel.innerHTML = `<div class="mobile-menu-title">SAMSON</div><button type="button" data-mobile-nav="cheatcodes">Cheatcodes</button><button type="button" data-mobile-nav="prompts">Prompt Library</button><button type="button" data-mobile-nav="categories">Categories</button><button type="button" data-mobile-nav="favorites">Favorites</button><button type="button" data-mobile-nav="onboarding">Onboarding AI</button><label class="mobile-theme-picker"><span>UI PERSONALITY</span><select id="mobile-theme-select" class="theme-picker" data-theme-select aria-label="UI Personality mobile">${themeOptionsMarkup()}</select></label>`;
+    panel.innerHTML = `<div class="mobile-menu-title">SAMSON</div><button type="button" data-mobile-nav="cheatcodes">Cheatcodes</button><button type="button" data-mobile-nav="prompts">Prompt Library</button><button type="button" data-mobile-nav="radar">AI Radar</button><button type="button" data-mobile-nav="categories">Categories</button><button type="button" data-mobile-nav="favorites">Favorites</button><button type="button" data-mobile-nav="onboarding">Onboarding AI</button><label class="mobile-theme-picker"><span>UI PERSONALITY</span><select id="mobile-theme-select" class="theme-picker" data-theme-select aria-label="UI Personality mobile">${themeOptionsMarkup()}</select></label>`;
 
     header.appendChild(toggle);
     header.insertAdjacentElement('afterend', panel);
@@ -115,6 +123,7 @@
       const targets = {
         cheatcodes: nav.querySelector('#nav-cheatcodes') || nav.querySelector('.nav-link.active'),
         prompts: nav.querySelector('#nav-recent'),
+        radar,
         categories: nav.querySelector('#nav-categories'),
         favorites: nav.querySelector('#nav-favorites'),
         onboarding
