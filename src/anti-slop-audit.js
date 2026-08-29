@@ -11,7 +11,7 @@
     const search = document.querySelector('#search');
     const searchLabel = document.querySelector('label[for="search"]');
     const themeControls = [...document.querySelectorAll('[data-theme-select]')];
-    const themeOptionsValid = themeControls.length > 0 && themeControls.every((control) => control.options.length >= 3);
+    const themeOptionsValid = themeControls.length > 0 && themeControls.every((control) => control.options.length >= 4);
 
     const resultsText = document.querySelector('.results-count')?.textContent || '';
     const runtimeCommandCount = Number(resultsText.match(/OF\s+(\d+)\s+COMMANDS/i)?.[1] || 0);
@@ -25,8 +25,8 @@
 
     const rules = [
       rule('design-tokens', 20, Boolean(styles.getPropertyValue('--ui-bg').trim() && styles.getPropertyValue('--ui-accent').trim()), 'Core visual decisions are tokenized.'),
-      rule('theme-engine', 20, Boolean(window.SamsonTheme && window.SamsonTheme.themes?.length >= 3), 'Theme state is centralized and constrained.'),
-      rule('theme-controls', 15, themeOptionsValid, 'Users can intentionally select a supported UI personality.'),
+      rule('theme-engine', 20, Boolean(window.SamsonTheme && window.SamsonTheme.themes?.length >= 4), 'Theme state is centralized and exposes the four supported UI personalities.'),
+      rule('theme-controls', 15, themeOptionsValid, 'Desktop and mobile controls expose the supported UI personalities.'),
       rule('runtime-truth', 20, statsMatch, 'Visible catalog statistics match runtime data.'),
       rule('accessible-search', 15, Boolean(search && searchLabel), 'Primary search retains an explicit accessible label.'),
       rule('unique-dom-ids', 10, ids.length === uniqueIds.size, 'Interactive shell does not introduce duplicate DOM ids.')
