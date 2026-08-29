@@ -10,30 +10,46 @@ const openPixelPromptLibrary = async (page, viewport) => {
   await expect(page.locator('#featured')).toBeVisible();
   await expect(page.locator('.nft-grid').first()).toBeVisible();
   await expect(page.locator('.nft-grid').first().locator('.nft-card').first()).toBeVisible();
+  await page.evaluate(async () => {
+    await document.fonts.ready;
+    await new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+  });
 };
 
-const box = async (locator) => {
-  const value = await locator.boundingBox();
-  expect(value).not.toBeNull();
-  return value;
-};
+const snapshotGrid = async (page) => page.locator('.nft-grid').first().evaluate((grid) => {
+  const rect = (element) => {
+    const value = element.getBoundingClientRect();
+    return { x: value.x, y: value.y, width: value.width, height: value.height, right: value.right, bottom: value.bottom };
+  };
+
+  const cards = [...grid.querySelectorAll('.nft-card')];
+  const firstCard = cards[0];
+  const firstFour = cards.slice(0, 4).map(rect);
+  const category = firstCard.querySelector('.nft-art small');
+  const action = firstCard.querySelector('.open-btn');
+  const art = firstCard.querySelector('.nft-art');
+  const info = firstCard.querySelector('.nft-info');
+
+  return {
+    count: cards.length,
+    columns: getComputedStyle(grid).gridTemplateColumns.split(' ').filter(Boolean).length,
+    cards: firstFour,
+    category: rect(category),
+    action: rect(action),
+    art: rect(art),
+    info: rect(info)
+  };
+});
 
 test.describe('Pixel desktop prompt-card proportions', () => {
   test('1080px desktop uses three balanced columns with collision-free footers', async ({ page }) => {
     await openPixelPromptLibrary(page, { width: 1080, height: 900 });
+    const layout = await snapshotGrid(page);
 
-    const grid = page.locator('.nft-grid').first();
-    const cards = grid.locator('.nft-card');
-    expect(await cards.count()).toBeGreaterThanOrEqual(4);
+    expect(layout.count).toBeGreaterThanOrEqual(4);
+    expect(layout.columns).toBe(3);
 
-    const columns = await grid.evaluate((element) => getComputedStyle(element).gridTemplateColumns.split(' ').length);
-    expect(columns).toBe(3);
-
-    const first = await box(cards.nth(0));
-    const second = await box(cards.nth(1));
-    const third = await box(cards.nth(2));
-    const fourth = await box(cards.nth(3));
-
+    const [first, second, third, fourth] = layout.cards;
     expect(Math.abs(first.y - second.y)).toBeLessThanOrEqual(2);
     expect(Math.abs(first.y - third.y)).toBeLessThanOrEqual(2);
     expect(fourth.y).toBeGreaterThan(first.y + first.height * 0.7);
@@ -43,32 +59,20 @@ test.describe('Pixel desktop prompt-card proportions', () => {
     expect(ratio).toBeLessThan(1.9);
     expect(first.width).toBeGreaterThan(270);
 
-    const category = await box(cards.nth(0).locator('.nft-art small'));
-    const action = await box(cards.nth(0).locator('.open-btn'));
-    expect(category.x + category.width).toBeLessThanOrEqual(action.x - 4);
-
-    const art = await box(cards.nth(0).locator('.nft-art'));
-    const info = await box(cards.nth(0).locator('.nft-info'));
-    expect(art.height).toBeGreaterThanOrEqual(57);
-    expect(art.height).toBeLessThanOrEqual(59);
-    expect(info.y).toBeGreaterThanOrEqual(art.y + art.height - 1);
+    expect(layout.category.right).toBeLessThanOrEqual(layout.action.x - 4);
+    expect(layout.art.height).toBeGreaterThanOrEqual(57);
+    expect(layout.art.height).toBeLessThanOrEqual(59);
+    expect(layout.info.y).toBeGreaterThanOrEqual(layout.art.bottom - 1);
   });
 
   test('1440px wide desktop promotes to four columns only with a wider shell', async ({ page }) => {
     await openPixelPromptLibrary(page, { width: 1440, height: 1000 });
+    const layout = await snapshotGrid(page);
 
-    const grid = page.locator('.nft-grid').first();
-    const cards = grid.locator('.nft-card');
-    expect(await cards.count()).toBeGreaterThanOrEqual(4);
+    expect(layout.count).toBeGreaterThanOrEqual(4);
+    expect(layout.columns).toBe(4);
 
-    const columns = await grid.evaluate((element) => getComputedStyle(element).gridTemplateColumns.split(' ').length);
-    expect(columns).toBe(4);
-
-    const first = await box(cards.nth(0));
-    const second = await box(cards.nth(1));
-    const third = await box(cards.nth(2));
-    const fourth = await box(cards.nth(3));
-
+    const [first, second, third, fourth] = layout.cards;
     expect(Math.abs(first.y - second.y)).toBeLessThanOrEqual(2);
     expect(Math.abs(first.y - third.y)).toBeLessThanOrEqual(2);
     expect(Math.abs(first.y - fourth.y)).toBeLessThanOrEqual(2);
@@ -77,9 +81,6 @@ test.describe('Pixel desktop prompt-card proportions', () => {
     const ratio = first.width / first.height;
     expect(ratio).toBeGreaterThan(1.55);
     expect(ratio).toBeLessThan(1.9);
-
-    const category = await box(cards.nth(0).locator('.nft-art small'));
-    const action = await box(cards.nth(0).locator('.open-btn'));
-    expect(category.x + category.width).toBeLessThanOrEqual(action.x - 4);
+    expect(layout.category.right).toBeLessThanOrEqual(layout.action.x - 4);
   });
 });
