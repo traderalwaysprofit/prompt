@@ -5,11 +5,13 @@
   const THEMES = Object.freeze([
     { id: 'default', label: 'Samson Default', description: 'Clean, professional, neutral' },
     { id: 'developer', label: 'Developer', description: 'Dark, technical, compact' },
-    { id: 'swiss', label: 'Swiss', description: 'Editorial, typographic, high-contrast' }
+    { id: 'swiss', label: 'Swiss', description: 'Editorial, typographic, high-contrast' },
+    { id: 'pixel', label: 'Pixel', description: 'Retro arcade, blocky, high-contrast' }
   ]);
 
   const ids = new Set(THEMES.map((theme) => theme.id));
   const normalize = (value) => ids.has(value) ? value : 'default';
+  const isDarkTheme = (theme) => theme === 'developer' || theme === 'pixel';
 
   const read = () => {
     try {
@@ -31,7 +33,7 @@
     const announce = options.announce !== false;
 
     document.documentElement.dataset.theme = theme;
-    document.documentElement.style.colorScheme = theme === 'developer' ? 'dark' : 'light';
+    document.documentElement.style.colorScheme = isDarkTheme(theme) ? 'dark' : 'light';
 
     if (persist) {
       try { localStorage.setItem(STORAGE_KEY, theme); } catch (_) {}
