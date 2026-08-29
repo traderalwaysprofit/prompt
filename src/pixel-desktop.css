@@ -2,6 +2,39 @@
    Keeps the prompt library dense but prevents narrow four-column cards,
    clipped category chips, oversized empty art regions, and CTA collisions. */
 
+/* Pagination numbers need a denser readable face than the 8px Silkscreen
+   used for chrome labels. In the selected yellow state, the small pixel glyph
+   could collapse visually into a black square. Keep words retro, but render
+   numeric page controls as clear UI data. */
+html[data-theme="pixel"] .pagination .pagination-page{
+  font-family:var(--ui-font-body)!important;
+  font-size:11px!important;
+  font-weight:700!important;
+  line-height:1!important;
+  letter-spacing:0!important;
+  text-transform:none!important;
+}
+
+html[data-theme="pixel"] .pagination .pagination-page>span{
+  display:inline-flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  min-width:1ch!important;
+  min-height:1em!important;
+  font:inherit!important;
+  line-height:1!important;
+}
+
+html[data-theme="pixel"] .pagination .pagination-page[aria-current="page"]{
+  color:var(--pixel-void)!important;
+  font-size:12px!important;
+  font-weight:800!important;
+}
+
+html[data-theme="pixel"] .pagination .pagination-page[aria-current="page"]>span{
+  color:var(--pixel-void)!important;
+}
+
 @media (min-width:761px){
   html[data-theme="pixel"] .nft-grid{
     grid-template-columns:repeat(2,minmax(0,1fr))!important;
