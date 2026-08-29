@@ -4,6 +4,7 @@
   const root = document.documentElement;
 
   const modeFromHash = () => {
+    if (location.hash === '#radar') return 'radar';
     if (location.hash === '#prompts') return 'prompts';
     if (location.hash === '#workflows' || /^#cheatcodes\//.test(location.hash)) return 'workflows';
     return 'chooser';
@@ -18,6 +19,11 @@
   document.addEventListener('click', (event) => {
     const target = event.target;
     if (!(target instanceof Element)) return;
+
+    if (target.closest('#nav-radar, [data-mobile-nav="radar"]')) {
+      setMode('radar');
+      return;
+    }
 
     if (target.closest('[data-route-prompts], #hero-prompts, #nav-recent, #nav-categories, #nav-favorites, [data-prompt-category]')) {
       setMode('prompts');
