@@ -1,6 +1,12 @@
 import { test, expect } from '@playwright/test';
 
 const BASE_URL = process.env.PROD_URL || 'https://samson.web.id';
+const workflowChoiceButton = (page) => page.locator('#workflow-choice [data-show-workflows]');
+
+const openPromptLibrary = async (page) => {
+  await page.getByRole('button', { name: /Buka Prompt Library/ }).click();
+  await expect(page.locator('#featured')).toBeVisible();
+};
 
 test.describe('samson.web.id current frontend', () => {
   test('loads the app, favicon, and complete runtime data', async ({ page }) => {
@@ -64,6 +70,7 @@ test.describe('samson.web.id current frontend', () => {
 
   test('prompt cards keep a proportional, consistent responsive layout', async ({ page }) => {
     await page.goto(BASE_URL, { waitUntil: 'networkidle' });
+    await openPromptLibrary(page);
 
     const layout = await page.locator('.nft-grid').evaluate((grid) => {
       const cards = [...grid.querySelectorAll('.nft-card')];
@@ -108,6 +115,7 @@ test.describe('samson.web.id current frontend', () => {
   test('pagination exposes page numbers, smart ellipsis, and accessible controls', async ({ page }) => {
     await page.emulateMedia({ reducedMotion: 'reduce' });
     await page.goto(BASE_URL, { waitUntil: 'networkidle' });
+    await openPromptLibrary(page);
     const commands = [
       ...await (await page.request.get(BASE_URL + '/data/commands.json')).json(),
       ...await (await page.request.get(BASE_URL + '/data/commands-extra.json')).json()
@@ -139,6 +147,7 @@ test.describe('samson.web.id current frontend', () => {
 
   test('search filters commands using the current search control', async ({ page }) => {
     await page.goto(BASE_URL, { waitUntil: 'networkidle' });
+    await openPromptLibrary(page);
     const search = page.locator('#search');
     await expect(search).toHaveAttribute('placeholder', /poster, SEO, marketing, coding/i);
     await search.fill('/xauanalysis');
@@ -153,8 +162,11 @@ test.describe('samson.web.id current frontend', () => {
     await expect(page.locator('.choice-card')).toHaveCount(2);
     await expect(page.getByRole('heading', { name: 'Pilih pekerjaan yang ingin diselesaikan' })).toBeVisible();
     await expect(page.getByRole('heading', { name: 'Temukan satu prompt spesifik' })).toBeVisible();
-    await expect(page.getByRole('button', { name: /Lihat 6 Workflow/ })).toBeVisible();
+    await expect(workflowChoiceButton(page)).toBeVisible();
+    await expect(workflowChoiceButton(page)).toContainText('Lihat 12 Workflow');
     await expect(page.getByRole('button', { name: /Buka Prompt Library/ })).toBeVisible();
+    await expect(page.locator('#featured')).toBeHidden();
+    await expect(page.locator('#workflow-catalog')).toBeHidden();
     await expect(page.locator('#nav-cheatcodes')).toHaveText('Cheatcodes');
     await expect(page.locator('#nav-recent')).toHaveText('Prompt Library');
     await expect(page.locator('#nav-categories')).toHaveText('Categories');
@@ -162,7 +174,7 @@ test.describe('samson.web.id current frontend', () => {
 
   test('Build Website runs as an eight-step workflow with local progress', async ({ page }) => {
     await page.goto(BASE_URL, { waitUntil: 'networkidle' });
-    await page.getByRole('button', { name: /Lihat 6 Workflow/ }).click();
+    await workflowChoiceButton(page).click();
     await expect(page.locator('.workflow-catalog-card')).toHaveCount(6);
     const websiteCard = page.locator('.workflow-catalog-card').filter({ hasText: 'Build a Website' });
     await websiteCard.getByRole('button', { name: 'Mulai Build a Website' }).click();
@@ -184,9 +196,9 @@ test.describe('samson.web.id current frontend', () => {
     await expect(page.locator('#cheatcode-detail .workflow-progress-label')).toContainText('1/8');
   });
 
-  test('users can choose from six outcome-based workflows', async ({ page }) => {
+  test('users can choose from six core outcome-based workflows', async ({ page }) => {
     await page.goto(BASE_URL, { waitUntil: 'networkidle' });
-    await page.getByRole('button', { name: /Lihat 6 Workflow/ }).click();
+    await workflowChoiceButton(page).click();
     const catalog = page.locator('#workflow-catalog');
     await expect(catalog).toBeVisible();
     await expect(catalog.locator('.workflow-catalog-card')).toHaveCount(6);
@@ -205,7 +217,7 @@ test.describe('samson.web.id current frontend', () => {
     await page.goto(BASE_URL, { waitUntil: 'networkidle' });
     const promptCount = (await (await page.request.get(BASE_URL + '/data/commands.json')).json()).length
       + (await (await page.request.get(BASE_URL + '/data/commands-extra.json')).json()).length;
-    await page.getByRole('button', { name: /Buka Prompt Library/ }).click();
+    await openPromptLibrary(page);
     await expect(page).toHaveURL(/#prompts$/);
     await expect(page.locator('#search')).toBeVisible();
     await expect(page.locator('#category-filter')).toBeVisible();
@@ -214,6 +226,7 @@ test.describe('samson.web.id current frontend', () => {
 
   test('category select filters the command grid', async ({ page }) => {
     await page.goto(BASE_URL, { waitUntil: 'networkidle' });
+    await openPromptLibrary(page);
     await page.locator('#category-filter').selectOption('trading');
     await expect(page.locator('.nft-card code', { hasText: '/xauanalysis' })).toBeVisible();
     await expect(page.locator('.nft-card code', { hasText: '/fxanalysis' })).toBeVisible();
@@ -221,6 +234,7 @@ test.describe('samson.web.id current frontend', () => {
 
   test('command detail modal opens and closes', async ({ page }) => {
     await page.goto(BASE_URL, { waitUntil: 'networkidle' });
+    await openPromptLibrary(page);
     await page.locator('#search').fill('/xauanalysis');
     await page.locator('.nft-card').click();
     await expect(page.locator('.modal[role="dialog"]')).toBeVisible();
@@ -252,6 +266,7 @@ test.describe('samson.web.id current frontend', () => {
 
   test('favorites remain functional', async ({ page }) => {
     await page.goto(BASE_URL, { waitUntil: 'networkidle' });
+    await openPromptLibrary(page);
     await page.locator('[data-favorite]').first().click();
     if ((page.viewportSize()?.width || 1280) <= 700) {
       await page.locator('#mobile-menu-toggle').click();

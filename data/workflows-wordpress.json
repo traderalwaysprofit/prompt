@@ -1,0 +1,62 @@
+[
+  {
+    "id": "build-wordpress-site",
+    "title": "Build a WordPress Website",
+    "group": "WordPress",
+    "badge": "WORDPRESS BUILD",
+    "description": "Plan, build, optimize, and launch a production-ready WordPress website with a clear architecture and maintainable setup.",
+    "difficulty": "Intermediate",
+    "estimatedTime": "60–120 min",
+    "status": "active",
+    "steps": [
+      {"number":1,"title":"Define Website Goal","description":"Tetapkan tujuan bisnis, target user, CTA utama, jenis website, dan indikator keberhasilan sebelum memilih tooling.","output":"WordPress project brief","promptIds":[203,90]},
+      {"number":2,"title":"Choose WordPress Architecture","description":"Pilih pendekatan Gutenberg, Elementor, custom theme, child theme, atau hybrid berdasarkan kebutuhan, maintainability, dan performa.","output":"Architecture decision dan stack","promptIds":[203,40]},
+      {"number":3,"title":"Plan Information Architecture","description":"Susun sitemap, navigation, page hierarchy, taxonomy, content model, dan alur user.","output":"Sitemap dan content structure","promptIds":[203,41,100]},
+      {"number":4,"title":"Design System & Wireframe","description":"Definisikan typography, color, spacing, components, responsive behavior, lalu buat wireframe halaman utama.","output":"Design system dan responsive wireframe","promptIds":[203,41,202]},
+      {"number":5,"title":"Build the WordPress Site","description":"Implementasikan theme atau page builder, template, reusable sections, forms, custom CSS/JS/PHP jika diperlukan.","output":"Functional WordPress build","promptIds":[203,194]},
+      {"number":6,"title":"SEO & Schema Setup","description":"Atur permalink, metadata, canonical, sitemap, internal linking, indexability, dan schema yang relevan.","output":"SEO-ready WordPress configuration","promptIds":[203,162]},
+      {"number":7,"title":"Performance & Security","description":"Optimalkan caching, images, Core Web Vitals, plugin footprint, backup, update policy, access, dan hardening dasar.","output":"Performance dan security checklist","promptIds":[203,155,148]},
+      {"number":8,"title":"QA & Launch","description":"Uji responsive layout, forms, links, accessibility, SEO, backup/rollback, lalu siapkan deployment production.","output":"Verified production launch","promptIds":[203,148,197,198]}
+    ]
+  },
+  {
+    "id": "build-woocommerce-store",
+    "title": "Build a WooCommerce Store",
+    "group": "WordPress",
+    "badge": "WOOCOMMERCE",
+    "description": "Turn a commerce brief into a structured WooCommerce store with catalog, checkout, operations, SEO, security, and launch validation.",
+    "difficulty": "Advanced",
+    "estimatedTime": "90–180 min",
+    "status": "active",
+    "steps": [
+      {"number":1,"title":"Define Store Model","description":"Tetapkan produk, target customer, region, currency, order flow, fulfillment, dan KPI toko.","output":"Commerce model dan store brief","promptIds":[204,90]},
+      {"number":2,"title":"Plan Catalog & Taxonomy","description":"Susun categories, attributes, variations, SKU logic, product data, dan struktur navigasi katalog.","output":"Catalog architecture","promptIds":[204,40]},
+      {"number":3,"title":"Design Commerce Architecture","description":"Tentukan plugin minimum, payment, shipping, inventory, email, account, dan integrasi yang benar-benar diperlukan.","output":"WooCommerce technical architecture","promptIds":[204,140,40]},
+      {"number":4,"title":"Design Product & Checkout UX","description":"Rancang product page, cart, checkout, trust elements, mobile flow, dan friction reduction tanpa dark patterns.","output":"Commerce UX dan wireframe","promptIds":[204,41,202]},
+      {"number":5,"title":"Configure WooCommerce","description":"Implementasikan products, taxes, shipping, payment, transactional email, account, policies, dan storefront components.","output":"Functional WooCommerce store","promptIds":[204,194]},
+      {"number":6,"title":"SEO & Conversion Setup","description":"Optimalkan product metadata, category pages, internal linking, schema, search visibility, dan conversion measurement.","output":"SEO dan conversion configuration","promptIds":[204,162,127]},
+      {"number":7,"title":"Security & Performance","description":"Audit payment exposure, roles, updates, backups, caching compatibility, image load, scripts, dan plugin overhead.","output":"Secure and performant store checklist","promptIds":[204,155,148]},
+      {"number":8,"title":"Test Orders & Launch","description":"Uji complete purchase flow, payment, shipping, email, stock, coupons, mobile, failure paths, rollback, dan go-live readiness.","output":"Verified WooCommerce launch","promptIds":[204,148,197,198]}
+    ]
+  },
+  {
+    "id": "audit-optimize-wordpress",
+    "title": "Audit & Optimize WordPress",
+    "group": "WordPress",
+    "badge": "SITE HEALTH",
+    "description": "Audit an existing WordPress site across architecture, performance, SEO, security, UX, and maintenance, then prioritize verified fixes.",
+    "difficulty": "Intermediate",
+    "estimatedTime": "45–90 min",
+    "status": "active",
+    "steps": [
+      {"number":1,"title":"Inventory the Site","description":"Catat hosting, WordPress version, theme, plugins, integrations, critical pages, forms, traffic paths, dan operational dependencies.","output":"Current-state inventory","promptIds":[205,199]},
+      {"number":2,"title":"Audit Technical Health","description":"Cari errors, broken flows, update debt, plugin conflicts, console issues, database or configuration risks, dan regression points.","output":"Technical health findings","promptIds":[205,148,199]},
+      {"number":3,"title":"Audit Performance","description":"Evaluasi loading path, images, CSS/JS, caching, fonts, third-party scripts, database overhead, dan Core Web Vitals risks.","output":"Performance bottleneck report","promptIds":[205,199]},
+      {"number":4,"title":"Audit SEO & Schema","description":"Periksa crawlability, indexability, canonical, sitemap, metadata, internal links, structured data, dan content architecture.","output":"SEO and schema findings","promptIds":[205,162,199]},
+      {"number":5,"title":"Audit Security","description":"Periksa roles, authentication, updates, backups, exposed endpoints, plugin risk, file access, headers, dan recovery readiness.","output":"WordPress security findings","promptIds":[205,155,199]},
+      {"number":6,"title":"Audit UX & Accessibility","description":"Periksa mobile layout, navigation, forms, readability, interaction states, accessibility, and conversion friction.","output":"UX and accessibility findings","promptIds":[205,199,202]},
+      {"number":7,"title":"Prioritize Fixes","description":"Kelompokkan temuan berdasarkan severity, user impact, effort, dependency, rollback risk, dan urutan implementasi.","output":"Prioritized remediation roadmap","promptIds":[205,87,100]},
+      {"number":8,"title":"Verify & Maintain","description":"Retest setelah perbaikan, dokumentasikan baseline baru, backup/rollback, update cadence, monitoring, dan maintenance checklist.","output":"Verified optimization baseline","promptIds":[205,148,198]}
+    ]
+  }
+]

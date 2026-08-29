@@ -1,0 +1,126 @@
+/* Responsive typography guard for the hero "CHOOSE YOUR PATH" card and the two path-choice cards. */
+.hero-card{
+  display:flex;
+  flex-direction:column;
+  width:min(330px,88%);
+  min-height:350px;
+  padding:clamp(24px,3vw,30px);
+  overflow:hidden;
+}
+.hero-card .tag{
+  display:block;
+  line-height:1.4;
+  max-width:100%;
+  overflow-wrap:anywhere;
+}
+.hero-card-icon{
+  flex:0 0 auto;
+  margin-top:clamp(38px,6vw,62px);
+  font-size:clamp(24px,3vw,30px);
+  line-height:1;
+}
+.hero-card h3{
+  max-width:100%;
+  margin:14px 0 10px;
+  font-size:clamp(27px,3.1vw,34px);
+  line-height:1.06;
+  letter-spacing:-.035em;
+  text-wrap:balance;
+  overflow-wrap:normal;
+}
+.hero-card p{
+  max-width:100%;
+  margin:0;
+  font-size:clamp(9px,1vw,10px);
+  line-height:1.5;
+  letter-spacing:.11em;
+  white-space:normal;
+  overflow-wrap:anywhere;
+}
+.hero-card-footer{
+  position:static;
+  inset:auto;
+  width:100%;
+  margin-top:auto;
+  padding-top:22px;
+  line-height:1.4;
+  text-align:right;
+  overflow-wrap:anywhere;
+}
+
+.choice-card{
+  gap:0;
+  min-width:0;
+}
+.choice-card-topline{
+  flex-wrap:wrap;
+  row-gap:10px;
+}
+.choice-card h3{
+  max-width:16ch;
+  font-size:clamp(26px,2.8vw,36px);
+  line-height:1.12;
+  letter-spacing:-.035em;
+  text-wrap:balance;
+  overflow-wrap:normal;
+}
+.choice-card>p{
+  max-width:58ch;
+  line-height:1.65;
+  text-wrap:pretty;
+}
+.choice-feature strong{
+  line-height:1.35;
+  overflow-wrap:anywhere;
+}
+.choice-feature span{
+  line-height:1.5;
+  overflow-wrap:anywhere;
+}
+.choice-action{
+  height:auto;
+  min-height:52px;
+  padding:13px 18px;
+  line-height:1.25;
+  text-align:left;
+  white-space:normal;
+}
+.choice-action>span{
+  flex:0 0 auto;
+}
+
+@media(max-width:700px){
+  .hero-art{min-height:330px}
+  .hero-card{
+    width:min(300px,calc(100vw - 48px));
+    min-height:320px;
+    padding:24px;
+  }
+  .hero-card-icon{margin-top:38px}
+  .hero-card h3{
+    font-size:clamp(27px,8vw,32px);
+    line-height:1.08;
+  }
+  .hero-card-footer{padding-top:18px}
+  .choice-card h3{
+    max-width:18ch;
+    font-size:clamp(25px,7.3vw,32px);
+    line-height:1.13;
+  }
+  .choice-card>p{font-size:13.5px;line-height:1.65}
+}
+
+@media(max-width:380px){
+  .hero-card{
+    width:calc(100vw - 36px);
+    min-height:310px;
+    padding:21px;
+  }
+  .hero-card-icon{margin-top:30px}
+  .hero-card h3{font-size:27px}
+  .hero-card-footer{padding-top:14px;text-align:left}
+  .choice-card{padding:20px}
+  .choice-card-topline{margin-bottom:20px}
+  .choice-card h3{font-size:25px}
+  .choice-feature{padding:14px}
+}

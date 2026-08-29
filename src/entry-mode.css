@@ -1,0 +1,11 @@
+/* Entry gate: keep secondary catalogs hidden until the user chooses a path. */
+html:not([data-entry-mode="prompts"]) #featured{
+  display:none!important;
+}
+
+html[data-entry-mode="chooser"] #workflow-catalog,
+html[data-entry-mode="chooser"] #cheatcode-detail,
+html[data-entry-mode="prompts"] #workflow-catalog,
+html[data-entry-mode="prompts"] #cheatcode-detail{
+  display:none!important;
+}
