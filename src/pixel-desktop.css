@@ -126,7 +126,7 @@
   }
 }
 
-/* Typical desktop/laptop: three columns, which fixes the cramped 4-up layout. */
+/* Typical desktop/laptop: three columns, avoiding the cramped four-up layout. */
 @media (min-width:900px) and (max-width:1279px){
   html[data-theme="pixel"] .nft-grid{
     grid-template-columns:repeat(3,minmax(0,1fr))!important;
