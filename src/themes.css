@@ -118,9 +118,9 @@ html[data-theme] .grid-lines{background-image:linear-gradient(var(--ui-grid-line
 html[data-theme] .modal footer,
 html[data-theme] .mobile-menu-panel{background:var(--ui-surface-soft);border-color:var(--ui-border)}
 html[data-theme] .codebox{background:var(--ui-surface-strong);color:var(--ui-text-inverse)}
-html[data-theme] .pagination button,
-html[data-theme] .pagination span{background:var(--ui-surface);border-color:var(--ui-border);color:var(--ui-text-secondary)}
-html[data-theme] .pagination button:hover:not(:disabled){background:var(--ui-accent);border-color:var(--ui-accent);color:var(--ui-accent-contrast)}
+
+/* Pagination owns its component states in pagination.css. Keeping those states
+   out of the generic theme bridge avoids specificity conflicts with hover/current/focus. */
 
 /* Accessibility.css intentionally has !important rules; theme-specific accessible text follows it. */
 html[data-theme="developer"] .logo-text span,
