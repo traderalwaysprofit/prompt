@@ -1,6 +1,7 @@
 import { test, expect } from '@playwright/test';
 
 const BASE_URL = process.env.PROD_URL || 'https://samson.web.id';
+const workflowChoiceButton = (page) => page.locator('#workflow-choice [data-show-workflows]');
 
 test.describe('SAMSON trading workflows', () => {
   test('publishes three educational trading workflows with eight steps each', async ({ page }) => {
@@ -28,9 +29,10 @@ test.describe('SAMSON trading workflows', () => {
 
     await expect(page.locator('[data-catalog-stat="workflows"]')).toHaveText('12');
     await expect(page.locator('#workflow-choice .choice-feature strong')).toHaveText('12 Ready-to-run Workflows');
-    await expect(page.getByRole('button', { name: /Lihat 6 Workflow \+ 3 Trading \+ 3 WordPress/ })).toBeVisible();
+    await expect(workflowChoiceButton(page)).toBeVisible();
+    await expect(workflowChoiceButton(page)).toContainText('Lihat 12 Workflow');
 
-    await page.getByRole('button', { name: /Lihat 6 Workflow \+ 3 Trading \+ 3 WordPress/ }).click();
+    await workflowChoiceButton(page).click();
     await expect(page.locator('.workflow-filters')).toBeVisible();
     await expect(page.locator('[data-workflow-filter]')).toHaveCount(8);
     await expect(page.locator('.workflow-catalog-card')).toHaveCount(6);
@@ -47,7 +49,7 @@ test.describe('SAMSON trading workflows', () => {
 
   test('Analyze XAU/USD runs as an eight-step educational decision-support workflow', async ({ page }) => {
     await page.goto(BASE_URL, { waitUntil: 'networkidle' });
-    await page.getByRole('button', { name: /Lihat 6 Workflow/ }).click();
+    await workflowChoiceButton(page).click();
     await page.locator('[data-workflow-filter="trading"]').click();
 
     const xauCard = page.locator('.trading-workflow-card').filter({ hasText: 'Analyze XAU/USD' });
@@ -69,7 +71,7 @@ test.describe('SAMSON trading workflows', () => {
 
   test('Forex and Trading System workflows are available from Trading filter', async ({ page }) => {
     await page.goto(BASE_URL, { waitUntil: 'networkidle' });
-    await page.getByRole('button', { name: /Lihat 6 Workflow/ }).click();
+    await workflowChoiceButton(page).click();
     await page.locator('[data-workflow-filter="trading"]').click();
 
     await expect(page.locator('.trading-workflow-card').filter({ hasText: 'Analyze Forex Market' })).toBeVisible();
