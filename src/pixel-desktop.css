@@ -1,0 +1,149 @@
+/* Pixel Retro Wire — desktop proportion pass.
+   Keeps the prompt library dense but prevents narrow four-column cards,
+   clipped category chips, oversized empty art regions, and CTA collisions. */
+
+@media (min-width:761px){
+  html[data-theme="pixel"] .nft-grid{
+    grid-template-columns:repeat(2,minmax(0,1fr))!important;
+    gap:10px!important;
+  }
+
+  html[data-theme="pixel"] .nft-card{
+    display:grid!important;
+    grid-template-rows:58px minmax(0,1fr)!important;
+    aspect-ratio:1.72 / 1!important;
+    min-height:0!important;
+    overflow:hidden!important;
+  }
+
+  html[data-theme="pixel"] .nft-art{
+    position:static!important;
+    width:100%!important;
+    height:58px!important;
+    min-height:58px!important;
+    padding:0!important;
+    margin:0!important;
+    background:var(--pixel-inset)!important;
+    border:0!important;
+    border-bottom:1px solid var(--pixel-line)!important;
+    overflow:visible!important;
+  }
+
+  html[data-theme="pixel"] .nft-info{
+    display:grid!important;
+    height:auto!important;
+    min-height:0!important;
+    align-content:start!important;
+    padding:13px 56px 44px 16px!important;
+    overflow:hidden!important;
+  }
+
+  html[data-theme="pixel"] .nft-info code{
+    display:block!important;
+    min-width:0;
+    max-width:100%;
+    overflow:hidden;
+    font-size:13px!important;
+    line-height:1.25!important;
+    color:var(--pixel-bright)!important;
+    text-overflow:ellipsis;
+    white-space:nowrap;
+  }
+
+  html[data-theme="pixel"] .nft-info p{
+    display:-webkit-box!important;
+    margin:7px 0 0!important;
+    overflow:hidden!important;
+    font-size:11px!important;
+    line-height:1.45!important;
+    -webkit-box-orient:vertical;
+    -webkit-line-clamp:2;
+  }
+
+  html[data-theme="pixel"] .nft-art>span{
+    top:15px!important;
+    left:16px!important;
+    font-size:8px!important;
+  }
+
+  html[data-theme="pixel"] .nft-art small{
+    left:16px!important;
+    bottom:12px!important;
+    max-width:calc(100% - 86px)!important;
+    min-width:0;
+    padding:4px 6px!important;
+    overflow:hidden!important;
+    border:1px solid var(--pixel-line)!important;
+    border-radius:0!important;
+    background:transparent!important;
+    color:var(--pixel-dim)!important;
+    font-family:var(--ui-font-display)!important;
+    font-size:7px!important;
+    line-height:1.2!important;
+    letter-spacing:.04em!important;
+    text-overflow:ellipsis;
+    white-space:nowrap!important;
+  }
+
+  html[data-theme="pixel"] .favorite-btn{
+    top:10px!important;
+    right:10px!important;
+    width:30px!important;
+    height:30px!important;
+    border:1px solid var(--pixel-line)!important;
+    border-radius:0!important;
+    background:var(--pixel-panel)!important;
+    color:var(--pixel-dim)!important;
+    box-shadow:none!important;
+  }
+
+  html[data-theme="pixel"] .open-btn{
+    right:10px!important;
+    bottom:10px!important;
+    width:38px!important;
+    height:38px!important;
+    padding:0!important;
+    border:0!important;
+    border-radius:0!important;
+    background:var(--pixel-yellow)!important;
+    color:var(--pixel-void)!important;
+    opacity:1!important;
+    box-shadow:none!important;
+  }
+
+  html[data-theme="pixel"] .open-btn:hover,
+  html[data-theme="pixel"] .open-btn:focus-visible{
+    background:var(--pixel-amber)!important;
+    color:var(--pixel-void)!important;
+    transform:none!important;
+  }
+}
+
+/* Compact tablet / small laptop: two comfortable columns. */
+@media (min-width:761px) and (max-width:899px){
+  html[data-theme="pixel"] .nft-grid{
+    grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  }
+}
+
+/* Typical desktop/laptop: three columns, which fixes the cramped 4-up layout. */
+@media (min-width:900px) and (max-width:1279px){
+  html[data-theme="pixel"] .nft-grid{
+    grid-template-columns:repeat(3,minmax(0,1fr))!important;
+  }
+}
+
+/* Wide desktop: allow four columns only after the shell itself gets wider. */
+@media (min-width:1280px){
+  html[data-theme="pixel"] .pixel-wire-chrome,
+  html[data-theme="pixel"] main,
+  html[data-theme="pixel"] .site-header>*,
+  html[data-theme="pixel"] footer>*{
+    max-width:1180px!important;
+  }
+
+  html[data-theme="pixel"] .nft-grid{
+    grid-template-columns:repeat(4,minmax(0,1fr))!important;
+    gap:10px!important;
+  }
+}
