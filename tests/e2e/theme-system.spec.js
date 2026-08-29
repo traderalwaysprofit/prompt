@@ -25,51 +25,57 @@ test.describe('SAMSON adaptive UI system', () => {
     await page.evaluate(() => window.SamsonTheme.set('pixel'));
     await expect(page.locator('html')).toHaveAttribute('data-theme', 'pixel');
     await expect(page.locator('body')).toHaveCSS('background-color', 'rgb(0, 0, 0)');
-    await expect(page.locator('body')).toHaveClass(/pixel-arcade-active/);
+    await expect(page.locator('body')).toHaveClass(/pixel-wire-active/);
     await expect(page.locator('#theme-select')).toHaveValue('pixel');
     await expect(page.locator('#mobile-theme-select')).toHaveValue('pixel');
 
     await page.reload({ waitUntil: 'networkidle' });
     await expect(page.locator('html')).toHaveAttribute('data-theme', 'pixel');
-    await expect(page.locator('body')).toHaveClass(/pixel-arcade-active/);
+    await expect(page.locator('body')).toHaveClass(/pixel-wire-active/);
     await expect(page.locator('#theme-select')).toHaveValue('pixel');
     await expect(page.locator('#mobile-theme-select')).toHaveValue('pixel');
 
     await page.evaluate(() => window.SamsonTheme.reset());
     await expect(page.locator('html')).toHaveAttribute('data-theme', 'default');
-    await expect(page.locator('body')).not.toHaveClass(/pixel-arcade-active/);
+    await expect(page.locator('body')).not.toHaveClass(/pixel-wire-active/);
     await expect(page.locator('#theme-select')).toHaveValue('default');
     await expect(page.locator('#mobile-theme-select')).toHaveValue('default');
   });
 
-  test('Pixel personality matches the retro arcade visual contract', async ({ page }) => {
+  test('Pixel personality matches the retro wire editorial visual contract', async ({ page }) => {
     await page.goto(BASE_URL, { waitUntil: 'networkidle' });
     await page.evaluate(() => window.SamsonTheme.set('pixel'));
 
     const hero = page.locator('.hero h1');
     const heroFont = await hero.evaluate((element) => getComputedStyle(element).fontFamily);
-    expect(heroFont).toContain('Press Start 2P');
-    await expect(hero).toHaveCSS('color', 'rgb(255, 0, 255)');
+    expect(heroFont).toContain('Silkscreen');
+    await expect(hero).toHaveCSS('color', 'rgb(255, 204, 0)');
 
-    await expect(page.locator('.pixel-crt-overlay')).toHaveCSS('display', 'block');
-    await expect(page.locator('.pixel-vignette')).toHaveCSS('display', 'block');
-    await expect(page.locator('.pixel-boot-message')).toHaveCount(1);
+    const bodyFont = await page.locator('body').evaluate((element) => getComputedStyle(element).fontFamily);
+    expect(bodyFont).toContain('Verdana');
+
+    await expect(page.locator('.pixel-wire-chrome')).toHaveCSS('display', 'block');
+    await expect(page.locator('.pixel-wire-strip')).toHaveCount(2);
+    await expect(page.locator('.pixel-wire-brand')).toHaveText('SAMSON');
+    await expect(page.locator('.pixel-crt-overlay')).toHaveCount(0);
+    await expect(page.locator('.pixel-vignette')).toHaveCount(0);
+    await expect(page.locator('.pixel-boot-message')).toHaveCount(0);
 
     const heroCard = page.locator('.hero-card');
     await expect(heroCard).toHaveCSS('border-radius', '0px');
-    await expect(heroCard).toHaveCSS('border-top-width', '4px');
+    await expect(heroCard).toHaveCSS('border-top-width', '1px');
+    await expect(heroCard).toHaveCSS('box-shadow', 'none');
 
     const button = page.locator('[data-show-workflows]');
     await expect(button).toHaveCSS('border-radius', '0px');
-    await expect(button).toHaveCSS('border-top-width', '4px');
-    await expect(button).toHaveCSS('background-color', 'rgb(0, 0, 0)');
-    const shadow = await button.evaluate((element) => getComputedStyle(element).boxShadow);
-    expect(shadow).toContain('rgb(0, 255, 255)');
+    await expect(button).toHaveCSS('background-color', 'rgb(255, 204, 0)');
+    await expect(button).toHaveCSS('color', 'rgb(0, 0, 0)');
+    await expect(button).toHaveCSS('box-shadow', 'none');
 
     await page.getByRole('button', { name: /Buka Prompt Library/ }).click();
     const artworkBackground = await page.locator('.nft-art').first().evaluate((element) => getComputedStyle(element).backgroundImage);
     expect(artworkBackground).toBe('none');
-    await expect(page.locator('.nft-info p').first()).toHaveCSS('color', 'rgb(209, 213, 219)');
+    await expect(page.locator('.nft-card').first()).toHaveCSS('border-top-width', '1px');
   });
 
   test('theme mutation preserves prompt search behavior', async ({ page }) => {
