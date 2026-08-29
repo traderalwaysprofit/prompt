@@ -1,0 +1,281 @@
+/* SAMSON Pixel personality: retro arcade character with modern usability. */
+html[data-theme="pixel"]{
+  color-scheme:dark;
+  --ui-font-body:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  --ui-font-display:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono",monospace;
+  --ui-bg:#10141c;
+  --ui-bg-elevated:#151b25;
+  --ui-bg-muted:#202838;
+  --ui-surface:#181e29;
+  --ui-surface-soft:#202838;
+  --ui-surface-strong:#f4f7f2;
+  --ui-text:#f4f7f2;
+  --ui-text-secondary:#b6c0cc;
+  --ui-text-inverse:#10141c;
+  --ui-border:#4c596d;
+  --ui-border-strong:#f4f7f2;
+  --ui-accent:#79ff6b;
+  --ui-accent-contrast:#10141c;
+  --ui-success:#79ff6b;
+  --ui-danger:#ff6969;
+  --ui-radius-control:0px;
+  --ui-radius-card:0px;
+  --ui-radius-panel:0px;
+  --ui-radius-modal:0px;
+  --ui-shadow-1:2px 2px 0 #080b10;
+  --ui-shadow-2:4px 4px 0 #080b10;
+  --ui-shadow-3:6px 6px 0 #080b10;
+  --ui-grid-line:rgba(121,255,107,.08);
+  --ui-art-a:#202838;
+  --ui-art-b:#181e29;
+}
+
+html[data-theme="pixel"] body,
+html[data-theme="pixel"] .app{
+  background:var(--ui-bg);
+  color:var(--ui-text);
+}
+
+html[data-theme="pixel"] .site-header,
+html[data-theme="pixel"] footer,
+html[data-theme="pixel"] .mobile-menu-panel{
+  background:var(--ui-bg-elevated);
+  border-color:var(--ui-border);
+  box-shadow:none;
+}
+
+html[data-theme="pixel"] .hero h1,
+html[data-theme="pixel"] .hero-card h3,
+html[data-theme="pixel"] .section-head h2,
+html[data-theme="pixel"] .creator-spot h2,
+html[data-theme="pixel"] .choice-card h3,
+html[data-theme="pixel"] .workflow-catalog-card h3,
+html[data-theme="pixel"] .domain-workflow-card h3,
+html[data-theme="pixel"] .modal header h2{
+  font-family:var(--ui-font-display);
+  font-weight:900;
+  letter-spacing:-.035em;
+  text-transform:uppercase;
+  text-shadow:2px 2px 0 #080b10;
+}
+
+html[data-theme="pixel"] .eyebrow,
+html[data-theme="pixel"] .tag,
+html[data-theme="pixel"] .results-count,
+html[data-theme="pixel"] .choice-card-topline,
+html[data-theme="pixel"] .education-badge,
+html[data-theme="pixel"] .workflow-group-label,
+html[data-theme="pixel"] .theme-picker-wrap>span,
+html[data-theme="pixel"] .mobile-theme-picker>span{
+  font-family:var(--ui-font-display);
+  letter-spacing:.08em;
+  text-transform:uppercase;
+}
+
+/* Keep long-form content readable; pixel personality is reserved for display/metadata. */
+html[data-theme="pixel"] p,
+html[data-theme="pixel"] .workflow-content,
+html[data-theme="pixel"] .modal-body,
+html[data-theme="pixel"] .choice-feature span,
+html[data-theme="pixel"] .nft-info p{
+  font-family:var(--ui-font-body);
+}
+
+/* Solid, square surfaces: no glass and no decorative gradients. */
+html[data-theme="pixel"] .hero-card,
+html[data-theme="pixel"] .choice-card,
+html[data-theme="pixel"] .nft-card,
+html[data-theme="pixel"] .creator-spot,
+html[data-theme="pixel"] .creator-card,
+html[data-theme="pixel"] .workflow-catalog-card,
+html[data-theme="pixel"] .domain-workflow-card,
+html[data-theme="pixel"] .modal,
+html[data-theme="pixel"] .onboarding-option,
+html[data-theme="pixel"] .theme-picker{
+  border-radius:0!important;
+  border-color:var(--ui-border);
+  background:var(--ui-surface);
+}
+
+html[data-theme="pixel"] .hero-card,
+html[data-theme="pixel"] .choice-card,
+html[data-theme="pixel"] .creator-spot,
+html[data-theme="pixel"] .workflow-catalog-card,
+html[data-theme="pixel"] .domain-workflow-card{
+  box-shadow:var(--ui-shadow-2);
+}
+
+html[data-theme="pixel"] .nft-card,
+html[data-theme="pixel"] .creator-card,
+html[data-theme="pixel"] .onboarding-option{
+  box-shadow:var(--ui-shadow-1);
+}
+
+html[data-theme="pixel"] .modal{
+  box-shadow:var(--ui-shadow-3);
+}
+
+html[data-theme="pixel"] .nft-art{
+  background:var(--ui-art-a)!important;
+}
+
+html[data-theme="pixel"] .grid-lines{
+  background-image:
+    linear-gradient(var(--ui-grid-line) 1px,transparent 1px),
+    linear-gradient(90deg,var(--ui-grid-line) 1px,transparent 1px);
+  background-size:16px 16px;
+}
+
+html[data-theme="pixel"] .hero-card:before{
+  display:none;
+}
+
+/* Tactile arcade controls. */
+html[data-theme="pixel"] .choice-action,
+html[data-theme="pixel"] .hero-actions button,
+html[data-theme="pixel"] .view-all,
+html[data-theme="pixel"] .open-btn,
+html[data-theme="pixel"] .copy-section,
+html[data-theme="pixel"] .modal-fav,
+html[data-theme="pixel"] .close,
+html[data-theme="pixel"] .workflow-start,
+html[data-theme="pixel"] .workflow-complete,
+html[data-theme="pixel"] .workflow-reset,
+html[data-theme="pixel"] [data-workflow-filter],
+html[data-theme="pixel"] .workflow-step-tab,
+html[data-theme="pixel"] .mobile-menu-toggle,
+html[data-theme="pixel"] .mobile-menu-panel button{
+  border-radius:0!important;
+  border:1px solid var(--ui-border-strong);
+  background:var(--ui-surface);
+  color:var(--ui-text);
+  box-shadow:3px 3px 0 #080b10;
+  transform:translate(0,0);
+  transition:transform 100ms steps(2,end),box-shadow 100ms steps(2,end),background-color 100ms linear,color 100ms linear;
+}
+
+html[data-theme="pixel"] .choice-action:hover,
+html[data-theme="pixel"] .hero-actions button:hover,
+html[data-theme="pixel"] .view-all:hover,
+html[data-theme="pixel"] .open-btn:hover,
+html[data-theme="pixel"] .copy-section:hover,
+html[data-theme="pixel"] .workflow-start:hover,
+html[data-theme="pixel"] .workflow-complete:hover,
+html[data-theme="pixel"] [data-workflow-filter]:hover,
+html[data-theme="pixel"] .workflow-step-tab:hover{
+  transform:translate(-1px,-1px);
+  box-shadow:4px 4px 0 #080b10;
+}
+
+html[data-theme="pixel"] .choice-action:active,
+html[data-theme="pixel"] .hero-actions button:active,
+html[data-theme="pixel"] .view-all:active,
+html[data-theme="pixel"] .open-btn:active,
+html[data-theme="pixel"] .copy-section:active,
+html[data-theme="pixel"] .workflow-start:active,
+html[data-theme="pixel"] .workflow-complete:active,
+html[data-theme="pixel"] [data-workflow-filter]:active,
+html[data-theme="pixel"] .workflow-step-tab:active{
+  transform:translate(2px,2px);
+  box-shadow:1px 1px 0 #080b10;
+}
+
+html[data-theme="pixel"] .choice-action:focus-visible,
+html[data-theme="pixel"] button:focus-visible,
+html[data-theme="pixel"] input:focus-visible,
+html[data-theme="pixel"] select:focus-visible{
+  outline:2px solid var(--ui-accent);
+  outline-offset:3px;
+}
+
+html[data-theme="pixel"] .logo-mark,
+html[data-theme="pixel"] .favorite-btn.is-favorite,
+html[data-theme="pixel"] .modal-fav.is-favorite,
+html[data-theme="pixel"] [data-workflow-filter].active,
+html[data-theme="pixel"] .workflow-step-tab.active{
+  background:var(--ui-accent);
+  color:var(--ui-accent-contrast)!important;
+  border-color:var(--ui-accent);
+}
+
+html[data-theme="pixel"] .market-search input,
+html[data-theme="pixel"] .market-tools select,
+html[data-theme="pixel"] .theme-picker{
+  border-radius:0!important;
+  background:var(--ui-surface);
+  color:var(--ui-text);
+  border:1px solid var(--ui-border-strong);
+  box-shadow:2px 2px 0 #080b10;
+}
+
+/* Pixel pagination overrides the generic raised gradient with solid arcade controls. */
+html[data-theme="pixel"] .pagination .pagination-control,
+html[data-theme="pixel"] .pagination .pagination-page{
+  border-radius:0!important;
+  border-color:var(--ui-border-strong);
+  background:var(--ui-surface)!important;
+  color:var(--ui-text)!important;
+  box-shadow:3px 3px 0 #080b10!important;
+  transition:transform 100ms steps(2,end),box-shadow 100ms steps(2,end),background-color 100ms linear;
+}
+
+html[data-theme="pixel"] .pagination .pagination-control:hover:not(:disabled),
+html[data-theme="pixel"] .pagination .pagination-page:hover:not([aria-current="page"]){
+  transform:translate(-1px,-1px);
+  background:var(--ui-bg-muted)!important;
+  box-shadow:4px 4px 0 #080b10!important;
+}
+
+html[data-theme="pixel"] .pagination .pagination-control:active:not(:disabled),
+html[data-theme="pixel"] .pagination .pagination-page:active:not([aria-current="page"]){
+  transform:translate(2px,2px);
+  box-shadow:1px 1px 0 #080b10!important;
+}
+
+html[data-theme="pixel"] .pagination .pagination-page[aria-current="page"]{
+  background:var(--ui-accent)!important;
+  color:var(--ui-accent-contrast)!important;
+  border-color:var(--ui-accent)!important;
+  box-shadow:3px 3px 0 #080b10!important;
+}
+
+html[data-theme="pixel"] .pagination .pagination-page[aria-current="page"]::before{
+  border-radius:0;
+  border-color:rgba(16,20,28,.45);
+}
+
+html[data-theme="pixel"] .pagination .pagination-ellipsis{
+  background:transparent!important;
+  color:var(--ui-text-secondary)!important;
+}
+
+@media(max-width:700px){
+  html[data-theme="pixel"]{
+    --ui-shadow-1:1px 1px 0 #080b10;
+    --ui-shadow-2:3px 3px 0 #080b10;
+    --ui-shadow-3:4px 4px 0 #080b10;
+  }
+
+  html[data-theme="pixel"] .hero h1,
+  html[data-theme="pixel"] .hero-card h3,
+  html[data-theme="pixel"] .choice-card h3{
+    text-shadow:1px 1px 0 #080b10;
+  }
+}
+
+@media(prefers-reduced-motion:reduce){
+  html[data-theme="pixel"] .choice-action,
+  html[data-theme="pixel"] .hero-actions button,
+  html[data-theme="pixel"] .view-all,
+  html[data-theme="pixel"] .open-btn,
+  html[data-theme="pixel"] .copy-section,
+  html[data-theme="pixel"] .workflow-start,
+  html[data-theme="pixel"] .workflow-complete,
+  html[data-theme="pixel"] [data-workflow-filter],
+  html[data-theme="pixel"] .workflow-step-tab,
+  html[data-theme="pixel"] .pagination .pagination-control,
+  html[data-theme="pixel"] .pagination .pagination-page{
+    transition:none;
+    transform:none!important;
+  }
+}
