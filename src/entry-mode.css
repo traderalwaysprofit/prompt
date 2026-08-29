@@ -9,3 +9,14 @@ html[data-entry-mode="prompts"] #workflow-catalog,
 html[data-entry-mode="prompts"] #cheatcode-detail{
   display:none!important;
 }
+
+html:not([data-entry-mode="radar"]) #ai-radar{
+  display:none!important;
+}
+
+html[data-entry-mode="radar"] .hero,
+html[data-entry-mode="radar"] #cheatcodes,
+html[data-entry-mode="radar"] #featured,
+html[data-entry-mode="radar"] .creator-spot{
+  display:none!important;
+}
