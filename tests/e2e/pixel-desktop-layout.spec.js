@@ -8,7 +8,8 @@ const openPixelPromptLibrary = async (page, viewport) => {
   await page.evaluate(() => window.SamsonTheme.set('pixel'));
   await page.getByRole('button', { name: /Buka Prompt Library/ }).click();
   await expect(page.locator('#featured')).toBeVisible();
-  await expect(page.locator('.nft-card').first()).toBeVisible();
+  await expect(page.locator('.nft-grid').first()).toBeVisible();
+  await expect(page.locator('.nft-grid').first().locator('.nft-card').first()).toBeVisible();
 };
 
 const box = async (locator) => {
@@ -21,7 +22,13 @@ test.describe('Pixel desktop prompt-card proportions', () => {
   test('1080px desktop uses three balanced columns with collision-free footers', async ({ page }) => {
     await openPixelPromptLibrary(page, { width: 1080, height: 900 });
 
-    const cards = page.locator('.nft-card');
+    const grid = page.locator('.nft-grid').first();
+    const cards = grid.locator('.nft-card');
+    await expect(cards).toHaveCount(8);
+
+    const columns = await grid.evaluate((element) => getComputedStyle(element).gridTemplateColumns.split(' ').length);
+    expect(columns).toBe(3);
+
     const first = await box(cards.nth(0));
     const second = await box(cards.nth(1));
     const third = await box(cards.nth(2));
@@ -50,7 +57,13 @@ test.describe('Pixel desktop prompt-card proportions', () => {
   test('1440px wide desktop promotes to four columns only with a wider shell', async ({ page }) => {
     await openPixelPromptLibrary(page, { width: 1440, height: 1000 });
 
-    const cards = page.locator('.nft-card');
+    const grid = page.locator('.nft-grid').first();
+    const cards = grid.locator('.nft-card');
+    await expect(cards).toHaveCount(8);
+
+    const columns = await grid.evaluate((element) => getComputedStyle(element).gridTemplateColumns.split(' ').length);
+    expect(columns).toBe(4);
+
     const first = await box(cards.nth(0));
     const second = await box(cards.nth(1));
     const third = await box(cards.nth(2));
