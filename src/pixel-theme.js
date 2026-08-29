@@ -3,68 +3,50 @@
 
   const PIXEL_THEME = 'pixel';
   const META_DEFAULT = '#18202b';
-  let bootTimer = null;
 
-  const ensureVisualLayer = () => {
+  const ensureWireChrome = () => {
     if (!document.body) return null;
+    let chrome = document.querySelector('.pixel-wire-chrome');
+    if (chrome) return chrome;
 
-    let crt = document.querySelector('.pixel-crt-overlay');
-    if (!crt) {
-      crt = document.createElement('div');
-      crt.className = 'pixel-crt-overlay';
-      crt.setAttribute('aria-hidden', 'true');
-      document.body.appendChild(crt);
-    }
+    chrome = document.createElement('div');
+    chrome.className = 'pixel-wire-chrome';
+    chrome.setAttribute('aria-hidden', 'true');
+    chrome.innerHTML = `
+      <div class="pixel-wire-strip lead">
+        <span class="pixel-wire-brand">SAMSON</span>
+        <span class="pixel-wire-title">AI WORKFLOW + PROMPT SYSTEM</span>
+        <span class="pixel-wire-status">PIXEL MODE</span>
+      </div>
+      <div class="pixel-wire-strip pixel-wire-ticker">
+        <span>WORKFLOWS &nbsp;&gt;&gt;&gt;&nbsp; PROMPT LIBRARY &nbsp;&gt;&gt;&gt;&nbsp; BUILD &nbsp;&gt;&gt;&gt;&nbsp; RESEARCH &nbsp;&gt;&gt;&gt;&nbsp; AUTOMATION &nbsp;&gt;&gt;&gt;&nbsp; WORDPRESS &nbsp;&gt;&gt;&gt;&nbsp; TRADING &nbsp;&gt;&gt;&gt;&nbsp; NO RANKING, JUST TOOLS</span>
+      </div>`;
 
-    let vignette = document.querySelector('.pixel-vignette');
-    if (!vignette) {
-      vignette = document.createElement('div');
-      vignette.className = 'pixel-vignette';
-      vignette.setAttribute('aria-hidden', 'true');
-      document.body.appendChild(vignette);
-    }
+    document.body.insertBefore(chrome, document.body.firstChild);
+    return chrome;
+  };
 
-    let boot = document.querySelector('.pixel-boot-message');
-    if (!boot) {
-      boot = document.createElement('div');
-      boot.className = 'pixel-boot-message';
-      boot.setAttribute('aria-hidden', 'true');
-      boot.textContent = '► ARCADE MODE READY ◄';
-      document.body.appendChild(boot);
-    }
-
-    return { crt, vignette, boot };
+  const removeLegacyArcadeLayers = () => {
+    document.querySelectorAll('.pixel-crt-overlay,.pixel-vignette,.pixel-boot-message').forEach((node) => node.remove());
+    document.body?.classList.remove('pixel-arcade-active');
   };
 
   const setThemeColor = (active) => {
     const meta = document.querySelector('meta[name="theme-color"]');
     if (!meta) return;
     if (!meta.dataset.defaultThemeColor) meta.dataset.defaultThemeColor = meta.content || META_DEFAULT;
-    meta.content = active ? '#000000' : meta.dataset.defaultThemeColor;
+    meta.content = active ? '#0c0c0c' : meta.dataset.defaultThemeColor;
   };
 
-  const showBootMessage = (boot) => {
-    clearTimeout(bootTimer);
-    boot.classList.remove('is-visible');
-    void boot.offsetWidth;
-    boot.classList.add('is-visible');
-    bootTimer = setTimeout(() => boot.classList.remove('is-visible'), 1500);
-  };
-
-  const syncPixelMode = (theme, options = {}) => {
+  const syncPixelMode = (theme) => {
     const active = theme === PIXEL_THEME;
-    const layers = ensureVisualLayer();
-    if (!layers) return;
+    removeLegacyArcadeLayers();
+    const chrome = ensureWireChrome();
+    if (!chrome || !document.body) return;
 
-    document.body.classList.toggle('pixel-arcade-active', active);
+    document.body.classList.toggle('pixel-wire-active', active);
+    chrome.hidden = !active;
     setThemeColor(active);
-
-    if (active && options.announce !== false) {
-      showBootMessage(layers.boot);
-    } else if (!active) {
-      clearTimeout(bootTimer);
-      layers.boot.classList.remove('is-visible');
-    }
   };
 
   const currentTheme = () => window.SamsonTheme?.get?.() || document.documentElement.dataset.theme || 'default';
@@ -73,7 +55,7 @@
     syncPixelMode(event.detail?.theme || currentTheme());
   });
 
-  const init = () => syncPixelMode(currentTheme(), { announce: currentTheme() === PIXEL_THEME });
+  const init = () => syncPixelMode(currentTheme());
 
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', init, { once: true });
