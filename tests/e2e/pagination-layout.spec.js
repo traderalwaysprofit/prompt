@@ -77,4 +77,41 @@ test.describe('SAMSON pagination layout', () => {
     expect(layout.page.height).toBeGreaterThanOrEqual(44);
     expect(layout.shadow).not.toBe('none');
   });
+
+  test('Pixel selected page keeps a readable numeric glyph', async ({ page }) => {
+    await page.setViewportSize({ width: 1280, height: 900 });
+    await page.goto(BASE_URL, { waitUntil: 'networkidle' });
+    await page.evaluate(() => window.SamsonTheme.set('pixel'));
+    await page.getByRole('button', { name: /Buka Prompt Library/ }).click();
+
+    const pageTwo = page.locator('.pagination-page', { hasText: /^2$/ }).first();
+    await expect(pageTwo).toBeVisible();
+    await pageTwo.click();
+
+    const current = page.locator('.pagination-page[aria-current="page"]');
+    await expect(current).toHaveText('2');
+
+    const state = await current.evaluate((button) => {
+      const span = button.querySelector('span');
+      const buttonStyle = getComputedStyle(button);
+      const spanStyle = span ? getComputedStyle(span) : buttonStyle;
+      const rect = span ? span.getBoundingClientRect() : button.getBoundingClientRect();
+      return {
+        text: button.textContent.trim(),
+        fontSize: parseFloat(spanStyle.fontSize),
+        lineHeight: spanStyle.lineHeight,
+        glyphWidth: rect.width,
+        glyphHeight: rect.height,
+        color: buttonStyle.color,
+        backgroundColor: buttonStyle.backgroundColor
+      };
+    });
+
+    expect(state.text).toBe('2');
+    expect(state.fontSize).toBeGreaterThanOrEqual(11);
+    expect(state.glyphWidth).toBeGreaterThanOrEqual(6);
+    expect(state.glyphHeight).toBeGreaterThanOrEqual(11);
+    expect(state.color).toBe('rgb(0, 0, 0)');
+    expect(state.backgroundColor).toBe('rgb(255, 204, 0)');
+  });
 });
