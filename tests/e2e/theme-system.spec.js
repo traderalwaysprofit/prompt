@@ -2,6 +2,26 @@ import { test, expect } from '@playwright/test';
 
 const BASE_URL = process.env.PROD_URL || 'https://samson.web.id';
 
+const mobileViewports = [
+  { name: '320px compact phone', width: 320, height: 568 },
+  { name: '360px Android', width: 360, height: 800 },
+  { name: '375px iPhone', width: 375, height: 812 },
+  { name: '390px modern iPhone', width: 390, height: 844 },
+  { name: '412px large Android', width: 412, height: 915 },
+  { name: '768px tablet', width: 768, height: 1024 },
+  { name: 'landscape phone', width: 844, height: 390 }
+];
+
+const expectNoRootOverflow = async (page, label) => {
+  const dimensions = await page.evaluate(() => ({
+    viewport: document.documentElement.clientWidth,
+    htmlScroll: document.documentElement.scrollWidth,
+    bodyScroll: document.body.scrollWidth
+  }));
+  expect(dimensions.htmlScroll, `${label}: html overflow`).toBeLessThanOrEqual(dimensions.viewport + 1);
+  expect(dimensions.bodyScroll, `${label}: body overflow`).toBeLessThanOrEqual(dimensions.viewport + 1);
+};
+
 test.describe('SAMSON adaptive UI system', () => {
   test('offers four UI personalities, keeps Samson Default as default, and persists selection', async ({ page }) => {
     await page.goto(BASE_URL, { waitUntil: 'networkidle' });
@@ -76,6 +96,48 @@ test.describe('SAMSON adaptive UI system', () => {
     const artworkBackground = await page.locator('.nft-art').first().evaluate((element) => getComputedStyle(element).backgroundImage);
     expect(artworkBackground).toBe('none');
     await expect(page.locator('.nft-card').first()).toHaveCSS('border-top-width', '1px');
+  });
+
+  test('Pixel stays responsive across compact phones, modern phones, tablet, and landscape', async ({ page }) => {
+    await page.setViewportSize({ width: 320, height: 568 });
+    await page.goto(BASE_URL, { waitUntil: 'networkidle' });
+    await page.evaluate(() => window.SamsonTheme.set('pixel'));
+
+    for (const viewport of mobileViewports) {
+      await page.setViewportSize({ width: viewport.width, height: viewport.height });
+      await expectNoRootOverflow(page, `${viewport.name} chooser`);
+
+      const action = page.locator('#workflow-choice [data-show-workflows]');
+      await expect(action).toBeVisible();
+      if (viewport.width <= 760) {
+        const actionHeight = await action.evaluate((element) => element.getBoundingClientRect().height);
+        expect(actionHeight, `${viewport.name}: workflow action touch target`).toBeGreaterThanOrEqual(44);
+      }
+    }
+
+    await page.setViewportSize({ width: 320, height: 568 });
+    await page.getByRole('button', { name: /Buka Prompt Library/ }).click();
+    await expect(page.locator('#featured')).toBeVisible();
+
+    for (const viewport of mobileViewports) {
+      await page.setViewportSize({ width: viewport.width, height: viewport.height });
+      await expectNoRootOverflow(page, `${viewport.name} prompt library`);
+    }
+
+    await page.goto(`${BASE_URL}#cheatcodes`, { waitUntil: 'networkidle' });
+    await page.evaluate(() => window.SamsonTheme.set('pixel'));
+    await page.locator('#workflow-choice [data-show-workflows]').click();
+    await expect(page.locator('#workflow-catalog')).toBeVisible();
+
+    for (const viewport of mobileViewports) {
+      await page.setViewportSize({ width: viewport.width, height: viewport.height });
+      await expectNoRootOverflow(page, `${viewport.name} workflow catalog`);
+      if (viewport.width <= 760) {
+        await expect(page.locator('.workflow-filters')).toHaveCSS('overflow-x', 'auto');
+        const filterHeight = await page.locator('[data-workflow-filter]').first().evaluate((element) => element.getBoundingClientRect().height);
+        expect(filterHeight, `${viewport.name}: filter touch target`).toBeGreaterThanOrEqual(44);
+      }
+    }
   });
 
   test('theme mutation preserves prompt search behavior', async ({ page }) => {
