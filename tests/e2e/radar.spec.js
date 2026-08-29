@@ -10,7 +10,12 @@ async function openRadar(page) {
 
 test.describe('SAMSON Personal AI Radar', () => {
   test.beforeEach(async ({ page }) => {
-    await page.addInitScript(() => localStorage.removeItem('samsonRadarState'));
+    await page.addInitScript(() => {
+      if (!sessionStorage.getItem('samsonRadarTestReset')) {
+        localStorage.removeItem('samsonRadarState');
+        sessionStorage.setItem('samsonRadarTestReset', '1');
+      }
+    });
   });
 
   test('opens from desktop navigation as a dedicated entry mode', async ({ page }) => {
@@ -35,7 +40,7 @@ test.describe('SAMSON Personal AI Radar', () => {
     await expect(page.locator('[data-radar-item]')).toHaveCount(8);
     const codex = page.locator('[data-radar-item="openai-2026-08-24-codex-mcp-server"]');
     await expect(codex).toBeVisible();
-    await expect(codex.getByText('98', { exact: true })).toBeVisible();
+    await expect(codex.locator('.radar-score')).toHaveText('98');
     await expect(codex.getByText('PRIMARY', { exact: true })).toBeVisible();
     await expect(codex.getByText('WHAT CHANGED', { exact: true })).toBeVisible();
     await expect(codex.getByText('WHY IT MATTERS', { exact: true })).toBeVisible();
