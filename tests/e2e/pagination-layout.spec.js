@@ -29,6 +29,23 @@ const readCurrentState = async (page) => page.locator('.pagination-page[aria-cur
   };
 });
 
+const readPageState = async (locator) => locator.evaluate((button) => {
+  const span = button.querySelector('span');
+  const buttonStyle = getComputedStyle(button);
+  const spanStyle = span ? getComputedStyle(span) : buttonStyle;
+  const rect = span ? span.getBoundingClientRect() : button.getBoundingClientRect();
+  return {
+    text: button.textContent.trim(),
+    color: buttonStyle.color,
+    backgroundColor: buttonStyle.backgroundColor,
+    spanColor: spanStyle.color,
+    textFill: spanStyle.webkitTextFillColor,
+    fontSize: parseFloat(spanStyle.fontSize),
+    glyphWidth: rect.width,
+    glyphHeight: rect.height
+  };
+});
+
 test.describe('SAMSON pagination layout', () => {
   test('desktop pagination prioritizes readable page numbers and one clear current state', async ({ page }) => {
     await page.setViewportSize({ width: 1280, height: 900 });
@@ -75,6 +92,39 @@ test.describe('SAMSON pagination layout', () => {
     expect(initial.color).toBe('rgb(255, 255, 255)');
     expect(initial.backgroundColor).toBe('rgb(24, 32, 43)');
     expect(['none', 'normal', '"none"']).toContain(initial.beforeContent);
+  });
+
+  test('Default inactive page number stays readable in normal, hover, and focus states', async ({ page }) => {
+    await page.setViewportSize({ width: 1280, height: 900 });
+    await openPromptLibrary(page);
+    await expect(page.locator('html')).toHaveAttribute('data-theme', 'default');
+
+    const pageTwo = page.locator('.pagination-page', { hasText: /^2$/ }).first();
+    await expect(pageTwo).toBeVisible();
+    await expect(pageTwo).not.toHaveAttribute('aria-current', 'page');
+
+    const normal = await readPageState(pageTwo);
+    expect(normal.text).toBe('2');
+    expect(normal.fontSize).toBeGreaterThanOrEqual(14);
+    expect(normal.glyphWidth).toBeGreaterThanOrEqual(7);
+    expect(normal.glyphHeight).toBeGreaterThanOrEqual(13);
+    expect(normal.color).toBe('rgb(24, 32, 43)');
+    expect(normal.spanColor).toBe('rgb(24, 32, 43)');
+    expect(normal.textFill).toBe('rgb(24, 32, 43)');
+    expect(normal.backgroundColor).toBe('rgb(255, 255, 255)');
+
+    await pageTwo.hover();
+    const hovered = await readPageState(pageTwo);
+    expect(hovered.text).toBe('2');
+    expect(hovered.color).toBe('rgb(24, 32, 43)');
+    expect(hovered.spanColor).toBe('rgb(24, 32, 43)');
+    expect(hovered.textFill).toBe('rgb(24, 32, 43)');
+
+    await pageTwo.focus();
+    const focused = await readPageState(pageTwo);
+    expect(focused.text).toBe('2');
+    expect(focused.spanColor).toBe('rgb(24, 32, 43)');
+    expect(focused.textFill).toBe('rgb(24, 32, 43)');
   });
 
   test('changing pages keeps the selected digit readable instead of turning into a decorative block', async ({ page }) => {
