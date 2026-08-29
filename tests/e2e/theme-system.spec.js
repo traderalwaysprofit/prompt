@@ -39,7 +39,7 @@ test.describe('SAMSON adaptive UI system', () => {
     await expect(page.locator('#mobile-theme-select')).toHaveValue('default');
   });
 
-  test('Pixel personality uses square solid surfaces and tactile controls', async ({ page }) => {
+  test('Pixel personality uses square solid surfaces, accessible text, and tactile controls', async ({ page }) => {
     await page.goto(BASE_URL, { waitUntil: 'networkidle' });
     await page.evaluate(() => window.SamsonTheme.set('pixel'));
 
@@ -54,6 +54,7 @@ test.describe('SAMSON adaptive UI system', () => {
     await page.getByRole('button', { name: /Buka Prompt Library/ }).click();
     const artworkBackground = await page.locator('.nft-art').first().evaluate((element) => getComputedStyle(element).backgroundImage);
     expect(artworkBackground).toBe('none');
+    await expect(page.locator('.nft-info p').first()).toHaveCSS('color', 'rgb(182, 192, 204)');
   });
 
   test('theme mutation preserves prompt search behavior', async ({ page }) => {
