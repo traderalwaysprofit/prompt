@@ -1,3 +1,5 @@
+> **Historical feature PRD.** Dokumen ini merekam kondisi setelah PR #21 dan angka runtime di dalamnya bersifat historis. Untuk kondisi produk dan roadmap SAMSON terbaru, gunakan [`docs/PRD-SAMSON.md`](PRD-SAMSON.md) sebagai PRD kanonis.
+
 # PRD — Konsolidasi Kategori `kreatif` dan `design`
 
 | Metadata | Nilai |
