@@ -1,0 +1,524 @@
+/* SAMSON Pixel personality — retro web editorial/newswire style.
+   Adapted from the user-supplied reference: Silkscreen chrome, Verdana body,
+   dense black/charcoal panels, yellow/amber status accents, flat 1px rules. */
+html[data-theme="pixel"]{
+  color-scheme:dark;
+  --ui-font-body:Verdana,Tahoma,Geneva,sans-serif;
+  --ui-font-display:"Silkscreen",ui-monospace,Menlo,Consolas,monospace;
+  --ui-bg:#000000;
+  --ui-bg-elevated:#0c0c0c;
+  --ui-bg-muted:#151515;
+  --ui-surface:#0c0c0c;
+  --ui-surface-soft:#151515;
+  --ui-surface-strong:#e6e6e6;
+  --ui-text:#b4b4b4;
+  --ui-text-secondary:#7e7e7e;
+  --ui-text-inverse:#000000;
+  --ui-border:#303030;
+  --ui-border-strong:#4a4a4a;
+  --ui-accent:#ffcc00;
+  --ui-accent-contrast:#000000;
+  --ui-success:#9acd00;
+  --ui-danger:#e06246;
+  --ui-radius-control:0px;
+  --ui-radius-card:0px;
+  --ui-radius-panel:0px;
+  --ui-radius-modal:0px;
+  --ui-shadow-1:none;
+  --ui-shadow-2:none;
+  --ui-shadow-3:none;
+  --pixel-void:#000000;
+  --pixel-panel:#0c0c0c;
+  --pixel-inset:#151515;
+  --pixel-line:#303030;
+  --pixel-line-hi:#4a4a4a;
+  --pixel-dim:#7e7e7e;
+  --pixel-body:#b4b4b4;
+  --pixel-bright:#e6e6e6;
+  --pixel-yellow:#ffcc00;
+  --pixel-yellow-dk:#8a6e00;
+  --pixel-amber:#ff9900;
+  --pixel-green:#9acd00;
+}
+
+html[data-theme="pixel"],
+html[data-theme="pixel"] body,
+html[data-theme="pixel"] .app{
+  background:var(--pixel-void)!important;
+  color:var(--pixel-body)!important;
+}
+
+html[data-theme="pixel"] body{
+  font-family:var(--ui-font-body)!important;
+  font-size:12px;
+  line-height:1.5;
+  overflow-x:clip;
+}
+
+html[data-theme="pixel"] *{box-shadow:none}
+html[data-theme="pixel"] body.pixel-wire-active{overflow-x:clip}
+
+/* Theme-only newswire strips mounted by pixel-theme.js. */
+.pixel-wire-chrome{display:none}
+html[data-theme="pixel"] .pixel-wire-chrome{
+  display:block;
+  max-width:940px;
+  margin:0 auto;
+  padding:8px 8px 0;
+  font-family:var(--ui-font-display);
+}
+html[data-theme="pixel"] .pixel-wire-strip{
+  border:1px solid var(--pixel-line);
+  background:var(--pixel-inset);
+  min-height:27px;
+  padding:5px 8px;
+  margin-bottom:4px;
+  color:var(--pixel-yellow-dk);
+  font-size:8px;
+  line-height:1.7;
+  text-transform:uppercase;
+  letter-spacing:.08em;
+  overflow:hidden;
+  white-space:nowrap;
+}
+html[data-theme="pixel"] .pixel-wire-strip.lead{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  color:var(--pixel-dim);
+}
+html[data-theme="pixel"] .pixel-wire-brand{
+  color:var(--pixel-yellow);
+  font-weight:700;
+  letter-spacing:.12em;
+}
+html[data-theme="pixel"] .pixel-wire-title{
+  flex:1;
+  min-width:0;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+html[data-theme="pixel"] .pixel-wire-status{color:var(--pixel-yellow)}
+html[data-theme="pixel"] .pixel-wire-ticker span{
+  display:inline-block;
+  padding-left:100%;
+  animation:pixel-wire-slide 26s linear infinite;
+}
+@keyframes pixel-wire-slide{to{transform:translateX(-100%)}}
+
+/* Main shell becomes narrower and denser like the reference. */
+html[data-theme="pixel"] .app,
+html[data-theme="pixel"] .site-header>*,
+html[data-theme="pixel"] main,
+html[data-theme="pixel"] footer>*{
+  max-width:940px;
+}
+html[data-theme="pixel"] .site-header{
+  background:var(--pixel-panel)!important;
+  border-top:1px solid var(--pixel-line)!important;
+  border-bottom:1px solid var(--pixel-line)!important;
+  box-shadow:none!important;
+}
+html[data-theme="pixel"] .site-header,
+html[data-theme="pixel"] .mobile-menu-panel,
+html[data-theme="pixel"] footer{
+  color:var(--pixel-body)!important;
+}
+html[data-theme="pixel"] .logo-mark{
+  border-radius:0!important;
+  background:var(--pixel-yellow)!important;
+  color:var(--pixel-void)!important;
+}
+html[data-theme="pixel"] .logo-text strong{
+  color:var(--pixel-yellow)!important;
+  font-family:var(--ui-font-display)!important;
+  font-size:11px!important;
+  letter-spacing:.12em!important;
+  text-transform:uppercase;
+}
+
+/* Chrome typography: Silkscreen only for labels/headings. */
+html[data-theme="pixel"] .hero h1,
+html[data-theme="pixel"] .hero-card h3,
+html[data-theme="pixel"] .section-head h2,
+html[data-theme="pixel"] .creator-spot h2,
+html[data-theme="pixel"] .choice-card h3,
+html[data-theme="pixel"] .workflow-catalog-card h3,
+html[data-theme="pixel"] .domain-workflow-card h3,
+html[data-theme="pixel"] .workflow-header h2,
+html[data-theme="pixel"] .workflow-content h3,
+html[data-theme="pixel"] .modal header h2{
+  font-family:var(--ui-font-display)!important;
+  font-weight:700!important;
+  color:var(--pixel-yellow)!important;
+  text-transform:uppercase;
+  text-shadow:none!important;
+}
+html[data-theme="pixel"] .hero h1{
+  font-size:clamp(22px,4vw,36px)!important;
+  line-height:1.25!important;
+  letter-spacing:.04em!important;
+}
+html[data-theme="pixel"] .section-head h2,
+html[data-theme="pixel"] .workflow-header h2,
+html[data-theme="pixel"] .modal header h2{
+  font-size:11px!important;
+  letter-spacing:.18em!important;
+}
+html[data-theme="pixel"] .eyebrow,
+html[data-theme="pixel"] .tag,
+html[data-theme="pixel"] .results-count,
+html[data-theme="pixel"] .choice-card-topline,
+html[data-theme="pixel"] .education-badge,
+html[data-theme="pixel"] .workflow-group-label,
+html[data-theme="pixel"] .cheatcodes-eyebrow,
+html[data-theme="pixel"] .theme-picker-wrap>span,
+html[data-theme="pixel"] .mobile-theme-picker>span,
+html[data-theme="pixel"] .workflow-progress-label,
+html[data-theme="pixel"] .catalog-card-stats,
+html[data-theme="pixel"] .hero-stats{
+  font-family:var(--ui-font-display)!important;
+  font-size:8px!important;
+  letter-spacing:.06em!important;
+  text-transform:uppercase;
+  color:var(--pixel-yellow-dk)!important;
+  text-shadow:none!important;
+}
+html[data-theme="pixel"] .hero-stats b,
+html[data-theme="pixel"] .catalog-card-stats strong,
+html[data-theme="pixel"] .workflow-step-number{
+  color:var(--pixel-yellow)!important;
+  text-shadow:none!important;
+}
+
+/* Long-form copy uses compact Verdana like the reference. */
+html[data-theme="pixel"] p,
+html[data-theme="pixel"] .hero p,
+html[data-theme="pixel"] .choice-feature span,
+html[data-theme="pixel"] .nft-info p,
+html[data-theme="pixel"] .workflow-description,
+html[data-theme="pixel"] .workflow-output span,
+html[data-theme="pixel"] .workflow-prompt p,
+html[data-theme="pixel"] .modal-body,
+html[data-theme="pixel"] .modal-body p,
+html[data-theme="pixel"] .onboarding-option p,
+html[data-theme="pixel"] .trading-group-head>p{
+  font-family:var(--ui-font-body)!important;
+  color:var(--pixel-body)!important;
+  text-shadow:none!important;
+  line-height:1.55!important;
+}
+
+/* accessibility.css has !important light-theme secondary text. */
+html[data-theme="pixel"] .logo-text span,
+html[data-theme="pixel"] .nav-link,
+html[data-theme="pixel"] .hero p,
+html[data-theme="pixel"] .hero-stats span,
+html[data-theme="pixel"] .tag,
+html[data-theme="pixel"] .hero-card p,
+html[data-theme="pixel"] .hero-card-footer,
+html[data-theme="pixel"] .view-all,
+html[data-theme="pixel"] .market-search .svg-icon,
+html[data-theme="pixel"] .nft-art>span,
+html[data-theme="pixel"] .nft-art small,
+html[data-theme="pixel"] .nft-info p,
+html[data-theme="pixel"] .results-count,
+html[data-theme="pixel"] .creator-spot h2 span,
+html[data-theme="pixel"] .creator-spot p,
+html[data-theme="pixel"] .creator-card span,
+html[data-theme="pixel"] footer,
+html[data-theme="pixel"] .modal header small,
+html[data-theme="pixel"] .modal-body label,
+html[data-theme="pixel"] .modal-body p,
+html[data-theme="pixel"] .smart-result,
+html[data-theme="pixel"] .smart-result span,
+html[data-theme="pixel"] .smart-result small,
+html[data-theme="pixel"] .market-search input::placeholder,
+html[data-theme="pixel"] .onboarding-option small,
+html[data-theme="pixel"] .onboarding-option p,
+html[data-theme="pixel"] .mobile-menu-title,
+html[data-theme="pixel"] .mobile-menu-panel button{
+  color:var(--pixel-dim)!important;
+}
+
+/* Flat panel language: 1px rules, inset headers, zero radii, zero elevation. */
+html[data-theme="pixel"] .hero,
+html[data-theme="pixel"] .hero-card,
+html[data-theme="pixel"] .choice-card,
+html[data-theme="pixel"] .nft-card,
+html[data-theme="pixel"] .creator-spot,
+html[data-theme="pixel"] .creator-card,
+html[data-theme="pixel"] .workflow-catalog-card,
+html[data-theme="pixel"] .domain-workflow-card,
+html[data-theme="pixel"] .workflow-content,
+html[data-theme="pixel"] .workflow-steps,
+html[data-theme="pixel"] .modal,
+html[data-theme="pixel"] .onboarding-option,
+html[data-theme="pixel"] .theme-picker,
+html[data-theme="pixel"] .smart-panel{
+  border-radius:0!important;
+  border:1px solid var(--pixel-line)!important;
+  background:var(--pixel-panel)!important;
+  box-shadow:none!important;
+  backdrop-filter:none!important;
+}
+html[data-theme="pixel"] .hero{
+  padding:18px 12px!important;
+  margin-bottom:4px!important;
+  position:relative;
+}
+html[data-theme="pixel"] .hero::after,
+html[data-theme="pixel"] .choice-card::after,
+html[data-theme="pixel"] .workflow-catalog-card::after,
+html[data-theme="pixel"] .domain-workflow-card::after{
+  content:"";
+  position:absolute;
+  top:-1px;
+  right:-1px;
+  width:12px;
+  height:12px;
+  border-top:1px solid var(--pixel-line-hi);
+  border-right:1px solid var(--pixel-line-hi);
+  background:linear-gradient(225deg,var(--pixel-yellow-dk) 0 4px,transparent 4px);
+  pointer-events:none;
+}
+html[data-theme="pixel"] .choice-card,
+html[data-theme="pixel"] .workflow-catalog-card,
+html[data-theme="pixel"] .domain-workflow-card{
+  position:relative;
+  padding:10px!important;
+}
+html[data-theme="pixel"] .hero-card:before{display:none!important}
+html[data-theme="pixel"] .nft-card:nth-child(even),
+html[data-theme="pixel"] .workflow-catalog-card:nth-child(even),
+html[data-theme="pixel"] .domain-workflow-card:nth-child(even){
+  background:#0e0e0e!important;
+}
+html[data-theme="pixel"] .nft-art{
+  background:var(--pixel-inset)!important;
+  border-bottom:1px solid var(--pixel-line)!important;
+  min-height:86px!important;
+}
+html[data-theme="pixel"] .grid-lines{display:none!important}
+
+/* Section headings read like panel headers. */
+html[data-theme="pixel"] .section-head,
+html[data-theme="pixel"] .trading-group-head,
+html[data-theme="pixel"] .workflow-header,
+html[data-theme="pixel"] .modal header{
+  background:var(--pixel-inset)!important;
+  border-bottom:1px solid var(--pixel-line)!important;
+  padding:6px 8px!important;
+}
+html[data-theme="pixel"] .section-head h2{
+  flex:1;
+  text-align:center;
+}
+
+/* Inputs and selectors. */
+html[data-theme="pixel"] .market-search,
+html[data-theme="pixel"] .market-search input,
+html[data-theme="pixel"] .market-tools select,
+html[data-theme="pixel"] .theme-picker,
+html[data-theme="pixel"] input,
+html[data-theme="pixel"] select,
+html[data-theme="pixel"] textarea{
+  border-radius:0!important;
+  background:var(--pixel-void)!important;
+  border-color:var(--pixel-line)!important;
+  color:var(--pixel-bright)!important;
+  box-shadow:none!important;
+  font-family:var(--ui-font-body)!important;
+}
+html[data-theme="pixel"] input:focus,
+html[data-theme="pixel"] select:focus,
+html[data-theme="pixel"] textarea:focus{
+  border-color:var(--pixel-yellow)!important;
+  outline:none!important;
+}
+
+/* FWA-style flat yellow buttons. */
+html[data-theme="pixel"] .choice-action,
+html[data-theme="pixel"] .hero-actions button,
+html[data-theme="pixel"] .view-all,
+html[data-theme="pixel"] .open-btn,
+html[data-theme="pixel"] .copy-section,
+html[data-theme="pixel"] .modal-fav,
+html[data-theme="pixel"] .close,
+html[data-theme="pixel"] .workflow-start,
+html[data-theme="pixel"] .workflow-complete,
+html[data-theme="pixel"] .workflow-next,
+html[data-theme="pixel"] .workflow-copy{
+  border-radius:0!important;
+  border:0!important;
+  background:var(--pixel-yellow)!important;
+  color:var(--pixel-void)!important;
+  box-shadow:none!important;
+  font-family:var(--ui-font-display)!important;
+  font-size:9px!important;
+  letter-spacing:.08em!important;
+  text-transform:uppercase;
+  padding:7px 10px!important;
+  transform:none!important;
+  transition:background-color .1s linear,color .1s linear!important;
+}
+html[data-theme="pixel"] .choice-action:hover,
+html[data-theme="pixel"] .hero-actions button:hover,
+html[data-theme="pixel"] .view-all:hover,
+html[data-theme="pixel"] .open-btn:hover,
+html[data-theme="pixel"] .copy-section:hover,
+html[data-theme="pixel"] .workflow-start:hover,
+html[data-theme="pixel"] .workflow-complete:hover,
+html[data-theme="pixel"] .workflow-next:hover,
+html[data-theme="pixel"] .workflow-copy:hover{
+  background:var(--pixel-amber)!important;
+  color:var(--pixel-void)!important;
+}
+
+/* Filter chips and workflow tabs mirror the reference's bracketed chip grammar. */
+html[data-theme="pixel"] [data-workflow-filter],
+html[data-theme="pixel"] .workflow-step-tab,
+html[data-theme="pixel"] .mobile-menu-toggle,
+html[data-theme="pixel"] .mobile-menu-panel button,
+html[data-theme="pixel"] .workflow-reset{
+  border-radius:0!important;
+  border:1px solid var(--pixel-line)!important;
+  background:transparent!important;
+  color:var(--pixel-dim)!important;
+  box-shadow:none!important;
+  font-family:var(--ui-font-display)!important;
+  font-size:8px!important;
+  letter-spacing:.06em!important;
+  text-transform:uppercase;
+  transform:none!important;
+}
+html[data-theme="pixel"] [data-workflow-filter]:hover,
+html[data-theme="pixel"] .workflow-step-tab:hover,
+html[data-theme="pixel"] .mobile-menu-panel button:hover,
+html[data-theme="pixel"] .workflow-reset:hover{
+  border-color:var(--pixel-line-hi)!important;
+  color:var(--pixel-yellow)!important;
+}
+html[data-theme="pixel"] [data-workflow-filter][aria-pressed="true"],
+html[data-theme="pixel"] .workflow-step-tab[aria-current="step"],
+html[data-theme="pixel"] .favorite-btn.is-favorite,
+html[data-theme="pixel"] .modal-fav.is-favorite{
+  background:var(--pixel-yellow)!important;
+  border-color:var(--pixel-yellow)!important;
+  color:var(--pixel-void)!important;
+}
+
+/* Links are amber, then yellow on hover. */
+html[data-theme="pixel"] a:not(.choice-action):not(.view-all),
+html[data-theme="pixel"] .nav-link{
+  color:var(--pixel-amber)!important;
+}
+html[data-theme="pixel"] a:hover,
+html[data-theme="pixel"] .nav-link:hover{
+  color:var(--pixel-yellow)!important;
+}
+html[data-theme="pixel"] button:focus-visible,
+html[data-theme="pixel"] a:focus-visible,
+html[data-theme="pixel"] input:focus-visible,
+html[data-theme="pixel"] select:focus-visible{
+  outline:2px solid var(--pixel-yellow)!important;
+  outline-offset:2px!important;
+}
+
+/* Progress/status are counters, not decorative glowing bars. */
+html[data-theme="pixel"] .catalog-progress,
+html[data-theme="pixel"] .workflow-progress-track{
+  height:5px!important;
+  border-radius:0!important;
+  background:var(--pixel-inset)!important;
+  border:1px solid var(--pixel-line)!important;
+}
+html[data-theme="pixel"] .catalog-progress>span,
+html[data-theme="pixel"] .workflow-progress-bar{
+  border-radius:0!important;
+  background:var(--pixel-yellow)!important;
+}
+html[data-theme="pixel"] .education-badge,
+html[data-theme="pixel"] .smart-badge{
+  border-radius:0!important;
+  border:1px solid var(--pixel-line)!important;
+  background:transparent!important;
+  color:var(--pixel-yellow)!important;
+}
+
+/* Pagination becomes a compact retro pager. */
+html[data-theme="pixel"] .pagination{
+  border-top:1px solid var(--pixel-line)!important;
+  padding-top:12px!important;
+  gap:4px!important;
+}
+html[data-theme="pixel"] .pagination .pagination-control,
+html[data-theme="pixel"] .pagination .pagination-page{
+  min-width:32px!important;
+  min-height:32px!important;
+  border-radius:0!important;
+  border:1px solid var(--pixel-line)!important;
+  background:transparent!important;
+  color:var(--pixel-dim)!important;
+  box-shadow:none!important;
+  font-family:var(--ui-font-display)!important;
+  font-size:8px!important;
+  text-transform:uppercase;
+  transform:none!important;
+}
+html[data-theme="pixel"] .pagination .pagination-control:hover:not(:disabled),
+html[data-theme="pixel"] .pagination .pagination-page:hover:not([aria-current="page"]){
+  border-color:var(--pixel-line-hi)!important;
+  color:var(--pixel-yellow)!important;
+  background:var(--pixel-inset)!important;
+}
+html[data-theme="pixel"] .pagination .pagination-page[aria-current="page"]{
+  background:var(--pixel-yellow)!important;
+  border-color:var(--pixel-yellow)!important;
+  color:var(--pixel-void)!important;
+}
+html[data-theme="pixel"] .pagination .pagination-ellipsis{
+  color:var(--pixel-line-hi)!important;
+  background:transparent!important;
+}
+
+html[data-theme="pixel"] footer{
+  border-top:1px solid var(--pixel-line)!important;
+  background:var(--pixel-panel)!important;
+  font-family:var(--ui-font-display)!important;
+  font-size:8px!important;
+  text-transform:uppercase;
+  letter-spacing:.08em;
+}
+
+@media(max-width:700px){
+  html[data-theme="pixel"] .pixel-wire-chrome{padding:4px 4px 0}
+  html[data-theme="pixel"] .pixel-wire-strip{font-size:7px;padding:5px 6px}
+  html[data-theme="pixel"] .pixel-wire-status{display:none}
+  html[data-theme="pixel"] .hero{padding:12px 8px!important}
+  html[data-theme="pixel"] .hero h1{font-size:clamp(18px,7vw,27px)!important}
+  html[data-theme="pixel"] .choice-card,
+  html[data-theme="pixel"] .workflow-catalog-card,
+  html[data-theme="pixel"] .domain-workflow-card{padding:8px!important}
+  html[data-theme="pixel"] [data-workflow-filter],
+  html[data-theme="pixel"] .workflow-step-tab{min-height:44px!important;padding:7px!important}
+}
+
+@media(max-width:460px){
+  html[data-theme="pixel"] .pixel-wire-strip.lead{gap:6px}
+  html[data-theme="pixel"] .pixel-wire-brand{font-size:7px}
+  html[data-theme="pixel"] .pixel-wire-title{font-size:7px}
+}
+
+@media(prefers-reduced-motion:reduce){
+  html[data-theme="pixel"] .pixel-wire-ticker span{
+    animation:none;
+    padding-left:0;
+  }
+  html[data-theme="pixel"] *,
+  html[data-theme="pixel"] *::before,
+  html[data-theme="pixel"] *::after{
+    scroll-behavior:auto!important;
+    transition:none!important;
+  }
+}

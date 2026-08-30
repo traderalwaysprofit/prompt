@@ -26,6 +26,32 @@
     overlay.querySelector('.onboarding-close')?.focus();
   };
 
+  const themeOptionsMarkup = () => {
+    const themes = window.SamsonTheme?.themes || [
+      { id: 'default', label: 'Samson Default' },
+      { id: 'developer', label: 'Developer' },
+      { id: 'swiss', label: 'Swiss' }
+    ];
+    return themes.map((theme) => `<option value="${theme.id}">${theme.label}</option>`).join('');
+  };
+
+  const bindThemeSelect = (select) => {
+    if (!select) return;
+    select.value = window.SamsonTheme?.get?.() || document.documentElement.dataset.theme || 'default';
+    select.addEventListener('change', () => {
+      window.SamsonTheme?.set?.(select.value);
+    });
+  };
+
+  const createDesktopThemePicker = (nav) => {
+    const wrapper = document.createElement('label');
+    wrapper.className = 'theme-picker-wrap';
+    wrapper.setAttribute('aria-label', 'UI Personality');
+    wrapper.innerHTML = `<span>APPEARANCE</span><select id="theme-select" class="theme-picker" data-theme-select aria-label="UI Personality">${themeOptionsMarkup()}</select>`;
+    nav.appendChild(wrapper);
+    bindThemeSelect(wrapper.querySelector('[data-theme-select]'));
+  };
+
   const enhanceShell = () => {
     const header = document.querySelector('.site-header');
     const nav = header?.querySelector('nav');
@@ -43,9 +69,6 @@
       logoMark.setAttribute('aria-label', 'Cloudflare');
     }
 
-    const categoryStat = document.querySelector('.hero-stats span:nth-child(2) b');
-    if (categoryStat) categoryStat.textContent = '20';
-
     const onboarding = document.createElement('button');
     onboarding.id = 'nav-onboarding';
     onboarding.className = 'nav-link onboarding-nav';
@@ -54,6 +77,8 @@
     onboarding.innerHTML = '<svg class="svg-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M12 8v4l2.5 2"></path></svg><span>Onboarding AI</span>';
     onboarding.addEventListener('click', openOnboarding);
     nav.appendChild(onboarding);
+
+    createDesktopThemePicker(nav);
 
     const toggle = document.createElement('button');
     toggle.id = 'mobile-menu-toggle';
@@ -68,10 +93,11 @@
     panel.id = 'mobile-menu-panel';
     panel.className = 'mobile-menu-panel';
     panel.setAttribute('aria-hidden', 'true');
-    panel.innerHTML = '<div class="mobile-menu-title">SAMSON</div><button type="button" data-mobile-nav="cheatcodes">Cheatcodes</button><button type="button" data-mobile-nav="prompts">Prompt Library</button><button type="button" data-mobile-nav="categories">Categories</button><button type="button" data-mobile-nav="favorites">Favorites</button><button type="button" data-mobile-nav="onboarding">Onboarding AI</button>';
+    panel.innerHTML = `<div class="mobile-menu-title">SAMSON</div><button type="button" data-mobile-nav="cheatcodes">Cheatcodes</button><button type="button" data-mobile-nav="prompts">Prompt Library</button><button type="button" data-mobile-nav="categories">Categories</button><button type="button" data-mobile-nav="favorites">Favorites</button><button type="button" data-mobile-nav="onboarding">Onboarding AI</button><label class="mobile-theme-picker"><span>UI PERSONALITY</span><select id="mobile-theme-select" class="theme-picker" data-theme-select aria-label="UI Personality mobile">${themeOptionsMarkup()}</select></label>`;
 
     header.appendChild(toggle);
     header.insertAdjacentElement('afterend', panel);
+    bindThemeSelect(panel.querySelector('[data-theme-select]'));
 
     toggle.addEventListener('click', (event) => {
       event.stopPropagation();

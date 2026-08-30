@@ -6,5 +6,9 @@
   {"id":198,"example":"/github audit repository ini, perbaiki struktur kode, buat commit plan, testing, dan siapkan pull request untuk production."},
   {"id":199,"example":"/aiaudit audit seluruh website ini dari sisi UI, UX, SEO, performance, security, accessibility, architecture, dan AI readiness."},
   {"id":200,"example":"/autopilot dari brief ini lakukan research → planning → coding → audit → optimization → testing → deployment, lalu verifikasi hasil akhir."},
-  {"id":201,"example":"/sourceradar cari referensi terbaru mengenai praktik keamanan GitHub Actions, pinning action ke commit SHA, Dependabot, dan perlindungan branch main."}
+  {"id":201,"example":"/sourceradar cari referensi terbaru mengenai praktik keamanan GitHub Actions, pinning action ke commit SHA, Dependabot, dan perlindungan branch main."},
+  {"id":202,"example":"/antislopui audit frontend samson.web.id, lock search/workflow/accessibility, gunakan mutation L2, lalu redesign dengan karakter Swiss editorial tanpa gradient dekoratif, pill berlebihan, card spam, atau fake statistics. Target Anti-Slop Score minimal 90."},
+  {"id":203,"example":"/wordpress bangun website company profile WordPress dengan Gutenberg atau Elementor yang dipilih berdasarkan kebutuhan, SEO-ready, cepat, aman, responsive, dan mudah dipelihara."},
+  {"id":204,"example":"/woocommerce rancang toko WooCommerce untuk 50 produk dengan category, variation, checkout mobile, payment dan shipping terstruktur, SEO, performance, security, serta order testing sebelum launch."},
+  {"id":205,"example":"/wpaudit audit website WordPress existing dari sisi plugin/theme, performance, Core Web Vitals, SEO/schema, security, accessibility, UX, backup, dan maintenance lalu buat prioritas 30/60/90 hari."}
 ]

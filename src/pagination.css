@@ -1,12 +1,13 @@
 .pagination{
-  width:100%;
-  max-width:760px;
-  margin:18px auto 0;
+  --pagination-size:44px;
+  --pagination-gap:clamp(5px,.8vw,8px);
+  width:min(100%,680px);
+  margin:22px auto 0;
   display:flex;
   align-items:center;
   justify-content:center;
-  gap:10px;
-  overflow:hidden;
+  gap:var(--pagination-gap);
+  overflow:visible;
 }
 
 .pagination-pages{
@@ -14,41 +15,59 @@
   display:flex;
   align-items:center;
   justify-content:center;
-  gap:6px;
+  gap:var(--pagination-gap);
 }
 
+/*
+  Pagination is navigation data first, decoration second.
+  Keep numeric glyphs on the readable body face in every personality and use
+  one clear state layer for current, hover, disabled, and keyboard focus.
+*/
 .pagination .pagination-control,
 .pagination .pagination-page{
   position:relative;
-  isolation:isolate;
   flex:0 0 auto;
   box-sizing:border-box;
-  min-width:44px;
-  width:44px;
-  height:44px;
-  min-height:44px;
+  min-width:var(--pagination-size);
+  width:var(--pagination-size);
+  height:var(--pagination-size);
+  min-height:var(--pagination-size);
   padding:0;
   display:inline-flex;
   align-items:center;
   justify-content:center;
   gap:8px;
-  border:1px solid #dfe4ea;
-  border-radius:12px;
-  background:#fff;
-  color:#595959!important;
-  font-size:12px!important;
-  font-weight:750;
-  line-height:1;
+  border:1px solid var(--ui-border-strong,#c8ced7);
+  border-radius:var(--ui-radius-control,9px);
+  background:var(--ui-surface,#fff);
+  color:var(--ui-text,#18202b)!important;
+  font-family:var(--ui-font-body,Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif)!important;
+  font-size:14px!important;
+  font-weight:700!important;
+  font-variant-numeric:tabular-nums;
+  font-feature-settings:"tnum" 1;
+  line-height:1!important;
+  letter-spacing:0!important;
+  text-transform:none!important;
+  text-shadow:none!important;
   cursor:pointer;
-  box-shadow:0 4px 12px rgba(24,32,43,.04);
-  transition:transform .18s ease,background-color .18s ease,border-color .18s ease,color .18s ease,box-shadow .18s ease;
+  box-shadow:0 1px 2px rgba(24,32,43,.08);
+  transform:none!important;
+  transition:
+    background-color var(--ui-duration-fast,160ms) ease,
+    border-color var(--ui-duration-fast,160ms) ease,
+    color var(--ui-duration-fast,160ms) ease,
+    box-shadow var(--ui-duration-fast,160ms) ease;
   touch-action:manipulation;
+  -webkit-tap-highlight-color:transparent;
 }
 
 .pagination .pagination-control{
   width:auto;
-  min-width:110px;
-  padding:0 15px;
+  min-width:112px;
+  padding:0 16px;
+  font-size:13px!important;
+  font-weight:700!important;
 }
 
 .pagination .pagination-control>span,
@@ -56,108 +75,137 @@
   position:relative;
   z-index:1;
   flex:0 0 auto;
-  width:auto;
-  height:auto;
-  min-height:0;
-  padding:0;
-  display:inline;
-  border:0;
-  border-radius:0;
-  background:transparent;
+  width:auto!important;
+  height:auto!important;
+  min-width:.75ch;
+  min-height:1em!important;
+  padding:0!important;
+  margin:0!important;
+  display:inline-flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  border:0!important;
+  border-radius:0!important;
+  background:transparent!important;
   color:inherit!important;
-  font:inherit;
+  -webkit-text-fill-color:currentColor!important;
+  font:inherit!important;
   font-size:inherit!important;
-  letter-spacing:inherit;
+  font-weight:inherit!important;
+  line-height:1!important;
+  letter-spacing:0!important;
+  text-shadow:none!important;
 }
 
 .pagination .pagination-control:hover:not(:disabled),
 .pagination .pagination-page:hover:not([aria-current="page"]){
-  transform:translateY(-1px);
-  border-color:#b8c0cb;
-  background:#f5f7fa;
-  color:#18202b!important;
-  box-shadow:0 8px 18px rgba(24,32,43,.09);
+  border-color:var(--ui-text-secondary,#595959);
+  background:var(--ui-bg-muted,#f0f2f5);
+  color:var(--ui-text,#18202b)!important;
+  box-shadow:0 2px 5px rgba(24,32,43,.10);
 }
 
+.pagination .pagination-control:active:not(:disabled),
+.pagination .pagination-page:active:not([aria-current="page"]){
+  background:var(--ui-bg-muted,#f0f2f5);
+  box-shadow:none;
+}
+
+/* Keyboard focus is deliberately separate from selected/current state. */
 .pagination .pagination-control:focus-visible,
 .pagination .pagination-page:focus-visible{
-  outline:3px solid rgba(69,88,111,.22);
-  outline-offset:2px;
+  outline:none;
+  box-shadow:
+    0 0 0 2px var(--ui-bg,#f6f7f9),
+    0 0 0 4px var(--ui-accent,#18202b);
 }
 
 .pagination .pagination-control:disabled{
-  opacity:.42;
+  border-color:var(--ui-border,#dfe4ea);
+  background:var(--ui-bg-muted,#f0f2f5);
+  color:var(--ui-text-secondary,#595959)!important;
+  opacity:.55;
   cursor:not-allowed;
   box-shadow:none;
 }
 
+/* One-layer current state: no pseudo overlay, spring, glow, or extra inset. */
 .pagination .pagination-page[aria-current="page"]{
-  border-color:#18202b;
-  background:#18202b;
-  color:#fff!important;
-  box-shadow:0 8px 18px rgba(24,32,43,.16);
+  border-color:var(--ui-accent,#18202b)!important;
+  background:var(--ui-accent,#18202b)!important;
+  color:var(--ui-accent-contrast,#fff)!important;
+  font-size:14px!important;
+  font-weight:800!important;
+  box-shadow:none;
 }
 
-.pagination .pagination-page[aria-current="page"]::before{
-  content:"";
-  position:absolute;
-  inset:-1px;
-  z-index:0;
-  border-radius:12px;
-  background:#18202b;
-  animation:pagination-spring .48s cubic-bezier(.34,1.56,.64,1);
+.pagination .pagination-page[aria-current="page"]>span{
+  color:var(--ui-accent-contrast,#fff)!important;
+  -webkit-text-fill-color:var(--ui-accent-contrast,#fff)!important;
+}
+
+.pagination .pagination-page[aria-current="page"]::before,
+.pagination .pagination-page[aria-current="page"]::after{
+  content:none!important;
+  display:none!important;
 }
 
 .pagination .pagination-ellipsis{
-  flex:0 0 28px;
-  width:28px;
-  height:44px;
-  min-height:44px;
+  flex:0 0 20px;
+  width:20px;
+  height:var(--pagination-size);
+  min-height:var(--pagination-size);
   padding:0;
   display:grid;
   place-items:center;
   border:0;
   border-radius:0;
   background:transparent;
-  color:#595959!important;
-  font-size:15px!important;
-  letter-spacing:.08em;
-}
-
-@keyframes pagination-spring{
-  0%{transform:scale(.72);opacity:.35}
-  70%{transform:scale(1.07);opacity:1}
-  100%{transform:scale(1);opacity:1}
+  color:var(--ui-text-secondary,#595959)!important;
+  font-family:var(--ui-font-body,Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif)!important;
+  font-size:14px!important;
+  font-weight:700;
+  line-height:1;
+  letter-spacing:.04em;
 }
 
 @media(max-width:620px){
   .pagination{
-    grid-template-columns:44px minmax(0,1fr) 44px;
+    --pagination-size:44px;
+    width:100%;
     display:grid;
+    grid-template-columns:44px minmax(0,1fr) 44px;
     gap:6px;
+    margin-top:18px;
+    padding:0 2px 4px;
   }
 
   .pagination-pages{
     width:100%;
     max-width:100%;
     justify-content:flex-start;
-    gap:4px;
-    padding:2px;
+    gap:5px;
+    padding:2px 3px 5px;
     overflow-x:auto;
     overflow-y:hidden;
     overscroll-behavior-inline:contain;
     scrollbar-width:none;
+    scroll-padding-inline:4px;
     -webkit-overflow-scrolling:touch;
   }
 
-  .pagination-pages::-webkit-scrollbar{
-    display:none;
-  }
+  .pagination-pages::-webkit-scrollbar{display:none}
 
   .pagination .pagination-control{
     width:44px;
     min-width:44px;
     padding:0;
+  }
+
+  .pagination .pagination-page{
+    flex:0 0 44px;
+    width:44px;
+    min-width:44px;
   }
 
   .pagination-control-label{
@@ -180,31 +228,15 @@
 
 @media(max-width:390px){
   .pagination{
+    grid-template-columns:44px minmax(0,1fr) 44px;
     gap:4px;
   }
 
-  .pagination-pages{
-    gap:3px;
-  }
-
-  .pagination .pagination-ellipsis{
-    flex-basis:14px;
-    width:14px;
-  }
+  .pagination-pages{gap:4px;padding-inline:2px}
+  .pagination .pagination-ellipsis{flex-basis:14px;width:14px}
 }
 
 @media(prefers-reduced-motion:reduce){
   .pagination .pagination-control,
-  .pagination .pagination-page{
-    transition:none;
-  }
-
-  .pagination .pagination-page[aria-current="page"]::before{
-    animation:none;
-  }
-
-  .pagination .pagination-control:hover:not(:disabled),
-  .pagination .pagination-page:hover:not([aria-current="page"]){
-    transform:none;
-  }
+  .pagination .pagination-page{transition:none}
 }

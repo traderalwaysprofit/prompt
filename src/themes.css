@@ -1,0 +1,169 @@
+/* SAMSON Adaptive UI themes. Functional layout/behavior stays in the existing component CSS. */
+
+html[data-theme="default"]{
+  color-scheme:light;
+}
+
+html[data-theme="developer"]{
+  color-scheme:dark;
+  --ui-font-body:var(--ui-font-mono);
+  --ui-font-display:var(--ui-font-mono);
+  --ui-bg:#0d1117;
+  --ui-bg-elevated:#111820;
+  --ui-bg-muted:#161d26;
+  --ui-surface:#111820;
+  --ui-surface-soft:#151d26;
+  --ui-surface-strong:#e6edf3;
+  --ui-text:#e6edf3;
+  --ui-text-secondary:#b7c0ca;
+  --ui-text-inverse:#0d1117;
+  --ui-border:#30363d;
+  --ui-border-strong:#4b5563;
+  --ui-accent:#7ee787;
+  --ui-accent-contrast:#0d1117;
+  --ui-radius-control:4px;
+  --ui-radius-card:6px;
+  --ui-radius-panel:8px;
+  --ui-radius-modal:8px;
+  --ui-shadow-1:none;
+  --ui-shadow-2:0 12px 28px rgba(0,0,0,.3);
+  --ui-shadow-3:0 30px 80px rgba(0,0,0,.55);
+  --ui-grid-line:rgba(126,231,135,.12);
+  --ui-art-a:#17221b;
+  --ui-art-b:#243127;
+}
+
+html[data-theme="swiss"]{
+  color-scheme:light;
+  --ui-font-body:Arial,Helvetica,sans-serif;
+  --ui-font-display:Arial,Helvetica,sans-serif;
+  --ui-bg:#f4f1ea;
+  --ui-bg-elevated:#fffdf8;
+  --ui-bg-muted:#ece7dd;
+  --ui-surface:#fffdf8;
+  --ui-surface-soft:#f8f4ec;
+  --ui-surface-strong:#111111;
+  --ui-text:#111111;
+  --ui-text-secondary:#4e4e4e;
+  --ui-text-inverse:#fffdf8;
+  --ui-border:#b9b5ac;
+  --ui-border-strong:#111111;
+  --ui-accent:#d62828;
+  --ui-accent-contrast:#ffffff;
+  --ui-radius-control:0px;
+  --ui-radius-card:0px;
+  --ui-radius-panel:0px;
+  --ui-radius-modal:0px;
+  --ui-shadow-1:none;
+  --ui-shadow-2:6px 6px 0 rgba(17,17,17,.15);
+  --ui-shadow-3:10px 10px 0 rgba(17,17,17,.2);
+  --ui-grid-line:rgba(17,17,17,.12);
+  --ui-art-a:#e8e1d4;
+  --ui-art-b:#d6cec0;
+}
+
+/* Token bridge: the current UI adopts theme decisions without changing behavior. */
+html[data-theme] body,
+html[data-theme] .app{background:var(--ui-bg);color:var(--ui-text)}
+html[data-theme] .site-header,
+html[data-theme] footer{background:color-mix(in srgb,var(--ui-bg-elevated) 95%,transparent);border-color:var(--ui-border)}
+html[data-theme] .logo-mark,
+html[data-theme] .hero-actions button:not(.ghost),
+html[data-theme] .avatar,
+html[data-theme] .favorite-btn.is-favorite,
+html[data-theme] .modal-fav.is-favorite{background:var(--ui-accent);color:var(--ui-accent-contrast);border-color:var(--ui-accent)}
+html[data-theme] .logo-text strong,
+html[data-theme] .hero h1,
+html[data-theme] .section-head h2,
+html[data-theme] .creator-spot h2,
+html[data-theme] .nft-info code,
+html[data-theme] .modal header h2{color:var(--ui-text)}
+html[data-theme] .nav-link:hover,
+html[data-theme] .nav-link.active{background:var(--ui-bg-muted);color:var(--ui-text)}
+html[data-theme] .hero-card,
+html[data-theme] .nft-card,
+html[data-theme] .creator-spot,
+html[data-theme] .creator-card,
+html[data-theme] .modal,
+html[data-theme] .view-all,
+html[data-theme] .market-search input,
+html[data-theme] .market-tools select,
+html[data-theme] .hero-actions .ghost,
+html[data-theme] .open-btn,
+html[data-theme] .close,
+html[data-theme] .copy-section,
+html[data-theme] .modal-fav,
+html[data-theme] .onboarding-option,
+html[data-theme] .theme-picker{background:var(--ui-surface);border-color:var(--ui-border);color:var(--ui-text)}
+html[data-theme] .nft-card{border-radius:var(--ui-radius-card);box-shadow:var(--ui-shadow-1);transition:transform var(--ui-duration-fast) var(--ui-ease),box-shadow var(--ui-duration-fast) var(--ui-ease),border-color var(--ui-duration-fast) var(--ui-ease)}
+html[data-theme] .nft-card:hover{border-color:var(--ui-border-strong);box-shadow:var(--ui-shadow-2)}
+html[data-theme] .hero-card{border-radius:var(--ui-radius-panel);box-shadow:var(--ui-shadow-2)}
+html[data-theme] .creator-spot{border-radius:var(--ui-radius-panel)}
+html[data-theme] .creator-card{border-radius:var(--ui-radius-card)}
+html[data-theme] .modal,
+html[data-theme] .onboarding-modal{border-radius:var(--ui-radius-modal);box-shadow:var(--ui-shadow-3)}
+html[data-theme] .nav-link,
+html[data-theme] .view-all,
+html[data-theme] .market-search input,
+html[data-theme] .market-tools select,
+html[data-theme] .hero-actions button,
+html[data-theme] .open-btn,
+html[data-theme] .close,
+html[data-theme] .copy-section,
+html[data-theme] .modal-fav,
+html[data-theme] .mobile-menu-toggle,
+html[data-theme] .mobile-menu-panel button{border-radius:var(--ui-radius-control)}
+html[data-theme] .nft-art{background:linear-gradient(135deg,var(--ui-art-a),var(--ui-art-b))}
+html[data-theme] .grid-lines{background-image:linear-gradient(var(--ui-grid-line) 1px,transparent 1px),linear-gradient(90deg,var(--ui-grid-line) 1px,transparent 1px)}
+html[data-theme] .modal footer,
+html[data-theme] .mobile-menu-panel{background:var(--ui-surface-soft);border-color:var(--ui-border)}
+html[data-theme] .codebox{background:var(--ui-surface-strong);color:var(--ui-text-inverse)}
+
+/* Pagination owns its component states in pagination.css. Keeping those states
+   out of the generic theme bridge avoids specificity conflicts with hover/current/focus. */
+
+/* Accessibility.css intentionally has !important rules; theme-specific accessible text follows it. */
+html[data-theme="developer"] .logo-text span,
+html[data-theme="developer"] .nav-link,
+html[data-theme="developer"] .eyebrow,
+html[data-theme="developer"] .hero p,
+html[data-theme="developer"] .hero-stats span,
+html[data-theme="developer"] .tag,
+html[data-theme="developer"] .hero-card p,
+html[data-theme="developer"] .hero-card-footer,
+html[data-theme="developer"] .view-all,
+html[data-theme="developer"] .market-search .svg-icon,
+html[data-theme="developer"] .nft-art>span,
+html[data-theme="developer"] .nft-art small,
+html[data-theme="developer"] .nft-info p,
+html[data-theme="developer"] .results-count,
+html[data-theme="developer"] .creator-spot h2 span,
+html[data-theme="developer"] .creator-spot p,
+html[data-theme="developer"] .creator-card span,
+html[data-theme="developer"] footer,
+html[data-theme="developer"] .modal header small,
+html[data-theme="developer"] .modal-body label,
+html[data-theme="developer"] .modal-body p,
+html[data-theme="developer"] .smart-result,
+html[data-theme="developer"] .smart-result span,
+html[data-theme="developer"] .smart-result small,
+html[data-theme="developer"] .market-search input::placeholder,
+html[data-theme="developer"] .onboarding-option small,
+html[data-theme="developer"] .onboarding-option p,
+html[data-theme="developer"] .mobile-menu-title,
+html[data-theme="developer"] .mobile-menu-panel button{color:var(--ui-text-secondary)!important}
+
+html[data-theme="swiss"] .hero h1{font-weight:900;text-transform:uppercase;letter-spacing:-.065em}
+html[data-theme="swiss"] .eyebrow,
+html[data-theme="swiss"] .tag,
+html[data-theme="swiss"] .results-count{letter-spacing:.16em;text-transform:uppercase}
+html[data-theme="swiss"] .nft-card:hover{transform:translate(-2px,-2px)}
+
+html[data-theme="developer"] .hero h1,
+html[data-theme="developer"] .section-head h2,
+html[data-theme="developer"] .creator-spot h2{letter-spacing:-.04em}
+html[data-theme="developer"] .hero-card:before{display:none}
+
+@media(prefers-reduced-motion:reduce){
+  html[data-theme] .nft-card{transition:none}
+}
