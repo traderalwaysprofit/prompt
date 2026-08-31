@@ -19,6 +19,7 @@ test.describe('SAMSON compact primary navigation', () => {
     await expect(nav.locator('#nav-more-menu')).toHaveClass(/is-open/);
     await expect(nav.locator('#nav-favorites')).toHaveText('Saved');
     await expect(nav.locator('#nav-favorites')).toBeVisible();
+    await expect(nav.locator('#nav-onboarding')).toHaveText('Cara Menggunakan SAMSON');
     await expect(nav.locator('#nav-onboarding')).toBeVisible();
     await expect(nav.locator('#theme-select')).toBeVisible();
 
@@ -36,7 +37,7 @@ test.describe('SAMSON compact primary navigation', () => {
     await expect(panel.getByRole('button', { name: 'Workflows', exact: true })).toBeVisible();
     await expect(panel.getByRole('button', { name: 'Prompts', exact: true })).toBeVisible();
     await expect(panel.getByRole('button', { name: 'Saved', exact: true })).toBeVisible();
-    await expect(panel.getByRole('button', { name: 'Onboarding AI', exact: true })).toBeVisible();
+    await expect(panel.getByRole('button', { name: 'Cara Menggunakan SAMSON', exact: true })).toBeVisible();
     await expect(panel.getByText('Categories', { exact: true })).toHaveCount(0);
     await expect(panel.locator('#mobile-theme-select')).toBeVisible();
 

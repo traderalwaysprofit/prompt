@@ -1,0 +1,74 @@
+.onboarding-v2-overlay{background:rgba(15,20,27,.5);backdrop-filter:blur(7px)}
+.onboarding-modal.onboarding-v2{width:min(760px,calc(100vw - 32px));max-height:min(760px,calc(100dvh - 32px));overflow:hidden;border-radius:var(--ui-radius-modal,22px);background:var(--ui-bg-elevated,#fff);color:var(--ui-text,#18202b)}
+.onboarding-v2-header{display:flex;align-items:flex-start;justify-content:space-between;gap:18px;padding:22px 24px 18px!important;border-bottom:1px solid var(--ui-border,#e4e8ed)}
+.onboarding-v2-header h2{margin:4px 0 3px;font-size:22px;line-height:1.2}
+.onboarding-v2-header small{display:block;max-width:580px;color:var(--ui-text-secondary,#697381);font-size:12px;line-height:1.55}
+.onboarding-v2-body{display:grid;gap:0;padding:0 24px!important;overflow-y:auto;max-height:calc(min(760px,100dvh - 32px) - 170px)}
+.onboarding-step{padding:18px 0;border-bottom:1px solid var(--ui-border,#e7eaf0)}
+.onboarding-step:last-child{border-bottom:0}
+.onboarding-step-head{display:grid;grid-template-columns:38px minmax(0,1fr);gap:12px;align-items:start}
+.onboarding-step-number{display:grid;place-items:center;width:32px;height:32px;border:1px solid var(--ui-border-strong,#c8ced7);border-radius:999px;color:var(--ui-text-secondary,#697381);font:800 10px var(--ui-font-mono,ui-monospace,monospace);letter-spacing:.08em}
+.onboarding-step-head h3{margin:1px 0 4px;font-size:15px;line-height:1.3}
+.onboarding-step-head p{margin:0;color:var(--ui-text-secondary,#697381);font-size:12px;line-height:1.6}
+.onboarding-path-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin:14px 0 0 50px}
+.onboarding-path-card{min-width:0;padding:13px 14px;border:1px solid var(--ui-border,#e3e7ec);border-radius:var(--ui-radius-panel,12px);background:var(--ui-surface-soft,#fafbfc)}
+.onboarding-path-label{display:block;margin-bottom:7px;color:var(--ui-text-secondary,#89929e);font:800 9px var(--ui-font-mono,ui-monospace,monospace);letter-spacing:.12em}
+.onboarding-path-card strong{display:block;font-size:12px;line-height:1.4}
+.onboarding-path-card p{margin:6px 0 0;color:var(--ui-text-secondary,#697381);font-size:11px;line-height:1.55}
+.onboarding-models{display:flex;flex-wrap:wrap;gap:6px;margin:13px 0 10px 50px}
+.onboarding-models span{display:inline-flex;align-items:center;min-height:28px;padding:4px 9px;border:1px solid var(--ui-border,#e3e7ec);border-radius:999px;background:var(--ui-surface,#fff);color:var(--ui-text-secondary,#5f6875);font-size:10px;font-weight:750}
+.onboarding-flow{display:flex;flex-wrap:wrap;align-items:center;gap:7px;margin:0 0 10px 50px}
+.onboarding-flow span{display:inline-flex;align-items:center;min-height:32px;padding:6px 9px;border:1px solid var(--ui-border,#e3e7ec);border-radius:var(--ui-radius-control,8px);background:var(--ui-surface,#fff);font-size:10px;font-weight:750}
+.onboarding-flow b{color:var(--ui-text-secondary,#89929e);font-size:11px}
+.onboarding-flow-secondary span{background:var(--ui-surface-soft,#fafbfc)}
+.onboarding-context-tip{display:flex;flex-wrap:wrap;gap:6px 10px;align-items:center;margin-left:50px;padding:10px 12px;border-left:2px solid var(--ui-accent,#18202b);background:var(--ui-bg-muted,#f2f4f7);font-size:11px;line-height:1.5}
+.onboarding-context-tip strong{font-size:11px}
+.onboarding-context-tip span{color:var(--ui-text-secondary,#697381)}
+.onboarding-saved-note{margin:10px 0 0 50px;color:var(--ui-text-secondary,#697381);font-size:11px;line-height:1.55}
+.onboarding-actions{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:14px 24px 18px;border-top:1px solid var(--ui-border,#e4e8ed);background:var(--ui-bg-elevated,#fff)}
+.onboarding-primary-actions{display:flex;flex-wrap:wrap;gap:8px}
+.onboarding-action,.onboarding-skip{min-height:42px;border-radius:var(--ui-radius-control,9px);font-size:11px;font-weight:800;cursor:pointer;transition:background-color .14s ease,color .14s ease,border-color .14s ease,transform .1s ease}
+.onboarding-action{padding:9px 13px;border:1px solid var(--ui-border-strong,#c8ced7)}
+.onboarding-action-primary{background:var(--ui-accent,#18202b);border-color:var(--ui-accent,#18202b);color:var(--ui-accent-contrast,#fff)}
+.onboarding-action-secondary{background:var(--ui-surface,#fff);color:var(--ui-text,#18202b)}
+.onboarding-skip{padding:9px 4px;border:0;background:transparent;color:var(--ui-text-secondary,#697381)}
+.onboarding-action:hover,.onboarding-action:focus-visible,.onboarding-skip:hover,.onboarding-skip:focus-visible{outline:none;filter:brightness(.98)}
+.onboarding-action-secondary:hover,.onboarding-action-secondary:focus-visible{background:var(--ui-bg-muted,#f0f2f5);border-color:var(--ui-border-strong,#c8ced7)}
+.onboarding-skip:hover,.onboarding-skip:focus-visible{color:var(--ui-text,#18202b)}
+.onboarding-action:active,.onboarding-skip:active{transform:translateY(1px)}
+
+@media(max-width:700px){
+  .onboarding-modal.onboarding-v2{width:calc(100vw - 20px);max-height:calc(100dvh - 20px);border-radius:var(--ui-radius-modal,18px)}
+  .onboarding-v2-header{padding:17px 17px 14px!important}
+  .onboarding-v2-header h2{font-size:19px}
+  .onboarding-v2-header small{font-size:11px}
+  .onboarding-v2-body{padding:0 17px!important;max-height:calc(100dvh - 188px)}
+  .onboarding-step{padding:15px 0}
+  .onboarding-step-head{grid-template-columns:34px minmax(0,1fr);gap:9px}
+  .onboarding-step-number{width:29px;height:29px}
+  .onboarding-step-head h3{font-size:14px}
+  .onboarding-path-grid{grid-template-columns:1fr;gap:8px;margin:12px 0 0 43px}
+  .onboarding-models,.onboarding-flow,.onboarding-context-tip,.onboarding-saved-note{margin-left:43px}
+  .onboarding-flow{gap:5px}
+  .onboarding-flow b{display:none}
+  .onboarding-flow span{min-height:30px;padding:5px 8px}
+  .onboarding-actions{align-items:stretch;flex-direction:column;padding:12px 17px 15px}
+  .onboarding-primary-actions{display:grid;grid-template-columns:1fr 1fr;gap:7px}
+  .onboarding-action,.onboarding-skip{min-height:44px}
+  .onboarding-skip{width:100%}
+}
+
+@media(max-width:420px){
+  .onboarding-v2-overlay{padding:8px}
+  .onboarding-modal.onboarding-v2{width:calc(100vw - 12px)}
+  .onboarding-v2-header{padding:15px 14px 12px!important}
+  .onboarding-v2-body{padding:0 14px!important}
+  .onboarding-step-head{grid-template-columns:31px minmax(0,1fr);gap:8px}
+  .onboarding-path-grid,.onboarding-models,.onboarding-flow,.onboarding-context-tip,.onboarding-saved-note{margin-left:39px}
+  .onboarding-primary-actions{grid-template-columns:1fr}
+  .onboarding-actions{padding:10px 14px 13px}
+}
+
+@media(prefers-reduced-motion:reduce){
+  .onboarding-action,.onboarding-skip{transition:none}
+}

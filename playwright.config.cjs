@@ -1,5 +1,16 @@
 const { defineConfig, devices } = require('@playwright/test');
 
+const baseURL = process.env.PROD_URL || 'https://samson.web.id';
+const onboardingStorageState = {
+  cookies: [],
+  origins: [
+    {
+      origin: new URL(baseURL).origin,
+      localStorage: [{ name: 'samsonOnboardingCompleted', value: 'true' }]
+    }
+  ]
+};
+
 module.exports = defineConfig({
   testDir: './tests/e2e',
   timeout: 30000,
@@ -10,7 +21,8 @@ module.exports = defineConfig({
   workers: process.env.CI ? 2 : undefined,
   reporter: process.env.CI ? [['line'], ['html', { open: 'never' }]] : 'list',
   use: {
-    baseURL: process.env.PROD_URL || 'https://samson.web.id',
+    baseURL,
+    storageState: onboardingStorageState,
     trace: 'retain-on-failure',
     screenshot: 'only-on-failure',
     video: 'retain-on-failure',
