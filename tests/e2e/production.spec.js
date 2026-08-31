@@ -55,7 +55,7 @@ test.describe('samson.web.id current frontend', () => {
     await page.goto(BASE_URL, { waitUntil: 'networkidle' });
 
     const description = page.locator('.nft-info p').first();
-    const category = page.locator('.nft-art small').first();
+    const category = page.locator('.open-btn span').first();
     const favorite = page.locator('.favorite-btn').first();
 
     await expect(description).toHaveCSS('color', 'rgb(89, 89, 89)');
@@ -80,10 +80,10 @@ test.describe('samson.web.id current frontend', () => {
       const cardBox = firstCard.getBoundingClientRect();
       const favorite = firstCard.querySelector('.favorite-btn');
       const open = firstCard.querySelector('.open-btn');
-      const category = firstCard.querySelector('.nft-art small');
+      const domain = firstCard.querySelector('.prompt-domain');
       const favoriteBox = favorite.getBoundingClientRect();
       const openBox = open.getBoundingClientRect();
-      const categoryBox = category.getBoundingClientRect();
+      const domainBox = domain.getBoundingClientRect();
       return {
         columns: gridStyle.gridTemplateColumns.split(' ').length,
         heights: boxes.map((box) => Math.round(box.height)),
@@ -92,8 +92,9 @@ test.describe('samson.web.id current frontend', () => {
           favoritePosition: getComputedStyle(favorite).position,
           openPosition: getComputedStyle(open).position,
           favoriteInsideRight: favoriteBox.right <= cardBox.right + 1 && favoriteBox.left >= cardBox.left,
-          openInsideRight: openBox.right <= cardBox.right + 1 && openBox.left >= cardBox.left,
-          categoryClearsOpen: categoryBox.right <= openBox.left
+          openInsideCard: openBox.right <= cardBox.right + 1 && openBox.left >= cardBox.left,
+          openSpansFooter: openBox.width >= cardBox.width - 50,
+          domainInsideCard: domainBox.left >= cardBox.left && domainBox.right <= cardBox.right + 1
         }
       };
     });
@@ -107,8 +108,9 @@ test.describe('samson.web.id current frontend', () => {
       favoritePosition: 'absolute',
       openPosition: 'absolute',
       favoriteInsideRight: true,
-      openInsideRight: true,
-      categoryClearsOpen: true
+      openInsideCard: true,
+      openSpansFooter: true,
+      domainInsideCard: true
     });
   });
 
