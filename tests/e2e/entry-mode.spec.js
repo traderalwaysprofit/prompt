@@ -6,7 +6,7 @@ const returnToChooser = async (page) => {
   if ((page.viewportSize()?.width || 1280) <= 700) {
     await page.locator('#mobile-menu-toggle').click();
     await expect(page.locator('#mobile-menu-panel')).toHaveClass(/is-open/);
-    await page.locator('[data-mobile-nav="cheatcodes"]').click();
+    await page.locator('[data-mobile-nav="workflows"]').click();
   } else {
     await page.locator('#nav-cheatcodes').click();
   }
