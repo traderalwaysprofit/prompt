@@ -37,6 +37,9 @@ for (const command of commands) {
   for (const field of ['name', 'categoryId', 'description', 'template']) {
     if (typeof command[field] !== 'string' || command[field].trim() === '') errors.push(`Missing required field: ${field} in command ${command.id}`);
   }
+  if ('displayTag' in command && (typeof command.displayTag !== 'string' || command.displayTag.trim() === '')) {
+    errors.push(`Invalid displayTag in command ${command.id}`);
+  }
   if (!categoryIds.has(command.categoryId)) errors.push(`Invalid category reference: ${command.name}`);
 }
 
@@ -101,6 +104,7 @@ for (const id of duplicateValues(workflowIds)) errors.push(`Duplicate workflow i
 for (const [id, name] of [[203, '/wordpress'], [204, '/woocommerce'], [205, '/wpaudit']]) {
   const command = commands.find((item) => item.id === id);
   if (!command || command.name !== name) errors.push(`Required WordPress command missing or changed: ${id} ${name}`);
+  if (command?.displayTag !== 'WORDPRESS') errors.push(`Required WordPress displayTag missing or changed: ${id} ${name}`);
 }
 
 console.log(JSON.stringify({
