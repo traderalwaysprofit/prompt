@@ -30,7 +30,8 @@
     const themes = window.SamsonTheme?.themes || [
       { id: 'default', label: 'Samson Default' },
       { id: 'developer', label: 'Developer' },
-      { id: 'swiss', label: 'Swiss' }
+      { id: 'swiss', label: 'Swiss' },
+      { id: 'pixel', label: 'Pixel' }
     ];
     return themes.map((theme) => `<option value="${theme.id}">${theme.label}</option>`).join('');
   };
@@ -43,13 +44,84 @@
     });
   };
 
-  const createDesktopThemePicker = (nav) => {
-    const wrapper = document.createElement('label');
-    wrapper.className = 'theme-picker-wrap';
-    wrapper.setAttribute('aria-label', 'UI Personality');
-    wrapper.innerHTML = `<span>APPEARANCE</span><select id="theme-select" class="theme-picker" data-theme-select aria-label="UI Personality">${themeOptionsMarkup()}</select>`;
+  const setUtilityMenu = (trigger, panel, open) => {
+    trigger.setAttribute('aria-expanded', String(open));
+    panel.setAttribute('aria-hidden', String(!open));
+    panel.classList.toggle('is-open', open);
+  };
+
+  const createDesktopUtilityMenu = (nav, onboarding) => {
+    const wrapper = document.createElement('div');
+    wrapper.className = 'nav-more';
+
+    const trigger = document.createElement('button');
+    trigger.id = 'nav-more';
+    trigger.className = 'nav-link nav-more-trigger';
+    trigger.type = 'button';
+    trigger.setAttribute('aria-haspopup', 'menu');
+    trigger.setAttribute('aria-expanded', 'false');
+    trigger.setAttribute('aria-controls', 'nav-more-menu');
+    trigger.innerHTML = '<span>More</span><svg class="svg-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>';
+
+    const panel = document.createElement('div');
+    panel.id = 'nav-more-menu';
+    panel.className = 'nav-more-menu';
+    panel.setAttribute('role', 'menu');
+    panel.setAttribute('aria-hidden', 'true');
+    panel.innerHTML = '<div class="nav-more-label">UTILITY</div><div class="nav-more-actions"></div><div class="nav-more-divider"></div><label class="theme-picker-wrap utility-theme-picker"><span>APPEARANCE</span><select id="theme-select" class="theme-picker" data-theme-select aria-label="UI Personality"></select></label>';
+    panel.querySelector('#theme-select').innerHTML = themeOptionsMarkup();
+
+    onboarding.className = 'nav-utility-action';
+    onboarding.innerHTML = '<svg class="svg-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M12 8v4l2.5 2"></path></svg><span>Onboarding AI</span>';
+    panel.querySelector('.nav-more-actions').appendChild(onboarding);
+
+    wrapper.append(trigger, panel);
     nav.appendChild(wrapper);
-    bindThemeSelect(wrapper.querySelector('[data-theme-select]'));
+    bindThemeSelect(panel.querySelector('[data-theme-select]'));
+
+    trigger.addEventListener('click', (event) => {
+      event.stopPropagation();
+      setUtilityMenu(trigger, panel, trigger.getAttribute('aria-expanded') !== 'true');
+    });
+
+    panel.addEventListener('click', (event) => {
+      if (event.target.closest('.nav-utility-action')) setUtilityMenu(trigger, panel, false);
+    });
+
+    document.addEventListener('click', (event) => {
+      if (!wrapper.contains(event.target)) setUtilityMenu(trigger, panel, false);
+    });
+
+    document.addEventListener('keydown', (event) => {
+      if (event.key !== 'Escape') return;
+      if (trigger.getAttribute('aria-expanded') === 'true') {
+        setUtilityMenu(trigger, panel, false);
+        trigger.focus();
+      }
+    });
+
+    return { wrapper, panel, trigger };
+  };
+
+  const syncCompactPrimaryNavigation = (nav, utilityPanel) => {
+    const workflow = nav.querySelector('#nav-cheatcodes') || nav.querySelector('.nav-link:not(#nav-recent):not(#nav-favorites):not(#nav-more)');
+    const prompts = nav.querySelector('#nav-recent');
+    const categories = nav.querySelector('#nav-categories');
+    const favorites = nav.querySelector('#nav-favorites');
+    const actions = utilityPanel.querySelector('.nav-more-actions');
+
+    if (workflow && workflow.textContent.trim() !== 'Workflows') workflow.textContent = 'Workflows';
+    if (prompts && prompts.textContent.trim() !== 'Prompts') prompts.textContent = 'Prompts';
+    categories?.remove();
+
+    if (favorites && favorites.parentElement !== actions) {
+      favorites.textContent = 'Saved';
+      favorites.classList.remove('active');
+      favorites.classList.add('nav-utility-action');
+      actions.prepend(favorites);
+    } else if (favorites && favorites.textContent.trim() !== 'Saved') {
+      favorites.textContent = 'Saved';
+    }
   };
 
   const enhanceShell = () => {
@@ -71,14 +143,16 @@
 
     const onboarding = document.createElement('button');
     onboarding.id = 'nav-onboarding';
-    onboarding.className = 'nav-link onboarding-nav';
     onboarding.type = 'button';
     onboarding.setAttribute('aria-label', 'Onboarding AI');
-    onboarding.innerHTML = '<svg class="svg-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M12 8v4l2.5 2"></path></svg><span>Onboarding AI</span>';
     onboarding.addEventListener('click', openOnboarding);
-    nav.appendChild(onboarding);
 
-    createDesktopThemePicker(nav);
+    const utility = createDesktopUtilityMenu(nav, onboarding);
+    syncCompactPrimaryNavigation(nav, utility.panel);
+
+    const navObserver = new MutationObserver(() => syncCompactPrimaryNavigation(nav, utility.panel));
+    navObserver.observe(nav, { childList: true, subtree: true, characterData: true });
+    window.setTimeout(() => navObserver.disconnect(), 1800);
 
     const toggle = document.createElement('button');
     toggle.id = 'mobile-menu-toggle';
@@ -93,7 +167,7 @@
     panel.id = 'mobile-menu-panel';
     panel.className = 'mobile-menu-panel';
     panel.setAttribute('aria-hidden', 'true');
-    panel.innerHTML = `<div class="mobile-menu-title">SAMSON</div><button type="button" data-mobile-nav="cheatcodes">Cheatcodes</button><button type="button" data-mobile-nav="prompts">Prompt Library</button><button type="button" data-mobile-nav="categories">Categories</button><button type="button" data-mobile-nav="favorites">Favorites</button><button type="button" data-mobile-nav="onboarding">Onboarding AI</button><label class="mobile-theme-picker"><span>UI PERSONALITY</span><select id="mobile-theme-select" class="theme-picker" data-theme-select aria-label="UI Personality mobile">${themeOptionsMarkup()}</select></label>`;
+    panel.innerHTML = `<div class="mobile-menu-title">SAMSON</div><div class="mobile-menu-group-label">WORK</div><button type="button" data-mobile-nav="workflows">Workflows</button><button type="button" data-mobile-nav="prompts">Prompts</button><button type="button" data-mobile-nav="favorites">Saved</button><div class="mobile-menu-divider"></div><div class="mobile-menu-group-label">HELP</div><button type="button" data-mobile-nav="onboarding">Onboarding AI</button><label class="mobile-theme-picker"><span>APPEARANCE</span><select id="mobile-theme-select" class="theme-picker" data-theme-select aria-label="UI Personality mobile">${themeOptionsMarkup()}</select></label>`;
 
     header.appendChild(toggle);
     header.insertAdjacentElement('afterend', panel);
@@ -113,9 +187,8 @@
       if (!item) return;
 
       const targets = {
-        cheatcodes: nav.querySelector('#nav-cheatcodes') || nav.querySelector('.nav-link.active'),
+        workflows: nav.querySelector('#nav-cheatcodes') || nav.querySelector('.nav-link.active'),
         prompts: nav.querySelector('#nav-recent'),
-        categories: nav.querySelector('#nav-categories'),
         favorites: nav.querySelector('#nav-favorites'),
         onboarding
       };
