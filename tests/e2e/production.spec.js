@@ -155,7 +155,7 @@ test.describe('samson.web.id current frontend', () => {
     await expect(page.locator('.nft-card code')).toHaveText('/xauanalysis');
   });
 
-  test('homepage positions Cheatcodes first while preserving Prompt Library', async ({ page }) => {
+  test('homepage keeps Workflows and Prompts as the two primary product paths', async ({ page }) => {
     await page.goto(BASE_URL, { waitUntil: 'networkidle' });
 
     await expect(page.getByRole('heading', { name: 'Bagaimana Anda ingin bekerja?' })).toBeVisible();
@@ -167,9 +167,10 @@ test.describe('samson.web.id current frontend', () => {
     await expect(page.getByRole('button', { name: /Buka Prompt Library/ })).toBeVisible();
     await expect(page.locator('#featured')).toBeHidden();
     await expect(page.locator('#workflow-catalog')).toBeHidden();
-    await expect(page.locator('#nav-cheatcodes')).toHaveText('Cheatcodes');
-    await expect(page.locator('#nav-recent')).toHaveText('Prompt Library');
-    await expect(page.locator('#nav-categories')).toHaveText('Categories');
+    await expect(page.locator('#nav-cheatcodes')).toHaveText('Workflows');
+    await expect(page.locator('#nav-recent')).toHaveText('Prompts');
+    await expect(page.locator('#nav-categories')).toHaveCount(0);
+    await expect(page.locator('#nav-more')).toContainText('More');
   });
 
   test('Build Website runs as an eight-step workflow with local progress', async ({ page }) => {
@@ -255,6 +256,7 @@ test.describe('samson.web.id current frontend', () => {
       await expect(page.locator('#mobile-menu-panel')).toHaveClass(/is-open/);
       await page.locator('[data-mobile-nav="onboarding"]').click();
     } else {
+      await page.locator('#nav-more').click();
       await page.locator('#nav-onboarding').click();
     }
 
@@ -272,6 +274,7 @@ test.describe('samson.web.id current frontend', () => {
       await page.locator('#mobile-menu-toggle').click();
       await page.locator('[data-mobile-nav="favorites"]').click();
     } else {
+      await page.locator('#nav-more').click();
       await page.locator('#nav-favorites').click();
     }
     await expect(page.locator('.results-count')).toContainText('1 SAVED PROMPTS');
