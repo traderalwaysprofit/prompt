@@ -38,36 +38,16 @@
   border:0!important;
   box-shadow:none!important;
 }
-.nft-art .prompt-visual-svg,
-.nft-art .grid-lines,
-.nft-art>div:not(.grid-lines),
-.nft-art>.svg-icon{
-  display:none!important;
-}
-.nft-art>span{
+.prompt-domain{
   position:absolute;
-  top:18px;
+  top:20px;
   left:20px;
-  z-index:3;
-  color:#98a1ae;
-  font:700 9px/1 ui-monospace,SFMono-Regular,Menlo,monospace;
-  letter-spacing:.1em;
-}
-.nft-art small{
-  display:inline-flex!important;
-  position:absolute;
-  left:20px;
-  bottom:18px;
   z-index:3;
   max-width:calc(100% - 76px);
   overflow:hidden;
-  padding:5px 8px;
-  border:1px solid #e5e9ee;
-  border-radius:999px;
-  background:#f7f9fb;
-  color:#7b8694;
-  font:750 8px/1 ui-monospace,SFMono-Regular,Menlo,monospace;
-  letter-spacing:.055em;
+  color:#657180;
+  font:800 10px/1 ui-monospace,SFMono-Regular,Menlo,monospace;
+  letter-spacing:.12em;
   text-overflow:ellipsis;
   white-space:nowrap;
 }
@@ -76,7 +56,7 @@
   height:100%;
   min-height:0;
   align-content:start;
-  padding:56px 20px 62px;
+  padding:58px 20px 58px;
 }
 .nft-info>div{
   min-width:0;
@@ -96,7 +76,7 @@
   margin:10px 0 0;
   color:#778290;
   font-size:12px;
-  line-height:1.5;
+  line-height:1.55;
   -webkit-box-orient:vertical;
   -webkit-line-clamp:3;
 }
@@ -127,37 +107,50 @@
 }
 .open-btn{
   position:absolute;
-  right:16px;
-  bottom:14px;
-  width:34px;
-  height:34px;
-  padding:0;
-  display:grid;
-  place-items:center;
-  border:1px solid #dfe5eb;
-  border-radius:10px;
-  background:#fff;
-  color:#657180;
-  box-shadow:0 3px 10px rgba(24,32,43,.035);
+  left:20px;
+  right:20px;
+  bottom:13px;
+  width:auto;
+  min-height:36px;
+  padding:8px 0 0;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  border:0;
+  border-top:1px solid #edf0f3;
+  border-radius:0;
+  background:transparent;
+  color:#6b7684;
+  box-shadow:none;
   cursor:pointer;
-  opacity:.72;
-  transition:opacity .18s ease,color .18s ease,background .18s ease,border-color .18s ease,transform .18s ease;
+  font-size:11px;
+  font-weight:650;
+  text-align:left;
+  transition:color .18s ease,border-color .18s ease;
+}
+.open-btn span{
+  min-width:0;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
 }
 .open-btn .svg-icon{
-  width:15px;
-  height:15px;
+  flex:0 0 auto;
+  width:14px;
+  height:14px;
+  transition:transform .18s ease;
 }
 .nft-card:hover .open-btn,
-.open-btn:focus-visible{
-  opacity:1;
-}
 .open-btn:hover,
 .open-btn:focus-visible{
-  transform:translateY(-1px);
-  border-color:#1c2632;
-  background:#1c2632;
-  color:#fff;
+  color:#1c2632;
+  border-top-color:#d7dde4;
   outline:none;
+}
+.open-btn:hover .svg-icon,
+.open-btn:focus-visible .svg-icon{
+  transform:translateX(2px);
 }
 @media(max-width:1080px){
   .nft-grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
@@ -165,23 +158,24 @@
 @media(max-width:760px){
   .nft-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
   .nft-card{border-radius:16px}
-  .nft-info{padding:52px 17px 58px}
+  .nft-info{padding:54px 17px 56px}
   .nft-info code{font-size:13px}
-  .nft-art>span{top:16px;left:17px}
-  .nft-art small{left:17px;bottom:16px;max-width:calc(100% - 76px)}
+  .prompt-domain{top:18px;left:17px;max-width:calc(100% - 72px)}
   .favorite-btn{top:10px!important;right:10px!important}
-  .open-btn{right:13px;bottom:13px}
+  .open-btn{left:17px;right:17px;bottom:12px;min-height:38px}
 }
 @media(max-width:520px){
   .nft-grid{grid-template-columns:1fr;gap:10px}
   .nft-card{aspect-ratio:auto;min-height:172px}
-  .nft-info{min-height:172px;padding:52px 17px 58px}
-  .nft-info p{-webkit-line-clamp:2}
+  .nft-info{min-height:172px;padding:54px 17px 58px}
+  .nft-info p{-webkit-line-clamp:3}
+  .open-btn{min-height:44px}
 }
 @media(hover:none){
-  .open-btn{opacity:1}
+  .open-btn{color:#1c2632}
 }
 @media(prefers-reduced-motion:reduce){
-  .nft-card,.favorite-btn,.open-btn{transition:none}
-  .nft-card:hover,.favorite-btn:hover,.open-btn:hover{transform:none}
+  .nft-card,.favorite-btn,.open-btn,.open-btn .svg-icon{transition:none}
+  .nft-card:hover,.favorite-btn:hover{transform:none}
+  .open-btn:hover .svg-icon,.open-btn:focus-visible .svg-icon{transform:none}
 }
