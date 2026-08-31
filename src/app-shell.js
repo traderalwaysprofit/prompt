@@ -58,7 +58,7 @@
     trigger.id = 'nav-more';
     trigger.className = 'nav-link nav-more-trigger';
     trigger.type = 'button';
-    trigger.setAttribute('aria-haspopup', 'menu');
+    trigger.setAttribute('aria-haspopup', 'true');
     trigger.setAttribute('aria-expanded', 'false');
     trigger.setAttribute('aria-controls', 'nav-more-menu');
     trigger.innerHTML = '<span>More</span><svg class="svg-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>';
@@ -66,8 +66,8 @@
     const panel = document.createElement('div');
     panel.id = 'nav-more-menu';
     panel.className = 'nav-more-menu';
-    panel.setAttribute('role', 'menu');
     panel.setAttribute('aria-hidden', 'true');
+    panel.setAttribute('aria-label', 'SAMSON utilities');
     panel.innerHTML = '<div class="nav-more-label">UTILITY</div><div class="nav-more-actions"></div><div class="nav-more-divider"></div><label class="theme-picker-wrap utility-theme-picker"><span>APPEARANCE</span><select id="theme-select" class="theme-picker" data-theme-select aria-label="UI Personality"></select></label>';
     panel.querySelector('#theme-select').innerHTML = themeOptionsMarkup();
 
@@ -124,6 +124,15 @@
     }
   };
 
+  const scheduleCompactNavigationSync = (nav, utilityPanel) => {
+    const sync = () => syncCompactPrimaryNavigation(nav, utilityPanel);
+    sync();
+    requestAnimationFrame(sync);
+    window.setTimeout(sync, 80);
+    window.setTimeout(sync, 240);
+    window.setTimeout(sync, 720);
+  };
+
   const enhanceShell = () => {
     const header = document.querySelector('.site-header');
     const nav = header?.querySelector('nav');
@@ -148,11 +157,7 @@
     onboarding.addEventListener('click', openOnboarding);
 
     const utility = createDesktopUtilityMenu(nav, onboarding);
-    syncCompactPrimaryNavigation(nav, utility.panel);
-
-    const navObserver = new MutationObserver(() => syncCompactPrimaryNavigation(nav, utility.panel));
-    navObserver.observe(nav, { childList: true, subtree: true, characterData: true });
-    window.setTimeout(() => navObserver.disconnect(), 1800);
+    scheduleCompactNavigationSync(nav, utility.panel);
 
     const toggle = document.createElement('button');
     toggle.id = 'mobile-menu-toggle';
