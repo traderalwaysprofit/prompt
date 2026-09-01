@@ -34,10 +34,6 @@ import { buildGoogleContactsCsv, ContactToolError, mapContactRows } from './cont
               <p>Auto-Mapping dari Excel <span>(Nama, Brand, WA)</span></p>
             </div>
           </div>
-          <div class="tools-privacy" aria-label="Privasi pemrosesan file">
-            <span class="tools-privacy-dot" aria-hidden="true"></span>
-            <div><strong>LOCAL ONLY</strong><span>File tidak diunggah</span></div>
-          </div>
         </header>
 
         <div class="contact-tool-grid">
