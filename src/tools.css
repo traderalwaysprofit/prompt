@@ -6,6 +6,7 @@
   background:var(--ui-bg,#f6f8fb);
   color:var(--ui-text,#10233f);
 }
+.tools-section [hidden]{display:none!important}
 .tools-inner{width:min(1288px,100%);min-width:0;margin:0 auto}
 .tools-page-header{display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:22px;margin-bottom:28px}
 .tools-back{display:inline-flex;align-items:center;justify-content:center;gap:7px;min-width:44px;min-height:44px;padding:0 13px;border:1px solid var(--ui-border,#dfe4ea);border-radius:var(--ui-radius-control,9px);background:var(--ui-surface,#fff);color:var(--ui-text-secondary,#5e6a7c);font-size:12px;font-weight:800;cursor:pointer}

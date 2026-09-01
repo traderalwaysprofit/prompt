@@ -41,6 +41,10 @@ test.describe('SAMSON Google Contacts tool', () => {
   test('normalizes Indonesian WhatsApp numbers, rejects duplicates, and exports Google CSV', async ({ page }) => {
     await page.goto(`${BASE_URL}#tools/google-contacts`, { waitUntil: 'networkidle' });
 
+    await expect(page.locator('#contact-empty-state')).toBeVisible();
+    await expect(page.locator('#contact-preview-content')).toBeHidden();
+    await expect(page.locator('#contact-file-meta')).toBeHidden();
+
     const source = [
       'Nama Kontak,Brand / Perusahaan,WhatsApp',
       'Sari,Masumi,081234567890',
@@ -58,6 +62,9 @@ test.describe('SAMSON Google Contacts tool', () => {
 
     await expect(page.locator('#contact-ready-count')).toHaveText('3');
     await expect(page.locator('#contact-issue-count')).toHaveText('2');
+    await expect(page.locator('#contact-empty-state')).toBeHidden();
+    await expect(page.locator('#contact-preview-content')).toBeVisible();
+    await expect(page.locator('#contact-file-meta')).toBeVisible();
     await expect(page.locator('#contact-header-mode')).toHaveText('Terdeteksi');
     await expect(page.locator('#contact-preview-body tr')).toHaveCount(5);
     await expect(page.locator('.contact-table thead th')).toHaveCount(3);
