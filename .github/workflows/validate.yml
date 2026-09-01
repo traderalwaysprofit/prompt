@@ -107,8 +107,11 @@ jobs:
           test -s dist/src/cheatcodes.js
           test -s dist/src/cheatcodes.css
           test -s dist/src/tools.js
-          test -s dist/src/contact-tools-core.js
+          test -s dist/src/tools-registry.js
           test -s dist/src/tools.css
+          test -s dist/src/tools/google-contacts.js
+          test -s dist/src/tools/google-contacts-core.js
+          test -s dist/src/tools/google-contacts.css
           test -s dist/assets/templates/samson-template-kontak.xlsx
           test -s dist/vendor/xlsx.full.min.js
           test -s dist/vendor/LICENSE.sheetjs.txt

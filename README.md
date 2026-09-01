@@ -47,7 +47,7 @@ Baseline runtime saat ini:
 - Runtime statistics berasal dari data aktual, bukan angka statis di UI.
 - Automated prompt intake melalui GitHub workflow dan pull request.
 - Adaptive UI dengan empat personality: **Samson Default, Developer, Swiss, Pixel**.
-- Practical Tools dengan template Excel A–C dan konverter Google Contacts CSV yang memproses data secara lokal di browser.
+- Practical Tools Hub modular dengan katalog `#tools`; Google Contacts Ready memakai template Excel A–C dan memproses data secara lokal di browser.
 - Data validation, regression protection, security-header validation, Browser E2E, dan production verification.
 - Cloudflare preview/build sebelum perubahan masuk production.
 

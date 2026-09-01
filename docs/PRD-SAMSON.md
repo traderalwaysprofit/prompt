@@ -215,6 +215,8 @@ Penambahan prompt harus dilakukan melalui workflow terkontrol dan pull request, 
 ### FR-6 — Practical Tools
 
 - menu Tools tersedia di More pada desktop dan menu kerja pada mobile;
+- menu Tools membuka katalog `#tools`, bukan langsung menjalankan salah satu tool;
+- setiap tool terdaftar melalui registry modular, memiliki deep link sendiri, dan dapat kembali ke katalog Tools;
 - tool Excel → Google Contacts menerima `.xlsx`, `.xls`, dan `.csv` dengan urutan kolom Nama, Brand/Perusahaan, dan WhatsApp;
 - template `.xlsx` siap-isi dapat diunduh dengan sheet pertama berurutan `Nama Kontak`, `Brand / Perusahaan`, dan `WhatsApp`;
 - data kontak diproses lokal di browser dan tidak dikirim ke backend;
