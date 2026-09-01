@@ -65,7 +65,7 @@ test.describe('SAMSON Work Assistant menu', () => {
     await expect(page.getByRole('button', { name: 'Promo', exact: false })).toBeVisible();
     await expect(page.getByRole('button', { name: 'B2B Outreach', exact: false })).toBeVisible();
 
-    await page.getByRole('button', { name: /Work Assistant/ }).click();
+    await page.locator('[data-work-assistant-back]').click();
     await expect(page.locator('[data-work-assistant-card="email"] button')).toHaveCount(0);
     await expect(page.locator('[data-work-assistant-card="customer-support"] button')).toHaveCount(0);
   });
@@ -83,6 +83,7 @@ test.describe('SAMSON Work Assistant menu', () => {
 
   test('deep link restores WhatsApp Broadcast and the selected problem', async ({ page }) => {
     await page.goto(`${BASE_URL}/#work-assistant/whatsapp-broadcast/b2b-outreach`, { waitUntil: 'networkidle' });
+    await expect(page.locator('html')).toHaveAttribute('data-entry-mode', 'workflows');
     await expect(page.locator('#workflow-catalog')).toBeVisible();
     await expect(page.locator('#work-assistant')).toBeVisible();
     await expect(page.getByRole('tab', { name: 'Work Assistant' })).toHaveAttribute('aria-selected', 'true');
