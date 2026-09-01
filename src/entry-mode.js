@@ -4,6 +4,7 @@
   const root = document.documentElement;
 
   const modeFromHash = () => {
+    if (/^#tools(?:\/|$)/.test(location.hash)) return 'tools';
     if (location.hash === '#prompts') return 'prompts';
     if (location.hash === '#workflows' || /^#cheatcodes\//.test(location.hash) || /^#work-assistant(?:\/|$)/.test(location.hash)) return 'workflows';
     return 'chooser';
@@ -21,6 +22,11 @@
 
     if (target.closest('[data-route-prompts], #hero-prompts, #nav-recent, #nav-categories, #nav-favorites, [data-prompt-category]')) {
       setMode('prompts');
+      return;
+    }
+
+    if (target.closest('#nav-tools, [data-open-tools], [data-mobile-nav="tools"]')) {
+      setMode('tools');
       return;
     }
 

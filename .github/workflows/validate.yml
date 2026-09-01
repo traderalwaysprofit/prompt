@@ -87,6 +87,9 @@ jobs:
       - name: Report prompt workflow coverage
         run: npm run report:prompt-coverage -- "${{ github.event_name == 'pull_request' && format('origin/{0}', github.base_ref) || 'HEAD^' }}"
 
+      - name: Test practical tools core
+        run: npm run test:tools
+
       - name: Build production output
         run: npm run build
 
@@ -103,6 +106,12 @@ jobs:
           test -s dist/src/app-shell.js
           test -s dist/src/cheatcodes.js
           test -s dist/src/cheatcodes.css
+          test -s dist/src/tools.js
+          test -s dist/src/contact-tools-core.js
+          test -s dist/src/tools.css
+          test -s dist/assets/templates/samson-template-kontak.xlsx
+          test -s dist/vendor/xlsx.full.min.js
+          test -s dist/vendor/LICENSE.sheetjs.txt
           test -s dist/data/commands.json
           test -s dist/data/commands-extra.json
           test -s dist/data/cheatcodes.json

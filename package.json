@@ -11,9 +11,13 @@
     "validate:data": "node scripts/validate-data.mjs",
     "test:e2e": "playwright test",
     "validate:security-headers": "node scripts/validate-security-headers.mjs",
-    "validate:regression": "node scripts/validate-regression.mjs"
+    "validate:regression": "node scripts/validate-regression.mjs",
+    "test:tools": "node scripts/test-contact-tools.mjs"
   },
   "devDependencies": {
     "@playwright/test": "^1.55.0"
+  },
+  "dependencies": {
+    "xlsx": "https://cdn.sheetjs.com/xlsx-0.20.3/xlsx-0.20.3.tgz"
   }
 }
