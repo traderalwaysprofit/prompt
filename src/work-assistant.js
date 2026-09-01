@@ -20,6 +20,7 @@
   })[character]);
 
   const catalog = () => document.querySelector('#workflow-catalog');
+  const guided = () => document.querySelector('#guided-workflows-panel');
   const assistant = () => document.querySelector('#work-assistant');
 
   const menuById = (id) => state.data?.menus?.find((item) => item.id === id) || null;
@@ -37,20 +38,27 @@
     switcher.setAttribute('role', 'tablist');
     switcher.setAttribute('aria-label', 'Workflow mode');
     switcher.innerHTML = `
-      <button type="button" class="workflow-mode-tab is-active" data-workflow-mode="guided" role="tab" aria-selected="true" aria-controls="workflow-catalog-grid">Guided Workflows</button>
-      <button type="button" class="workflow-mode-tab" data-workflow-mode="assistant" role="tab" aria-selected="false" aria-controls="work-assistant">Work Assistant</button>`;
+      <button id="guided-workflows-tab" type="button" class="workflow-mode-tab is-active" data-workflow-mode="guided" role="tab" aria-selected="true" aria-controls="guided-workflows-panel">Guided Workflows</button>
+      <button id="work-assistant-tab" type="button" class="workflow-mode-tab" data-workflow-mode="assistant" role="tab" aria-selected="false" aria-controls="work-assistant">Work Assistant</button>`;
 
-    const section = document.createElement('section');
-    section.id = 'work-assistant';
-    section.className = 'work-assistant';
-    section.hidden = true;
-    section.setAttribute('aria-labelledby', 'work-assistant-title');
-    section.innerHTML = '<p class="work-assistant-loading" role="status">Memuat Work Assistant…</p>';
+    const guidedPanel = document.createElement('section');
+    guidedPanel.id = 'guided-workflows-panel';
+    guidedPanel.className = 'workflow-mode-panel guided-workflows-panel';
+    guidedPanel.setAttribute('role', 'tabpanel');
+    guidedPanel.setAttribute('aria-labelledby', 'guided-workflows-tab');
+
+    const assistantPanel = document.createElement('section');
+    assistantPanel.id = 'work-assistant';
+    assistantPanel.className = 'workflow-mode-panel work-assistant';
+    assistantPanel.hidden = true;
+    assistantPanel.setAttribute('role', 'tabpanel');
+    assistantPanel.setAttribute('aria-labelledby', 'work-assistant-tab');
+    assistantPanel.innerHTML = '<p class="work-assistant-loading" role="status">Memuat Work Assistant…</p>';
 
     root.insertBefore(switcher, header);
-    root.appendChild(section);
-    header.dataset.guidedCatalog = '1';
-    grid.dataset.guidedCatalog = '1';
+    root.insertBefore(guidedPanel, header);
+    guidedPanel.append(header, grid);
+    root.appendChild(assistantPanel);
     state.mounted = true;
     return true;
   };
@@ -130,17 +138,15 @@
 
   const setMode = (mode, options = {}) => {
     const root = catalog();
-    const section = assistant();
-    const header = root?.querySelector('[data-guided-catalog="1"].workflow-catalog-header');
-    const grid = root?.querySelector('[data-guided-catalog="1"].workflow-catalog-grid');
-    if (!root || !section || !header || !grid) return;
+    const guidedPanel = guided();
+    const assistantPanel = assistant();
+    if (!root || !guidedPanel || !assistantPanel) return;
 
     const nextMode = mode === 'assistant' ? 'assistant' : 'guided';
     state.mode = nextMode;
     root.hidden = false;
-    header.hidden = nextMode === 'assistant';
-    grid.hidden = nextMode === 'assistant';
-    section.hidden = nextMode !== 'assistant';
+    guidedPanel.hidden = nextMode !== 'guided';
+    assistantPanel.hidden = nextMode !== 'assistant';
 
     root.querySelectorAll('[data-workflow-mode]').forEach((button) => {
       const active = button.dataset.workflowMode === nextMode;
@@ -186,6 +192,14 @@
 
   const routeFromHash = () => {
     if (!state.data || !state.mounted) return;
+
+    if (location.hash === '#workflows') {
+      state.selectedMenu = null;
+      state.selectedProblem = null;
+      setMode('guided', { updateHash: false, scroll: false });
+      return;
+    }
+
     const match = location.hash.match(/^#work-assistant(?:\/([^/]+))?(?:\/([^/]+))?$/);
     if (!match) return;
     const menuId = match[1] || null;
