@@ -1,0 +1,243 @@
+.workflow-mode-switch{
+  display:inline-flex;
+  gap:4px;
+  margin:0 0 24px;
+  padding:4px;
+  border:1px solid #303c4b;
+  border-radius:12px;
+  background:#111820;
+}
+.workflow-mode-tab{
+  min-height:44px;
+  border:0;
+  border-radius:8px;
+  padding:0 16px;
+  background:transparent;
+  color:#9eabb8;
+  font:800 11px/1.2 ui-monospace,SFMono-Regular,Menlo,monospace;
+  letter-spacing:.04em;
+  cursor:pointer;
+}
+.workflow-mode-tab:hover,.workflow-mode-tab:focus-visible{
+  color:#f3f7fb;
+  outline:2px solid rgba(120,184,255,.32);
+  outline-offset:1px;
+}
+.workflow-mode-tab.is-active{
+  background:#f4f8fd;
+  color:#151d27;
+}
+.work-assistant[hidden]{display:none}
+.work-assistant{min-width:0}
+.work-assistant-loading{margin:0;color:#b5c0cc}
+.work-assistant-header{
+  display:grid;
+  grid-template-columns:minmax(0,1fr) minmax(280px,460px);
+  align-items:end;
+  gap:28px;
+  margin-bottom:24px;
+}
+.work-assistant-eyebrow{
+  display:inline-flex;
+  color:#78b8ff;
+  font:800 11px/1.2 ui-monospace,SFMono-Regular,Menlo,monospace;
+  letter-spacing:.12em;
+}
+.work-assistant-header h2,.work-assistant-detail-head h2{
+  margin:7px 0 0;
+  color:#f7f9fc;
+  font-size:clamp(28px,3.4vw,42px);
+  line-height:1.04;
+  letter-spacing:-.04em;
+  outline:none;
+}
+.work-assistant-header>p,.work-assistant-detail-head>p{
+  margin:0;
+  color:#a9b5c2;
+  font-size:13px;
+  line-height:1.7;
+}
+.work-assistant-grid{
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:14px;
+}
+.work-assistant-card{
+  min-width:0;
+  min-height:300px;
+  display:flex;
+  flex-direction:column;
+  padding:22px;
+  border:1px solid #303c4b;
+  border-radius:16px;
+  background:#19212b;
+}
+.work-assistant-card.is-available{border-color:#3d638a;background:#182536}
+.work-assistant-card-meta{
+  display:flex;
+  justify-content:space-between;
+  gap:12px;
+  color:#82bdff;
+  font:800 9px/1.3 ui-monospace,SFMono-Regular,Menlo,monospace;
+  letter-spacing:.06em;
+}
+.work-assistant-card-meta span:last-child{color:#95a2b0}
+.work-assistant-card.is-available .work-assistant-card-meta span:last-child{color:#a8d3ff}
+.work-assistant-card h3{
+  margin:20px 0 9px;
+  color:#f7f9fc;
+  font-size:23px;
+  line-height:1.1;
+  letter-spacing:-.035em;
+}
+.work-assistant-card p{
+  margin:0;
+  color:#aeb9c5;
+  font-size:12px;
+  line-height:1.65;
+}
+.work-assistant-card button,.work-assistant-card-status{
+  min-height:46px;
+  margin-top:auto;
+  padding:0 14px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  border-radius:10px;
+  font-size:12px;
+  font-weight:800;
+}
+.work-assistant-card button{
+  border:1px solid #557ca5;
+  background:#1f3b58;
+  color:#f1f7fd;
+  cursor:pointer;
+}
+.work-assistant-card button:hover,.work-assistant-card button:focus-visible{
+  border-color:#7fc2ff;
+  background:#167cf5;
+  outline:3px solid rgba(74,166,255,.2);
+}
+.work-assistant-card-status{
+  border-top:1px solid #303b47;
+  border-radius:0;
+  padding-left:0;
+  padding-right:0;
+  color:#7f8b98;
+  font:750 10px ui-monospace,SFMono-Regular,Menlo,monospace;
+  letter-spacing:.05em;
+  text-transform:uppercase;
+}
+.work-assistant-note{
+  margin:18px 0 0;
+  color:#8794a2;
+  font-size:11px;
+  line-height:1.6;
+}
+.work-assistant-detail-head{max-width:760px;margin-bottom:22px}
+.work-assistant-back{
+  min-height:44px;
+  margin:0 0 22px;
+  padding:0;
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  border:0;
+  background:transparent;
+  color:#b9c7d5;
+  font-weight:800;
+  cursor:pointer;
+}
+.work-assistant-back:hover,.work-assistant-back:focus-visible{color:#fff;outline:2px solid rgba(120,184,255,.32);outline-offset:4px}
+.work-assistant-detail-head>p{margin-top:10px}
+.work-problem-intro{
+  display:grid;
+  grid-template-columns:minmax(180px,.6fr) minmax(0,1.4fr);
+  gap:18px;
+  margin-bottom:16px;
+  padding:15px 0;
+  border-top:1px solid #303c4b;
+  border-bottom:1px solid #303c4b;
+}
+.work-problem-intro strong{color:#eff5fb;font-size:14px}
+.work-problem-intro span{color:#99a8b7;font-size:12px;line-height:1.6}
+.work-problem-grid{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:10px;
+}
+.work-problem-card{
+  position:relative;
+  min-width:0;
+  min-height:126px;
+  display:grid;
+  grid-template-columns:minmax(0,1fr) 20px;
+  grid-template-rows:auto 1fr;
+  gap:6px 12px;
+  padding:18px;
+  border:1px solid #303c4b;
+  border-radius:12px;
+  background:#171f29;
+  color:#edf4fb;
+  text-align:left;
+  cursor:pointer;
+}
+.work-problem-card:hover,.work-problem-card:focus-visible{
+  border-color:#5796d8;
+  background:#1b2a3a;
+  outline:3px solid rgba(74,166,255,.14);
+}
+.work-problem-card.is-selected{border-color:#78b8ff;background:#1b3149}
+.work-problem-title{font-size:15px;font-weight:850;letter-spacing:-.01em}
+.work-problem-description{grid-column:1;color:#aeb9c5;font-size:11px;line-height:1.55}
+.work-problem-arrow{grid-column:2;grid-row:1/3;align-self:center;justify-self:end;color:#78b8ff;font-size:17px}
+.work-problem-selection{
+  margin-top:16px;
+  padding:18px;
+  border-left:3px solid #78b8ff;
+  background:#162332;
+}
+.work-problem-selection>span,.work-problem-selection strong,.work-problem-selection p,.work-problem-selection small{display:block}
+.work-problem-selection>span{color:#78b8ff;font:800 9px ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.1em}
+.work-problem-selection strong{margin-top:5px;color:#f7f9fc;font-size:17px}
+.work-problem-selection p{margin:5px 0 0;color:#aeb9c5;font-size:12px;line-height:1.55}
+.work-problem-selection small{margin-top:10px;color:#8190a0;font-size:10px}
+html[data-theme="swiss"] .workflow-mode-switch,
+html[data-theme="swiss"] .workflow-mode-tab,
+html[data-theme="swiss"] .work-assistant-card,
+html[data-theme="swiss"] .work-assistant-card button,
+html[data-theme="swiss"] .work-problem-card{border-radius:0}
+html[data-theme="developer"] .work-assistant-card h3,
+html[data-theme="developer"] .work-problem-title{font-family:var(--ui-font-mono)}
+html[data-theme="pixel"] .workflow-mode-switch,
+html[data-theme="pixel"] .workflow-mode-tab,
+html[data-theme="pixel"] .work-assistant-card,
+html[data-theme="pixel"] .work-assistant-card button,
+html[data-theme="pixel"] .work-problem-card{border-radius:0!important}
+html[data-theme="pixel"] .workflow-mode-tab,
+html[data-theme="pixel"] .work-assistant-eyebrow,
+html[data-theme="pixel"] .work-assistant-card-meta,
+html[data-theme="pixel"] .work-assistant-card-status{font-family:var(--ui-font-display)!important}
+@media(max-width:980px){
+  .work-assistant-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media(max-width:760px){
+  .workflow-mode-switch{display:grid;grid-template-columns:1fr 1fr;width:100%;border-radius:10px}
+  .workflow-mode-tab{padding:0 10px}
+  .work-assistant-header{display:block}
+  .work-assistant-header>p{margin-top:12px}
+  .work-assistant-grid{grid-template-columns:1fr}
+  .work-assistant-card{min-height:240px}
+  .work-problem-intro{grid-template-columns:1fr;gap:7px}
+  .work-problem-grid{grid-template-columns:1fr}
+  .work-problem-card{min-height:118px}
+}
+@media(max-width:430px){
+  .workflow-mode-switch{grid-template-columns:1fr}
+  .work-assistant-card{padding:18px}
+  .work-problem-card{padding:16px}
+}
+@media(prefers-reduced-motion:reduce){
+  .work-assistant-card button,.work-problem-card{transition:none}
+}
