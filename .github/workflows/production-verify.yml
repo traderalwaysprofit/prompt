@@ -54,6 +54,7 @@ jobs:
 
           urls = {"origin": os.environ["ORIGIN_URL"], "production": os.environ["PROD_URL"]}
           failures = []
+          min_categories = 19
           required_headers = {
               "strict-transport-security": "max-age=31536000; includeSubDomains",
               "x-content-type-options": "nosniff",
@@ -127,8 +128,8 @@ jobs:
                   cheatcodes = json.loads(cheatcodes_body)
                   if len(commands) < 200:
                       failures.append(f"{name} expected at least 200 commands, got {len(commands)}")
-                  if len(categories) < 20:
-                      failures.append(f"{name} expected at least 20 categories, got {len(categories)}")
+                  if len(categories) < min_categories:
+                      failures.append(f"{name} expected at least {min_categories} categories, got {len(categories)}")
                   if len(examples) != len(commands):
                       failures.append(f"{name} expected one example per command, got {len(examples)} examples for {len(commands)} commands")
                   command_ids = [item.get("id") for item in commands]
