@@ -1,0 +1,45 @@
+.workflow-assistant-entry{
+  margin-top:10px;
+  padding-top:12px;
+  border-top:1px solid rgba(126,190,255,.22);
+}
+.workflow-assistant-entry-copy{
+  display:flex;
+  justify-content:space-between;
+  gap:12px;
+  margin-bottom:10px;
+}
+.workflow-assistant-entry-copy span{
+  color:#8fc7ff;
+  font:800 10px/1.3 ui-monospace,SFMono-Regular,Menlo,monospace;
+  letter-spacing:.08em;
+}
+.workflow-assistant-entry-copy small{
+  color:#93a4b5;
+  font-size:10px;
+  line-height:1.4;
+  text-align:right;
+}
+.workflow-assistant-entry .choice-action{
+  margin-top:0;
+  text-decoration:none;
+}
+.choice-action-assistant{
+  border:1px solid #4d6f92;
+  background:#18283a;
+  color:#eef6ff;
+}
+.choice-action-assistant:hover,.choice-action-assistant:focus-visible{
+  border-color:#79bfff;
+  background:#1d3d5d;
+  outline:3px solid rgba(117,185,255,.2);
+}
+html[data-theme="swiss"] .choice-action-assistant,
+html[data-theme="pixel"] .choice-action-assistant{
+  border-radius:0!important;
+}
+@media(max-width:760px){
+  .workflow-assistant-entry-copy{display:block}
+  .workflow-assistant-entry-copy small{display:block;margin-top:4px;text-align:left}
+  .choice-action-assistant{min-height:48px}
+}
