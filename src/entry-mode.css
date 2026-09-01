@@ -9,3 +9,14 @@ html[data-entry-mode="prompts"] #workflow-catalog,
 html[data-entry-mode="prompts"] #cheatcode-detail{
   display:none!important;
 }
+
+html:not([data-entry-mode="tools"]) #tools{
+  display:none!important;
+}
+
+html[data-entry-mode="tools"] .hero,
+html[data-entry-mode="tools"] #cheatcodes,
+html[data-entry-mode="tools"] #featured,
+html[data-entry-mode="tools"] .creator-spot{
+  display:none!important;
+}

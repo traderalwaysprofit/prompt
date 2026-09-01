@@ -8,7 +8,7 @@
 
 SAMSON adalah aplikasi **static-first** tanpa backend aplikasi dan tanpa frontend framework. Runtime berjalan dengan Vanilla JavaScript/CSS, file JSON, `localStorage`, build statis, GitHub CI, dan Cloudflare Workers.
 
-SAMSON saat ini masih berfungsi sebagai **Prompt Library + Guided Workflow**, tetapi arah produknya adalah **AI Work System**:
+SAMSON saat ini berfungsi sebagai **Prompt Library + Guided Workflow + Practical Tools**, tetapi arah produknya adalah **AI Work System**:
 
 ```text
 Prompt
@@ -35,6 +35,7 @@ Baseline runtime saat ini:
 | Trading workflow | 3 |
 | WordPress workflow | 3 |
 | Total guided workflow | 12 |
+| Practical tool | 1 |
 | UI personality | 4 |
 
 ## Fitur utama
@@ -46,6 +47,7 @@ Baseline runtime saat ini:
 - Runtime statistics berasal dari data aktual, bukan angka statis di UI.
 - Automated prompt intake melalui GitHub workflow dan pull request.
 - Adaptive UI dengan empat personality: **Samson Default, Developer, Swiss, Pixel**.
+- Practical Tools dengan konverter Excel/CSV ke Google Contacts yang memproses data secara lokal di browser.
 - Data validation, regression protection, security-header validation, Browser E2E, dan production verification.
 - Cloudflare preview/build sebelum perubahan masuk production.
 
@@ -110,6 +112,7 @@ npm run test:e2e
 | `npm run validate:data` | Memvalidasi command, example, category, workflow, dan referensinya |
 | `npm run validate:regression` | Mendeteksi penghapusan/perubahan data yang tidak disetujui |
 | `npm run validate:security-headers` | Memastikan security-header contract tersedia |
+| `npm run test:tools` | Menguji normalisasi, deduplikasi, limit, dan ekspor Practical Tools |
 | `npm run report:prompt-coverage` | Melaporkan penggunaan prompt di guided workflow |
 | `npm run add:prompt` | Menambahkan prompt melalui tooling terkontrol |
 | `npm run test:e2e` | Menjalankan Playwright Browser E2E |
@@ -124,6 +127,7 @@ npm run test:e2e
 ├── scripts/               # Build, validation, regression, tooling
 ├── src/                   # Vanilla JavaScript dan CSS
 ├── tests/e2e/             # Playwright browser tests
+├── vendor/                # Metadata dependensi browser yang dipublikasikan saat build
 ├── index.html             # Entry point
 ├── _headers               # Security-header policy
 └── wrangler.jsonc         # Cloudflare Workers config

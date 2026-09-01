@@ -30,6 +30,7 @@ Baseline runtime saat dokumen ini diperbarui:
 | Trading workflow | 3 |
 | WordPress workflow | 3 |
 | Total guided workflow | 12 |
+| Practical tool | 1 |
 | UI personality | 4 |
 
 Enam core workflow melayani outcome umum seperti website, SaaS, marketing, SEO/content, research, dan automation. Domain catalog kemudian diperluas dengan tiga workflow Trading dan tiga workflow WordPress.
@@ -106,6 +107,7 @@ Browser
   ├─ src/*.js
   ├─ src/*.css
   ├─ data/*.json
+  ├─ vendor/xlsx.full.min.js
   └─ localStorage
         ↓
 Static build: dist/
@@ -209,6 +211,15 @@ Perubahan tidak boleh langsung dianggap selesai hanya karena code berhasil digen
 ### FR-5 — Safe prompt intake
 
 Penambahan prompt harus dilakukan melalui workflow terkontrol dan pull request, bukan edit langsung ke `main`.
+
+### FR-6 — Practical Tools
+
+- menu Tools tersedia di More pada desktop dan menu kerja pada mobile;
+- tool Excel → Google Contacts menerima `.xlsx`, `.xls`, dan `.csv` dengan urutan kolom Nama, Brand/Perusahaan, dan WhatsApp;
+- data kontak diproses lokal di browser dan tidak dikirim ke backend;
+- nomor Indonesia dinormalisasi ke format `+62`, nomor duplikat atau tidak valid ditandai, dan hanya baris yang dapat diekspor yang masuk ke CSV;
+- output memakai header template Google Contacts yang berlaku dan membatasi satu proses hingga 3.000 kontak;
+- tampilan dan behavior tetap usable pada keempat UI personality.
 
 ## 9. Non-functional requirements
 
