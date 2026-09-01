@@ -1,0 +1,115 @@
+{
+  "version": 1,
+  "title": "Work Assistant",
+  "description": "Pilih masalah pekerjaan yang ingin diselesaikan. SAMSON akan mengarahkan pekerjaan ke workflow dan tools AI yang sesuai.",
+  "menus": [
+    {
+      "id": "whatsapp-broadcast",
+      "domain": "MARKETING",
+      "title": "WhatsApp Broadcast",
+      "description": "Susun broadcast WhatsApp berdasarkan tujuan, audience, offer, dan konteks pekerjaan.",
+      "status": "pilot",
+      "statusLabel": "FIRST PILOT"
+    },
+    {
+      "id": "email",
+      "domain": "COMMUNICATION",
+      "title": "Email",
+      "description": "Buat email kerja, follow-up, outreach, dan komunikasi bisnis berdasarkan tujuan.",
+      "status": "planned",
+      "statusLabel": "PLANNED"
+    },
+    {
+      "id": "social-content",
+      "domain": "CONTENT",
+      "title": "Social Content",
+      "description": "Ubah kebutuhan campaign menjadi ide, caption, carousel, dan distribusi konten.",
+      "status": "planned",
+      "statusLabel": "PLANNED"
+    },
+    {
+      "id": "seo-content",
+      "domain": "SEO",
+      "title": "SEO Content",
+      "description": "Mulai dari keyword dan intent hingga brief, artikel, internal link, dan quality check.",
+      "status": "planned",
+      "statusLabel": "PLANNED"
+    },
+    {
+      "id": "website",
+      "domain": "WEB",
+      "title": "Website",
+      "description": "Arahkan masalah website ke planning, build, audit, atau improvement workflow.",
+      "status": "planned",
+      "statusLabel": "PLANNED"
+    },
+    {
+      "id": "customer-support",
+      "domain": "SERVICE",
+      "title": "Customer Support",
+      "description": "Bantu menyusun jawaban, SOP respons, escalation, dan knowledge response.",
+      "status": "planned",
+      "statusLabel": "PLANNED"
+    },
+    {
+      "id": "custom-work-problem",
+      "domain": "GENERAL",
+      "title": "Custom Work Problem",
+      "description": "Jelaskan masalah pekerjaan yang belum tersedia di menu agar dapat dipetakan ke workflow yang tepat.",
+      "status": "planned",
+      "statusLabel": "PLANNED"
+    }
+  ],
+  "whatsappProblems": [
+    {
+      "id": "promo",
+      "title": "Promo",
+      "description": "Mengirim penawaran produk atau jasa dengan value dan CTA yang jelas."
+    },
+    {
+      "id": "follow-up",
+      "title": "Follow-up",
+      "description": "Menindaklanjuti lead atau customer setelah percakapan, penawaran, atau inquiry sebelumnya."
+    },
+    {
+      "id": "reactivation",
+      "title": "Reactivation",
+      "description": "Menghubungi kembali customer lama atau lead yang sudah lama tidak aktif."
+    },
+    {
+      "id": "reminder",
+      "title": "Reminder",
+      "description": "Mengingatkan jadwal, pembayaran, event, order, atau aktivitas penting lainnya."
+    },
+    {
+      "id": "announcement",
+      "title": "Announcement",
+      "description": "Menyampaikan informasi operasional, perubahan layanan, atau pengumuman penting."
+    },
+    {
+      "id": "invitation",
+      "title": "Invitation",
+      "description": "Mengundang penerima ke event, webinar, kelas, meeting, atau aktivitas lainnya."
+    },
+    {
+      "id": "lead-nurture",
+      "title": "Lead Nurture",
+      "description": "Menghangatkan lead dengan pesan edukasi atau value sebelum penawaran berikutnya."
+    },
+    {
+      "id": "b2b-outreach",
+      "title": "B2B Outreach",
+      "description": "Menghubungi bisnis, klinik, dokter, reseller, atau calon partner secara profesional."
+    },
+    {
+      "id": "product-launch",
+      "title": "Product Launch",
+      "description": "Memperkenalkan produk, layanan, atau program baru kepada audience WhatsApp."
+    },
+    {
+      "id": "custom-problem",
+      "title": "Custom Problem",
+      "description": "Mulai dari masalah broadcast yang belum terwakili oleh pilihan di atas."
+    }
+  ]
+}
