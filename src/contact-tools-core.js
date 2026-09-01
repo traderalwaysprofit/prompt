@@ -1,4 +1,11 @@
 export const MAX_CONTACTS = 3000;
+export const INPUT_TEMPLATE_HEADERS = Object.freeze(['Nama Kontak', 'Brand / Perusahaan', 'WhatsApp']);
+export const GOOGLE_CONTACTS_HEADERS = Object.freeze([
+  'First Name',
+  'Organization Name',
+  'Phone 1 - Label',
+  'Phone 1 - Value'
+]);
 
 export class ContactToolError extends Error {}
 
@@ -50,7 +57,8 @@ export const mapContactRows = (rawRows, { maxContacts = MAX_CONTACTS } = {}) => 
     }
 
     const phone = formatIndonesianPhone(rawPhone);
-    let previewName = name && brand ? `${name} - ${brand}` : name || brand;
+    const googleFirstName = name || brand || phone.value;
+    const previewName = name && brand ? `${name} - ${brand}` : googleFirstName;
     let status = 'ready';
     let reason = 'Siap';
     let exportable = phone.valid;
@@ -65,15 +73,16 @@ export const mapContactRows = (rawRows, { maxContacts = MAX_CONTACTS } = {}) => 
       exportable = false;
     } else {
       seenPhones.add(phone.value);
-      if (!previewName) {
-        previewName = phone.value;
+      if (!name) {
         status = 'warning';
-        reason = 'Nama kosong';
+        reason = brand ? 'Nama kosong; memakai brand' : 'Nama kosong; memakai nomor';
       }
     }
 
     rows.push({
       rowNumber: index + 1,
+      name,
+      googleFirstName,
       previewName,
       brand,
       phone: phone.value,
@@ -93,12 +102,11 @@ export const mapContactRows = (rawRows, { maxContacts = MAX_CONTACTS } = {}) => 
 const csvCell = (value) => `"${cleanContactText(value).replace(/"/g, '""')}"`;
 
 export const buildGoogleContactsCsv = (rows) => {
-  const headers = ['First Name', 'Organization Name', 'Phone 1 - Label', 'Phone 1 - Value'];
-  const lines = [headers.map(csvCell).join(',')];
+  const lines = [GOOGLE_CONTACTS_HEADERS.map(csvCell).join(',')];
 
   for (const contact of rows) {
     lines.push([
-      contact.previewName,
+      contact.googleFirstName || contact.name || contact.brand || contact.phone,
       contact.brand,
       'Mobile',
       contact.phone

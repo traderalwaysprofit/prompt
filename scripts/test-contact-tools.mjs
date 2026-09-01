@@ -5,6 +5,8 @@ import {
   buildGoogleContactsCsv,
   ContactToolError,
   formatIndonesianPhone,
+  GOOGLE_CONTACTS_HEADERS,
+  INPUT_TEMPLATE_HEADERS,
   looksLikeContactHeader,
   mapContactRows
 } from '../src/contact-tools-core.js';
@@ -30,6 +32,7 @@ assert.equal(mapped.headerSkipped, true);
 assert.equal(mapped.rows.length, 5);
 assert.equal(mapped.exportableRows.length, 3);
 assert.equal(mapped.rows[0].previewName, 'Sari - Masumi');
+assert.equal(mapped.rows[0].googleFirstName, 'Sari');
 assert.equal(mapped.rows[2].status, 'duplicate');
 assert.equal(mapped.rows[3].status, 'invalid');
 assert.equal(mapped.rows[4].status, 'warning');
@@ -42,9 +45,11 @@ assert.throws(
 const csv = buildGoogleContactsCsv(mapped.exportableRows);
 assert.equal(csv.charCodeAt(0), 0xfeff);
 assert.match(csv, /^\uFEFF"First Name","Organization Name","Phone 1 - Label","Phone 1 - Value"\r\n/);
-assert.match(csv, /"Sari - Masumi","Masumi","Mobile","\+6281234567890"/);
+assert.match(csv, /"Sari","Masumi","Mobile","\+6281234567890"/);
+assert.doesNotMatch(csv, /"Sari - Masumi","Masumi"/);
 assert.equal((csv.match(/\+6281234567890/g) || []).length, 1);
 assert.doesNotMatch(csv, /\+12345/);
+assert.deepEqual([...GOOGLE_CONTACTS_HEADERS], ['First Name', 'Organization Name', 'Phone 1 - Label', 'Phone 1 - Value']);
 
 const sheetJsSource = await readFile(new URL('../node_modules/xlsx/dist/xlsx.full.min.js', import.meta.url), 'utf8');
 const browserSandbox = {
@@ -66,5 +71,18 @@ const workbook = browserSandbox.XLSX.read(new TextEncoder().encode('Nama,Brand,W
 const parsedRows = browserSandbox.XLSX.utils.sheet_to_json(workbook.Sheets[workbook.SheetNames[0]], { header: 1, raw: true, defval: '' });
 assert.equal(parsedRows.length, 2);
 assert.equal(parsedRows[1][0], 'Sari');
+
+const exportedWorkbook = browserSandbox.XLSX.read(new TextEncoder().encode(csv), { type: 'array' });
+const exportedRows = browserSandbox.XLSX.utils.sheet_to_json(exportedWorkbook.Sheets[exportedWorkbook.SheetNames[0]], { header: 1, raw: true, defval: '' });
+assert.deepEqual(Array.from(exportedRows[0]), [...GOOGLE_CONTACTS_HEADERS]);
+assert.deepEqual(Array.from(exportedRows[1].slice(0, 3)), ['Sari', 'Masumi', 'Mobile']);
+assert.equal(String(exportedRows[1][3]), '6281234567890');
+
+const templateBytes = await readFile(new URL('../assets/templates/samson-template-kontak.xlsx', import.meta.url));
+const templateWorkbook = browserSandbox.XLSX.read(templateBytes, { type: 'array' });
+assert.deepEqual(Array.from(templateWorkbook.SheetNames), ['Data Kontak', 'Petunjuk']);
+const templateRows = browserSandbox.XLSX.utils.sheet_to_json(templateWorkbook.Sheets['Data Kontak'], { header: 1, raw: true, defval: '', blankrows: false });
+assert.deepEqual(Array.from(templateRows[0]), [...INPUT_TEMPLATE_HEADERS]);
+assert.equal(templateRows.length, 1);
 
 console.log('CONTACT TOOLS TESTS: PASS');

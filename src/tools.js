@@ -26,10 +26,13 @@ import { buildGoogleContactsCsv, ContactToolError, mapContactRows } from './cont
       <div class="tools-inner">
         <header class="tools-page-header">
           <button class="tools-back" type="button" data-tools-back>${icon('M15 18l-6-6 6-6')}<span>Kembali</span></button>
-          <div class="tools-heading">
-            <span class="tools-kicker">TOOLS / CONTACT OPERATIONS</span>
-            <h1 id="tools-title" tabindex="-1">Excel → Google Contacts</h1>
-            <p>Rapikan nama, brand, dan nomor WhatsApp menjadi CSV yang siap diimpor ke Google Contacts.</p>
+          <div class="tools-product-heading">
+            <span class="tools-product-icon">${icon('M16 21v-2a4 4 0 00-4-4H6a4 4 0 00-4 4v2M9 11a4 4 0 100-8 4 4 0 000 8M22 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75')}</span>
+            <div class="tools-heading">
+              <span class="tools-kicker">TOOLS / CONTACT OPERATIONS</span>
+              <h1 id="tools-title" tabindex="-1">Google Contacts Ready</h1>
+              <p>Auto-Mapping dari Excel <span>(Nama, Brand, WA)</span></p>
+            </div>
           </div>
           <div class="tools-privacy" aria-label="Privasi pemrosesan file">
             <span class="tools-privacy-dot" aria-hidden="true"></span>
@@ -41,47 +44,59 @@ import { buildGoogleContactsCsv, ContactToolError, mapContactRows } from './cont
           <aside class="contact-tool-sidebar" aria-label="Unggah dan panduan file">
             <section class="tool-panel upload-panel" aria-labelledby="contact-upload-title">
               <div class="tool-step-heading">
-                <span class="tool-step-number">01</span>
-                <div><span>INPUT FILE</span><h2 id="contact-upload-title">Unggah spreadsheet</h2></div>
+                <span class="tool-step-number">1</span>
+                <div><span>INPUT FILE</span><h2 id="contact-upload-title">Unggah Excel</h2></div>
               </div>
               <label class="contact-drop-zone" id="contact-drop-zone" for="contact-file-input" tabindex="0" role="button" aria-describedby="contact-upload-help">
                 <input class="sr-only" id="contact-file-input" type="file" accept=".xlsx,.xls,.csv" />
                 <span class="contact-upload-icon">${icon('M12 16V4m0 0L7 9m5-5 5 5M5 15v4h14v-4')}</span>
-                <strong>Pilih atau jatuhkan file</strong>
-                <span id="contact-upload-help">.xlsx, .xls, atau .csv · maksimum 10 MB</span>
+                <strong>Pilih file .xlsx / .xls</strong>
+                <span id="contact-upload-help">Tarik file ke sini · CSV juga didukung · maksimum 10 MB</span>
               </label>
               <div class="tool-status" id="contact-tool-status" role="status" aria-live="polite" data-tone="neutral">Siap membaca file di perangkat ini.</div>
             </section>
 
             <section class="tool-panel column-guide" aria-labelledby="contact-column-title">
               <div class="tool-step-heading compact">
-                <span class="tool-step-number">02</span>
-                <div><span>KOLOM SUMBER</span><h2 id="contact-column-title">Urutan data</h2></div>
+                <span class="tool-step-number">2</span>
+                <div><span>KOLOM SUMBER</span><h2 id="contact-column-title">Template & urutan data</h2></div>
               </div>
+              <a class="tool-template-download" id="contact-template-download" href="/assets/templates/samson-template-kontak.xlsx" download="samson-template-kontak.xlsx">
+                ${icon('M12 3v12m0 0l-4-4m4 4 4-4M5 20h14')}
+                <span><strong>Download template Excel</strong><small>Kolom A–C sudah disiapkan</small></span>
+              </a>
               <ol class="column-list">
                 <li><span>A</span><div><strong>Nama Kontak</strong><small>Nama pelanggan atau relasi</small></div></li>
                 <li><span>B</span><div><strong>Brand / Perusahaan</strong><small>Nama usaha atau organisasi</small></div></li>
-                <li><span>C</span><div><strong>WhatsApp</strong><small>08…, 628…, atau +62…</small></div></li>
+                <li><span>C</span><div><strong>WhatsApp</strong><small>Otomatis dibersihkan menjadi +62</small></div></li>
               </ol>
-              <p class="column-note">Baris pertama boleh berupa header. Tool akan mendeteksinya otomatis.</p>
+              <p class="column-note">Isi data mulai baris 2. Jangan mengubah nama atau urutan header pada template.</p>
             </section>
 
-            <section class="tool-panel tool-limit-note" aria-label="Batas impor Google Contacts">
-              <span class="tools-kicker">IMPORT LIMIT</span>
-              <strong>Maksimum 3.000 kontak</strong>
-              <p>Google Contacts meminta file yang lebih besar dipecah sebelum diimpor.</p>
+            <section class="tool-panel tool-output-note" aria-label="Pemetaan Google Contacts">
+              <span class="tools-kicker">GOOGLE CSV MAPPING</span>
+              <strong>Output langsung siap impor</strong>
+              <dl>
+                <div><dt>Nama Kontak</dt><dd>First Name</dd></div>
+                <div><dt>Brand</dt><dd>Organization Name</dd></div>
+                <div><dt>WhatsApp</dt><dd>Phone 1 · Mobile</dd></div>
+              </dl>
+              <p>Maksimum 3.000 kontak per file sesuai batas impor Google Contacts.</p>
             </section>
           </aside>
 
           <section class="tool-panel contact-preview-panel" aria-labelledby="contact-preview-title">
             <header class="contact-preview-header">
-              <div>
+              <div class="contact-preview-heading">
                 <span class="tools-kicker">OUTPUT PREVIEW</span>
-                <h2 id="contact-preview-title">Pratinjau impor</h2>
+                <div class="contact-preview-title-line">
+                  <h2 id="contact-preview-title">Pratinjau Impor</h2>
+                  <span class="contact-ready-pill"><b id="contact-ready-count">0</b> Kontak</span>
+                </div>
               </div>
-              <div class="contact-counters" aria-label="Ringkasan hasil">
-                <span><b id="contact-ready-count">0</b> DAPAT DIEKSPOR</span>
-                <span><b id="contact-issue-count">0</b> PERLU DICEK</span>
+              <div class="contact-preview-toolbar" aria-label="Ringkasan dan unduh hasil">
+                <span class="contact-issue-pill"><b id="contact-issue-count">0</b> perlu dicek</span>
+                <button class="tool-button tool-button-primary contact-download-button" id="contact-download-button" type="button" disabled>${icon('M12 4v12m0 0l-5-5m5 5 5-5M5 20h14')}<span id="contact-download-label">Download CSV Google</span></button>
               </div>
             </header>
 
@@ -94,13 +109,13 @@ import { buildGoogleContactsCsv, ContactToolError, mapContactRows } from './cont
             <div class="contact-empty-state" id="contact-empty-state">
               <span class="contact-empty-icon">${icon('M6 3h9l3 3v15H6zM9 11h6M9 15h6M15 3v4h4')}</span>
               <h3>Belum ada data</h3>
-              <p>Unggah file untuk melihat hasil normalisasi nomor dan validasi duplikat.</p>
+              <p>Silakan unggah file Excel untuk melihat normalisasi nomor dan validasi duplikat.</p>
             </div>
 
             <div class="contact-preview-content" id="contact-preview-content" hidden>
               <div class="contact-table-wrap" tabindex="0" aria-label="Tabel pratinjau kontak, dapat digulir horizontal">
                 <table class="contact-table">
-                  <thead><tr><th scope="col">Nama kontak</th><th scope="col">Brand / perusahaan</th><th scope="col">Nomor +62</th><th scope="col">Status</th></tr></thead>
+                  <thead><tr><th scope="col">Nama kontak (preview)</th><th scope="col">Brand / perusahaan</th><th scope="col">Nomor (format +62)</th></tr></thead>
                   <tbody id="contact-preview-body"></tbody>
                 </table>
               </div>
@@ -110,7 +125,7 @@ import { buildGoogleContactsCsv, ContactToolError, mapContactRows } from './cont
             <footer class="contact-preview-actions">
               <button class="tool-button tool-button-secondary" id="contact-reset-button" type="button" disabled>${icon('M4 4v6h6M20 20v-6h-6M5.5 15a7 7 0 0011.8 2M18.5 9A7 7 0 006.7 7')}<span>Reset</span></button>
               <a class="tool-button tool-button-secondary" href="https://contacts.google.com/" target="_blank" rel="noopener noreferrer">Buka Google Contacts <span aria-hidden="true">↗</span></a>
-              <button class="tool-button tool-button-primary" id="contact-download-button" type="button" disabled>${icon('M12 4v12m0 0l-5-5m5 5 5-5M5 20h14')}<span id="contact-download-label">Download CSV</span></button>
+              <span class="contact-format-note">UTF-8 CSV · Header resmi Google · Nomor +62</span>
             </footer>
           </section>
         </div>
@@ -183,14 +198,13 @@ import { buildGoogleContactsCsv, ContactToolError, mapContactRows } from './cont
       phone.textContent = contact.phone || '—';
       phoneCell.appendChild(phone);
 
-      const statusCell = document.createElement('td');
       const badge = document.createElement('span');
       badge.className = `contact-row-status is-${contact.status}`;
       badge.textContent = statusLabels[contact.status] || contact.reason;
       badge.title = contact.reason;
-      statusCell.appendChild(badge);
+      phoneCell.appendChild(badge);
 
-      row.append(nameCell, brandCell, phoneCell, statusCell);
+      row.append(nameCell, brandCell, phoneCell);
       fragment.appendChild(row);
     }
 
@@ -217,8 +231,8 @@ import { buildGoogleContactsCsv, ContactToolError, mapContactRows } from './cont
     elements.reset.disabled = !hasRows;
     elements.download.disabled = state.exportableRows.length === 0;
     elements.downloadLabel.textContent = state.exportableRows.length
-      ? `Download ${state.exportableRows.length.toLocaleString('id-ID')} Kontak`
-      : 'Download CSV';
+      ? `Download CSV Google · ${state.exportableRows.length.toLocaleString('id-ID')}`
+      : 'Download CSV Google';
 
     if (hasRows) renderRows();
     else elements.body?.replaceChildren();

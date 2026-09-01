@@ -13,13 +13,29 @@ test.describe('SAMSON Google Contacts tool', () => {
 
     await expect(page.locator('html')).toHaveAttribute('data-entry-mode', 'tools');
     await expect(page.locator('#tools')).toBeVisible();
-    await expect(page.locator('#tools-title')).toHaveText('Excel → Google Contacts');
+    await expect(page.locator('#tools-title')).toHaveText('Google Contacts Ready');
+    await expect(page.locator('#contact-template-download')).toBeVisible();
+    await expect(page.locator('#contact-template-download')).toHaveAttribute('href', '/assets/templates/samson-template-kontak.xlsx');
     await expect(page.locator('.hero')).toBeHidden();
     await expect(page).toHaveURL(/#tools\/google-contacts$/);
 
     await page.locator('[data-tools-back]').click();
     await expect(page.locator('html')).toHaveAttribute('data-entry-mode', 'chooser');
     await expect(page.locator('#tools')).toBeHidden();
+  });
+
+  test('downloads the ordered Excel input template', async ({ page }) => {
+    await page.goto(`${BASE_URL}#tools/google-contacts`, { waitUntil: 'networkidle' });
+
+    const downloadPromise = page.waitForEvent('download');
+    await page.locator('#contact-template-download').click();
+    const download = await downloadPromise;
+    expect(download.suggestedFilename()).toBe('samson-template-kontak.xlsx');
+
+    const path = await download.path();
+    const template = await readFile(path);
+    expect(template.byteLength).toBeGreaterThan(5000);
+    expect(template.subarray(0, 2).toString('utf8')).toBe('PK');
   });
 
   test('normalizes Indonesian WhatsApp numbers, rejects duplicates, and exports Google CSV', async ({ page }) => {
@@ -44,6 +60,7 @@ test.describe('SAMSON Google Contacts tool', () => {
     await expect(page.locator('#contact-issue-count')).toHaveText('2');
     await expect(page.locator('#contact-header-mode')).toHaveText('Terdeteksi');
     await expect(page.locator('#contact-preview-body tr')).toHaveCount(5);
+    await expect(page.locator('.contact-table thead th')).toHaveCount(3);
     await expect(page.locator('.contact-row-status.is-duplicate')).toHaveCount(1);
     await expect(page.locator('.contact-row-status.is-invalid')).toHaveCount(1);
     await expect(page.locator('#contact-preview-body img')).toHaveCount(0);
@@ -58,8 +75,9 @@ test.describe('SAMSON Google Contacts tool', () => {
     const path = await download.path();
     const csv = await readFile(path, 'utf8');
     expect(csv).toContain('"First Name","Organization Name","Phone 1 - Label","Phone 1 - Value"');
-    expect(csv).toContain('"Sari - Masumi","Masumi","Mobile","+6281234567890"');
-    expect(csv).toContain('"Budi - Klinik","Klinik","Mobile","+6281234567891"');
+    expect(csv).toContain('"Sari","Masumi","Mobile","+6281234567890"');
+    expect(csv).toContain('"Budi","Klinik","Mobile","+6281234567891"');
+    expect(csv).not.toContain('"Sari - Masumi","Masumi"');
     expect(csv.match(/\+6281234567890/g)).toHaveLength(1);
     expect(csv).not.toContain('+12345');
   });

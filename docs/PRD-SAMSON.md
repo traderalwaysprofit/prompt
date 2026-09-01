@@ -216,9 +216,10 @@ Penambahan prompt harus dilakukan melalui workflow terkontrol dan pull request, 
 
 - menu Tools tersedia di More pada desktop dan menu kerja pada mobile;
 - tool Excel → Google Contacts menerima `.xlsx`, `.xls`, dan `.csv` dengan urutan kolom Nama, Brand/Perusahaan, dan WhatsApp;
+- template `.xlsx` siap-isi dapat diunduh dengan sheet pertama berurutan `Nama Kontak`, `Brand / Perusahaan`, dan `WhatsApp`;
 - data kontak diproses lokal di browser dan tidak dikirim ke backend;
 - nomor Indonesia dinormalisasi ke format `+62`, nomor duplikat atau tidak valid ditandai, dan hanya baris yang dapat diekspor yang masuk ke CSV;
-- output memakai header template Google Contacts yang berlaku dan membatasi satu proses hingga 3.000 kontak;
+- output memakai `First Name`, `Organization Name`, `Phone 1 - Label`, dan `Phone 1 - Value`, serta membatasi satu proses hingga 3.000 kontak;
 - tampilan dan behavior tetap usable pada keempat UI personality.
 
 ## 9. Non-functional requirements

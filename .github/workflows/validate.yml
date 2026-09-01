@@ -109,6 +109,7 @@ jobs:
           test -s dist/src/tools.js
           test -s dist/src/contact-tools-core.js
           test -s dist/src/tools.css
+          test -s dist/assets/templates/samson-template-kontak.xlsx
           test -s dist/vendor/xlsx.full.min.js
           test -s dist/vendor/LICENSE.sheetjs.txt
           test -s dist/data/commands.json

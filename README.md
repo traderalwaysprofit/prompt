@@ -47,7 +47,7 @@ Baseline runtime saat ini:
 - Runtime statistics berasal dari data aktual, bukan angka statis di UI.
 - Automated prompt intake melalui GitHub workflow dan pull request.
 - Adaptive UI dengan empat personality: **Samson Default, Developer, Swiss, Pixel**.
-- Practical Tools dengan konverter Excel/CSV ke Google Contacts yang memproses data secara lokal di browser.
+- Practical Tools dengan template Excel A–C dan konverter Google Contacts CSV yang memproses data secara lokal di browser.
 - Data validation, regression protection, security-header validation, Browser E2E, dan production verification.
 - Cloudflare preview/build sebelum perubahan masuk production.
 
@@ -122,6 +122,7 @@ npm run test:e2e
 ```text
 .
 ├── .github/workflows/     # Validate, Browser E2E, Production Verify
+├── assets/templates/      # Template input Excel yang dapat diunduh dari Tools
 ├── data/                  # Commands, examples, categories, workflows
 ├── docs/                  # PRD dan dokumentasi teknis
 ├── scripts/               # Build, validation, regression, tooling
