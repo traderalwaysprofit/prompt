@@ -5,7 +5,7 @@
 
   const modeFromHash = () => {
     if (location.hash === '#prompts') return 'prompts';
-    if (location.hash === '#workflows' || /^#cheatcodes\//.test(location.hash)) return 'workflows';
+    if (location.hash === '#workflows' || /^#cheatcodes\//.test(location.hash) || /^#work-assistant(?:\/|$)/.test(location.hash)) return 'workflows';
     return 'chooser';
   };
 
@@ -24,7 +24,7 @@
       return;
     }
 
-    if (target.closest('[data-show-workflows], [data-open-cheatcode]')) {
+    if (target.closest('[data-show-workflows], [data-open-cheatcode], [data-workflow-mode], [data-open-work-assistant], [data-work-problem]')) {
       setMode('workflows');
       return;
     }
