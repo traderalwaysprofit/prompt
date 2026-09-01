@@ -27,7 +27,8 @@
   background:#f4f8fd;
   color:#151d27;
 }
-.work-assistant[hidden]{display:none}
+.workflow-catalog [data-guided-catalog="1"][hidden]{display:none!important}
+.work-assistant[hidden]{display:none!important}
 .work-assistant{min-width:0}
 .work-assistant-loading{margin:0;color:#b5c0cc}
 .work-assistant-header{
