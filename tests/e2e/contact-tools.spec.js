@@ -3,8 +3,8 @@ import { test, expect } from '@playwright/test';
 
 const BASE_URL = process.env.PROD_URL || 'https://samson.web.id';
 
-test.describe('SAMSON Google Contacts tool', () => {
-  test('opens from the compact Tools menu and returns to the chooser', async ({ page }) => {
+test.describe('SAMSON Tools Hub and Google Contacts tool', () => {
+  test('opens the Tools catalog before Google Contacts and preserves the navigation hierarchy', async ({ page }) => {
     await page.setViewportSize({ width: 1280, height: 900 });
     await page.goto(BASE_URL, { waitUntil: 'networkidle' });
 
@@ -13,14 +13,30 @@ test.describe('SAMSON Google Contacts tool', () => {
 
     await expect(page.locator('html')).toHaveAttribute('data-entry-mode', 'tools');
     await expect(page.locator('#tools')).toBeVisible();
+    await expect(page.locator('#tools')).toHaveAttribute('data-tools-view', 'catalog');
+    await expect(page.locator('#tools-title')).toHaveText('Tools');
+    await expect(page.locator('.tools-count-pill')).toContainText('1 tool tersedia');
+    await expect(page.locator('[data-tool-id="google-contacts"]')).toBeVisible();
+    await expect(page.locator('#contact-file-input')).toHaveCount(0);
+    await expect(page.locator('.hero')).toBeHidden();
+    await expect(page).toHaveURL(/#tools$/);
+
+    await page.locator('[data-tool-id="google-contacts"]').click();
+
+    await expect(page.locator('#tools')).toHaveAttribute('data-tools-view', 'google-contacts');
     await expect(page.locator('#tools-title')).toHaveText('Google Contacts Ready');
     await expect(page.locator('.tools-privacy')).toHaveCount(0);
     await expect(page.locator('#contact-template-download')).toBeVisible();
     await expect(page.locator('#contact-template-download')).toHaveAttribute('href', '/assets/templates/samson-template-kontak.xlsx');
-    await expect(page.locator('.hero')).toBeHidden();
     await expect(page).toHaveURL(/#tools\/google-contacts$/);
 
-    await page.locator('[data-tools-back]').click();
+    await page.locator('[data-tools-catalog-back]').click();
+    await expect(page.locator('#tools')).toHaveAttribute('data-tools-view', 'catalog');
+    await expect(page.locator('#tools-title')).toHaveText('Tools');
+    await expect(page.locator('#contact-file-input')).toHaveCount(0);
+    await expect(page).toHaveURL(/#tools$/);
+
+    await page.locator('[data-tools-exit]').click();
     await expect(page.locator('html')).toHaveAttribute('data-entry-mode', 'chooser');
     await expect(page.locator('#tools')).toBeHidden();
   });
@@ -90,15 +106,15 @@ test.describe('SAMSON Google Contacts tool', () => {
     expect(csv).not.toContain('+12345');
   });
 
-  test('keeps the tool usable across all four themes and compact mobile', async ({ page }) => {
+  test('keeps the hub and tool usable across all four themes and compact mobile', async ({ page }) => {
     await page.setViewportSize({ width: 360, height: 800 });
-    await page.goto(`${BASE_URL}#tools/google-contacts`, { waitUntil: 'networkidle' });
+    await page.goto(`${BASE_URL}#tools`, { waitUntil: 'networkidle' });
 
     for (const theme of ['default', 'developer', 'swiss', 'pixel']) {
       await page.evaluate((id) => window.SamsonTheme.set(id), theme);
       await expect(page.locator('#tools')).toBeVisible();
-      await expect(page.locator('#contact-drop-zone')).toBeVisible();
-      const height = await page.locator('[data-tools-back]').evaluate((element) => element.getBoundingClientRect().height);
+      await expect(page.locator('[data-tool-id="google-contacts"]')).toBeVisible();
+      const height = await page.locator('[data-tools-exit]').evaluate((element) => element.getBoundingClientRect().height);
       expect(height).toBeGreaterThanOrEqual(44);
 
       const dimensions = await page.evaluate(() => ({
@@ -109,6 +125,18 @@ test.describe('SAMSON Google Contacts tool', () => {
       expect(dimensions.htmlScroll).toBeLessThanOrEqual(dimensions.viewport + 1);
       expect(dimensions.bodyScroll).toBeLessThanOrEqual(dimensions.viewport + 1);
     }
+
+    await page.locator('[data-tool-id="google-contacts"]').click();
+    await expect(page.locator('#contact-drop-zone')).toBeVisible();
+    await expect(page.locator('[data-tools-catalog-back]')).toBeVisible();
+
+    const toolDimensions = await page.evaluate(() => ({
+      viewport: document.documentElement.clientWidth,
+      htmlScroll: document.documentElement.scrollWidth,
+      bodyScroll: document.body.scrollWidth
+    }));
+    expect(toolDimensions.htmlScroll).toBeLessThanOrEqual(toolDimensions.viewport + 1);
+    expect(toolDimensions.bodyScroll).toBeLessThanOrEqual(toolDimensions.viewport + 1);
 
     await page.locator('#mobile-menu-toggle').click();
     await expect(page.locator('[data-mobile-nav="tools"]')).toBeVisible();
