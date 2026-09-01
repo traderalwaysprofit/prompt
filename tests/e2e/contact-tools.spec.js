@@ -14,6 +14,7 @@ test.describe('SAMSON Google Contacts tool', () => {
     await expect(page.locator('html')).toHaveAttribute('data-entry-mode', 'tools');
     await expect(page.locator('#tools')).toBeVisible();
     await expect(page.locator('#tools-title')).toHaveText('Google Contacts Ready');
+    await expect(page.locator('.tools-privacy')).toHaveCount(0);
     await expect(page.locator('#contact-template-download')).toBeVisible();
     await expect(page.locator('#contact-template-download')).toHaveAttribute('href', '/assets/templates/samson-template-kontak.xlsx');
     await expect(page.locator('.hero')).toBeHidden();
