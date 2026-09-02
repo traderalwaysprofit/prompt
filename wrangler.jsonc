@@ -9,6 +9,6 @@
     "run_worker_first": ["/api/*"]
   },
   "vars": {
-    "AI_MODEL": "gemini-2.5-flash"
+    "AI_MODEL": "gemini-3.6-flash"
   }
 }
