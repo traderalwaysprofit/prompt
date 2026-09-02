@@ -86,7 +86,14 @@ Worker modules:
 - `worker/ai-provider.js`
 - `worker/validation.js`
 
-The configured provider is Gemini through an adapter. The model is configured through `AI_MODEL`; V1 defaults to `gemini-3.5-flash` because grounded Google Search and structured output are required together.
+The configured provider is Gemini through an adapter. `AI_MODEL` defaults to `gemini-2.5-flash` for V1 because Google Search grounding is available on its free tier (subject to Google's published quota), while Gemini 3.x Search Grounding is paid-tier only.
+
+V1 uses a two-step AI pipeline:
+
+1. `gemini-2.5-flash` + Google Search performs grounded research and returns source metadata.
+2. A second `gemini-2.5-flash` call, without tools, converts the grounded research into the strict application JSON schema.
+
+This split is deliberate: Google documents Structured Outputs combined with built-in tools as a Gemini 3-series capability, so the free-tier-compatible 2.5 path separates grounding and schema formatting instead of combining both in one call.
 
 `GEMINI_API_KEY` must be configured as a Cloudflare Worker secret. It must never be committed, exposed to browser JavaScript, logged, or placed in documentation.
 
@@ -99,11 +106,13 @@ When the secret is missing, `/health` reports `configured: false`; AI buttons ar
 - optional native Cloudflare Rate Limiting binding support when it is added later to the deployed Worker
 - method, media type, payload-size, category, region, and limit validation
 - prompt-injection boundary for enrichment input (`<untrusted_data>`)
+- grounded research is treated as untrusted data during the second formatting call
 - structured provider response plus application normalization
 - no AI/external data rendered as raw HTML; dynamic values use DOM nodes / `textContent`
 - external links constrained by URL normalization and `noopener noreferrer`
 - no secret values in response payloads
 - request/provider timeouts and normalized error responses
+- Gemini 429 responses distinguish provider quota exhaustion from Samson's own request limiter
 - local database has explicit destructive confirmation
 
 V1 does not declare a new Rate Limiting binding in `wrangler.jsonc`. This keeps Cloudflare non-production `wrangler versions upload` previews compatible with the existing Worker while the feature is under review. The Worker still applies a best-effort 20 requests/minute per `cf-connecting-ip` and API path inside each isolate. This is provider-quota protection, not an exact accounting control. A native `B2B_RATE_LIMITER` binding can replace the fallback after the production Worker settings are deliberately provisioned and verified.
@@ -133,7 +142,7 @@ Because V1 has no account/user identity, the fallback key uses `cf-connecting-ip
 - route and WhatsApp brief
 - local-store migration
 - Worker validation
-- Gemini adapter request contract (mocked)
+- two-step Gemini adapter request contract (mocked)
 - native rate-limit path (mocked)
 
 Browser E2E covers:
