@@ -86,33 +86,25 @@ const makeRequest = (path, { method = 'GET', body, headers = {} } = {}) => new R
   body: body ? JSON.stringify(body) : undefined
 });
 const env = { GEMINI_API_KEY: 'test-key', AI_MODEL: 'gemini-2.5-flash', B2B_RATE_LIMITER: { limit: async () => ({ success: true }) } };
-let response = await handleB2BRequest(makeRequest('/api/tools/b2b/health'), env);
-assert.equal(response.status, 200);
-assert.equal((await response.json()).configured, true);
-response = await handleB2BRequest(makeRequest('/api/tools/b2b/health', { headers: { 'sec-fetch-site': 'cross-site' } }), env);
-assert.equal(response.status, 200);
-assert.equal((await response.json()).configured, true);
-response = await handleB2BRequest(makeRequest('/api/tools/b2b/search', {
-  method: 'POST',
-  body: { category: 'aesthetic-clinic', region: 'Mojokerto', limit: 5 },
-  headers: { 'sec-fetch-site': 'cross-site' }
-}), env);
-assert.equal(response.status, 403);
-assert.equal((await response.json()).error.code, 'CROSS_SITE_BLOCKED');
-response = await handleB2BRequest(makeRequest('/api/tools/b2b/search', { method: 'POST', body: { category: 'bad', region: 'Mojokerto', limit: 5 } }), env);
-assert.equal(response.status, 400);
-assert.equal((await response.json()).error.code, 'INVALID_CATEGORY');
 
 const originalFetch = globalThis.fetch;
-let providerCalls = 0;
-globalThis.fetch = async (url, options) => {
-  providerCalls += 1;
+let generationCalls = 0;
+globalThis.fetch = async (url, options = {}) => {
   assert.match(String(url), /generativelanguage\.googleapis\.com/);
   assert.match(String(url), /gemini-2\.5-flash/);
   assert.equal(options.headers['x-goog-api-key'], 'test-key');
+
+  if ((options.method || 'GET') === 'GET') {
+    return new Response(JSON.stringify({ name: 'models/gemini-2.5-flash', supportedGenerationMethods: ['generateContent'] }), {
+      status: 200,
+      headers: { 'Content-Type': 'application/json' }
+    });
+  }
+
+  generationCalls += 1;
   const payload = JSON.parse(options.body);
 
-  if (providerCalls === 1) {
+  if (generationCalls === 1) {
     assert.deepEqual(payload.tools, [{ google_search: {} }]);
     assert.equal(payload.generationConfig.responseSchema, undefined);
     return new Response(JSON.stringify({
@@ -125,7 +117,7 @@ globalThis.fetch = async (url, options) => {
 
   assert.equal(payload.tools, undefined);
   assert.equal(payload.generationConfig.responseMimeType, 'application/json');
-  assert.ok(payload.generationConfig.responseSchema);
+  assert.equal(payload.generationConfig.responseSchema, undefined);
   return new Response(JSON.stringify({
     candidates: [{
       content: { parts: [{ text: JSON.stringify([{
@@ -134,19 +126,45 @@ globalThis.fetch = async (url, options) => {
     }]
   }), { status: 200, headers: { 'Content-Type': 'application/json' } });
 };
+
 try {
+  let response = await handleB2BRequest(makeRequest('/api/tools/b2b/health'), env);
+  assert.equal(response.status, 200);
+  let health = await response.json();
+  assert.equal(health.configured, true);
+  assert.equal(health.providerReady, true);
+  assert.equal(health.pipeline, 'ground-search-then-json-mode');
+
+  response = await handleB2BRequest(makeRequest('/api/tools/b2b/health', { headers: { 'sec-fetch-site': 'cross-site' } }), env);
+  assert.equal(response.status, 200);
+  health = await response.json();
+  assert.equal(health.configured, true);
+
+  response = await handleB2BRequest(makeRequest('/api/tools/b2b/search', {
+    method: 'POST',
+    body: { category: 'aesthetic-clinic', region: 'Mojokerto', limit: 5 },
+    headers: { 'sec-fetch-site': 'cross-site' }
+  }), env);
+  assert.equal(response.status, 403);
+  assert.equal((await response.json()).error.code, 'CROSS_SITE_BLOCKED');
+
+  response = await handleB2BRequest(makeRequest('/api/tools/b2b/search', { method: 'POST', body: { category: 'bad', region: 'Mojokerto', limit: 5 } }), env);
+  assert.equal(response.status, 400);
+  assert.equal((await response.json()).error.code, 'INVALID_CATEGORY');
+
   response = await handleB2BRequest(makeRequest('/api/tools/b2b/search', { method: 'POST', body: { category: 'aesthetic-clinic', region: 'Mojokerto', limit: 5 } }), env);
   assert.equal(response.status, 200);
   const data = await response.json();
-  assert.equal(providerCalls, 2);
-  assert.equal(data.pipeline, 'ground-search-then-structure');
+  assert.equal(generationCalls, 2);
+  assert.equal(data.pipeline, 'ground-search-then-json-mode');
   assert.equal(data.candidates.length, 1);
   assert.equal(data.candidates[0].sources[0].url, 'https://source.example/a');
 } finally {
   globalThis.fetch = originalFetch;
 }
+
 const limitedEnv = { ...env, B2B_RATE_LIMITER: { limit: async () => ({ success: false }) } };
-response = await handleB2BRequest(makeRequest('/api/tools/b2b/search', { method: 'POST', body: { category: 'aesthetic-clinic', region: 'Mojokerto', limit: 5 } }), limitedEnv);
+let response = await handleB2BRequest(makeRequest('/api/tools/b2b/search', { method: 'POST', body: { category: 'aesthetic-clinic', region: 'Mojokerto', limit: 5 } }), limitedEnv);
 assert.equal(response.status, 429);
 assert.equal((await response.json()).error.code, 'RATE_LIMITED');
 
