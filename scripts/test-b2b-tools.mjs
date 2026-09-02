@@ -100,9 +100,10 @@ let serperSearchCalls = 0;
 
 globalThis.fetch = async (url, options = {}) => {
   const target = String(url);
+  const parsedTarget = new URL(target);
 
-  if (target.includes('generativelanguage.googleapis.com')) {
-    assert.match(target, /gemini-3\.6-flash/);
+  if (parsedTarget.hostname === 'generativelanguage.googleapis.com') {
+    assert.match(parsedTarget.pathname, /gemini-3\.6-flash/);
     assert.equal(options.headers['x-goog-api-key'], 'gemini-test-key');
 
     if ((options.method || 'GET') === 'GET') {
