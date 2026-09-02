@@ -1,4 +1,4 @@
-const DEFAULT_MODEL = 'gemini-2.5-flash';
+const DEFAULT_MODEL = 'gemini-3.5-flash';
 const GEMINI_API = 'https://generativelanguage.googleapis.com/v1beta/models';
 
 export class AIProviderError extends Error {
@@ -101,7 +101,6 @@ const callGemini = async ({ prompt, env, maxResults }) => {
         contents: [{ role: 'user', parts: [{ text: prompt }] }],
         tools: [{ google_search: {} }],
         generationConfig: {
-          temperature: 0.2,
           responseMimeType: 'application/json',
           responseSchema
         }
