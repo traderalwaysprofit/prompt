@@ -1,4 +1,15 @@
-import { AIProviderError, enrichWithGemini, getGeminiHealth, searchWithGemini } from './ai-provider.js';
+import {
+  AIProviderError,
+  getGeminiHealth,
+  normalizeEnrichmentWithGemini,
+  reviewSerperCandidatesWithGemini
+} from './ai-provider.js';
+import {
+  SearchProviderError,
+  getSerperHealth,
+  searchEnrichmentEvidence,
+  searchLocalBusinesses
+} from './serper-provider.js';
 import {
   RequestValidationError,
   errorResponse,
@@ -60,47 +71,92 @@ const enforceRateLimit = async (request, env) => {
 };
 
 const health = async (env) => {
-  const provider = await getGeminiHealth(env);
+  const search = getSerperHealth(env);
+  const ai = await getGeminiHealth(env);
+  const configured = search.configured && ai.providerReady;
   return jsonResponse({
-    status: provider.providerReady ? 'ready' : 'degraded',
-    provider: 'gemini',
-    ...provider,
+    status: configured ? 'ready' : 'degraded',
+    configured,
+    provider: 'serper+gemini',
+    searchProvider: 'serper',
+    searchConfigured: search.configured,
+    searchSecretPresent: search.secretPresent,
+    aiProvider: 'gemini',
+    aiConfigured: ai.configured,
+    aiSecretPresent: ai.secretPresent,
+    providerReady: ai.providerReady,
+    model: ai.model,
+    pipeline: 'serper-places-then-gemini-review',
+    providerErrorCode: !search.configured ? 'SEARCH_NOT_CONFIGURED' : ai.providerErrorCode,
     rateLimit: env.B2B_RATE_LIMITER?.limit ? 'cloudflare-binding' : 'worker-fallback',
     schemaVersion: 1
   });
 };
 
+const handleSearch = async (input, env) => {
+  const searchResult = await searchLocalBusinesses(input, env);
+  const reviewed = await reviewSerperCandidatesWithGemini({
+    candidates: searchResult.candidates,
+    categoryLabel: input.categoryLabel,
+    category: input.category,
+    region: input.region
+  }, env);
+
+  return {
+    provider: 'serper+gemini',
+    searchProvider: searchResult.provider,
+    model: reviewed.model,
+    pipeline: 'serper-places-then-gemini-review',
+    aiReview: reviewed.aiReview,
+    aiErrorCode: reviewed.aiErrorCode || null,
+    candidates: reviewed.candidates
+  };
+};
+
+const handleEnrich = async (input, env) => {
+  const evidence = await searchEnrichmentEvidence(input, env);
+  const normalized = await normalizeEnrichmentWithGemini({
+    input: input.input,
+    searchResults: evidence.results,
+    maxResults: 10
+  }, env);
+  return {
+    provider: 'serper+gemini',
+    searchProvider: evidence.provider,
+    ...normalized
+  };
+};
+
 export const handleB2BRequest = async (request, env) => {
   const url = new URL(request.url);
   try {
-    // Health is read-only and intentionally public so it can be opened directly
-    // from Cloudflare/GitHub preview links or a browser address bar.
     if (url.pathname === '/api/tools/b2b/health') {
       if (request.method !== 'GET') throw new RequestValidationError('Method tidak diizinkan.', { status: 405, code: 'METHOD_NOT_ALLOWED' });
       return await health(env);
     }
 
-    // Credential-consuming AI endpoints remain protected against cross-site calls.
     enforceSameOrigin(request);
     await enforceRateLimit(request, env);
 
     if (url.pathname === '/api/tools/b2b/search') {
       requirePost(request);
       const input = validateSearchInput(await readJsonBody(request, { maxBytes: 16 * 1024 }));
-      const result = await searchWithGemini(input, env);
+      const result = await handleSearch(input, env);
       return jsonResponse({ schemaVersion: 1, requestId: crypto.randomUUID(), ...result });
     }
 
     if (url.pathname === '/api/tools/b2b/enrich') {
       requirePost(request);
       const input = validateEnrichInput(await readJsonBody(request, { maxBytes: 32 * 1024 }));
-      const result = await enrichWithGemini(input, env);
+      const result = await handleEnrich(input, env);
       return jsonResponse({ schemaVersion: 1, requestId: crypto.randomUUID(), ...result });
     }
 
     throw new RequestValidationError('API route tidak ditemukan.', { status: 404, code: 'NOT_FOUND' });
   } catch (error) {
-    if (!(error instanceof RequestValidationError) && !(error instanceof AIProviderError)) console.error('B2B API error', error);
+    if (!(error instanceof RequestValidationError) && !(error instanceof AIProviderError) && !(error instanceof SearchProviderError)) {
+      console.error('B2B API error', error);
+    }
     return errorResponse(error);
   }
 };
