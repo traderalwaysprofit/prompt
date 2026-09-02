@@ -1,4 +1,4 @@
-const DEFAULT_MODEL = 'gemini-2.5-flash';
+const DEFAULT_MODEL = 'gemini-3.6-flash';
 const GEMINI_API = 'https://generativelanguage.googleapis.com/v1beta/models';
 
 export class AIProviderError extends Error {
@@ -76,7 +76,7 @@ const readProviderError = async (response) => {
   };
 };
 
-const classifyProviderError = (responseStatus, details, stage = 'request') => {
+const classifyProviderError = (responseStatus, details, stage = 'request', model = '') => {
   const combined = `${details.status} ${details.message}`.toLowerCase();
 
   if (responseStatus === 400) {
@@ -91,7 +91,7 @@ const classifyProviderError = (responseStatus, details, stage = 'request') => {
   }
 
   if (responseStatus === 403) {
-    return new AIProviderError('Project/API key tidak memiliki izin menggunakan Gemini API atau fitur yang diminta. Periksa API restrictions dan project key.', { status: 403, code: 'AI_PERMISSION_DENIED' });
+    return new AIProviderError('Project/API key tidak memiliki izin menggunakan Gemini API atau fitur yang diminta. Periksa API restrictions dan billing project key.', { status: 403, code: 'AI_PERMISSION_DENIED' });
   }
 
   if (responseStatus === 404) {
@@ -100,9 +100,16 @@ const classifyProviderError = (responseStatus, details, stage = 'request') => {
 
   if (responseStatus === 429) {
     const quotaHint = combined.includes('quota') || combined.includes('resource_exhausted');
+    const isGemini3Grounding = stage === 'grounding' && /^gemini-3(?:\.|-)/.test(model);
+    if (isGemini3Grounding && quotaHint) {
+      return new AIProviderError(
+        'Google Search grounding untuk Gemini 3.x membutuhkan project Gemini API dengan paid tier/billing aktif dan quota grounding tersedia.',
+        { status: 429, code: 'AI_GROUNDING_BILLING_REQUIRED' }
+      );
+    }
     return new AIProviderError(
       quotaHint
-        ? 'Kuota Gemini untuk model atau Google Search grounding belum tersedia atau sudah habis. Cek tier/quota project API key.'
+        ? 'Kuota Gemini untuk model atau fitur yang digunakan belum tersedia atau sudah habis. Cek tier/quota project API key.'
         : 'Batas permintaan Gemini tercapai. Coba lagi beberapa saat.',
       { status: 429, code: quotaHint ? 'AI_QUOTA_EXHAUSTED' : 'AI_RATE_LIMITED' }
     );
@@ -115,15 +122,16 @@ const classifyProviderError = (responseStatus, details, stage = 'request') => {
   return new AIProviderError('AI provider gagal memproses permintaan.', { status: 502, code: 'AI_UPSTREAM_ERROR' });
 };
 
-const throwProviderError = async (response, stage) => {
+const throwProviderError = async (response, stage, model) => {
   const details = await readProviderError(response);
   console.error('Gemini upstream error', {
     stage,
+    model,
     httpStatus: response.status,
     providerStatus: String(details.status || '').slice(0, 80),
     providerMessage: String(details.message || '').slice(0, 240)
   });
-  throw classifyProviderError(response.status, details, stage);
+  throw classifyProviderError(response.status, details, stage, model);
 };
 
 const generateContent = async ({ model, env, body, stage }) => {
@@ -147,7 +155,7 @@ const generateContent = async ({ model, env, body, stage }) => {
     clearTimeout(timeout);
   }
 
-  if (!response.ok) await throwProviderError(response, stage);
+  if (!response.ok) await throwProviderError(response, stage, model);
   return response.json();
 };
 
@@ -211,6 +219,7 @@ export const getGeminiHealth = async (env) => {
       providerReady: false,
       model,
       pipeline: 'ground-search-then-json-mode',
+      groundingTier: 'paid',
       providerErrorCode: 'AI_NOT_CONFIGURED'
     };
   }
@@ -225,13 +234,14 @@ export const getGeminiHealth = async (env) => {
     });
     if (!response.ok) {
       const details = await readProviderError(response);
-      const error = classifyProviderError(response.status, details, 'health-check');
+      const error = classifyProviderError(response.status, details, 'health-check', model);
       return {
         configured: false,
         secretPresent: true,
         providerReady: false,
         model,
         pipeline: 'ground-search-then-json-mode',
+        groundingTier: 'paid',
         providerErrorCode: error.code
       };
     }
@@ -241,6 +251,7 @@ export const getGeminiHealth = async (env) => {
       providerReady: true,
       model,
       pipeline: 'ground-search-then-json-mode',
+      groundingTier: 'paid',
       providerErrorCode: null
     };
   } catch {
@@ -250,6 +261,7 @@ export const getGeminiHealth = async (env) => {
       providerReady: false,
       model,
       pipeline: 'ground-search-then-json-mode',
+      groundingTier: 'paid',
       providerErrorCode: controller.signal.aborted ? 'AI_HEALTH_TIMEOUT' : 'AI_HEALTH_NETWORK_ERROR'
     };
   } finally {
@@ -278,8 +290,6 @@ const callGemini = async ({ prompt, env, maxResults }) => {
   if (!groundedText) throw new AIProviderError('Gemini tidak mengembalikan hasil riset.', { code: 'AI_EMPTY_RESPONSE' });
   const groundingSources = extractGroundingSources(groundedData);
 
-  // Use JSON mode without responseSchema here. This avoids provider-side schema
-  // compatibility failures while application code still validates and normalizes every field.
   const structuredData = await generateContent({
     model,
     env,
