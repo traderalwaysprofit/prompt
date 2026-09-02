@@ -10,26 +10,6 @@ export class AIProviderError extends Error {
   }
 }
 
-const responseSchema = {
-  type: 'ARRAY',
-  items: {
-    type: 'OBJECT',
-    properties: {
-      brand: { type: 'STRING' },
-      company: { type: 'STRING' },
-      category: { type: 'STRING' },
-      region: { type: 'STRING' },
-      address: { type: 'STRING' },
-      website: { type: 'STRING' },
-      instagram: { type: 'STRING' },
-      phone: { type: 'STRING' },
-      confidence: { type: 'NUMBER' },
-      sourceUrls: { type: 'ARRAY', items: { type: 'STRING' } }
-    },
-    required: ['brand', 'company', 'category', 'region', 'address', 'website', 'instagram', 'phone', 'confidence', 'sourceUrls']
-  }
-};
-
 const validHttpsUrl = (value) => {
   try {
     const url = new URL(String(value || ''));
@@ -96,23 +76,57 @@ const readProviderError = async (response) => {
   };
 };
 
-const throwProviderError = async (response) => {
-  const details = await readProviderError(response);
-  if (response.status === 429) {
-    const message = `${details.status} ${details.message}`.toLowerCase();
-    const quotaHint = message.includes('quota') || message.includes('resource_exhausted');
-    throw new AIProviderError(
+const classifyProviderError = (responseStatus, details, stage = 'request') => {
+  const combined = `${details.status} ${details.message}`.toLowerCase();
+
+  if (responseStatus === 400) {
+    if (combined.includes('api key not valid') || combined.includes('api_key_invalid')) {
+      return new AIProviderError('API key Gemini ditolak. Periksa bahwa key berasal dari Google AI Studio/Gemini API dan tidak dibatasi untuk API lain.', { status: 401, code: 'AI_API_KEY_INVALID' });
+    }
+    return new AIProviderError(`Gemini menolak konfigurasi request pada tahap ${stage}.`, { status: 502, code: 'AI_INVALID_REQUEST' });
+  }
+
+  if (responseStatus === 401) {
+    return new AIProviderError('API key Gemini tidak dapat diautentikasi.', { status: 401, code: 'AI_AUTH_FAILED' });
+  }
+
+  if (responseStatus === 403) {
+    return new AIProviderError('Project/API key tidak memiliki izin menggunakan Gemini API atau fitur yang diminta. Periksa API restrictions dan project key.', { status: 403, code: 'AI_PERMISSION_DENIED' });
+  }
+
+  if (responseStatus === 404) {
+    return new AIProviderError('Model Gemini yang dikonfigurasi tidak tersedia untuk API key/project ini.', { status: 502, code: 'AI_MODEL_NOT_FOUND' });
+  }
+
+  if (responseStatus === 429) {
+    const quotaHint = combined.includes('quota') || combined.includes('resource_exhausted');
+    return new AIProviderError(
       quotaHint
-        ? 'Kuota Gemini untuk model atau Google Search grounding belum tersedia atau sudah habis. Coba lagi nanti atau cek tier/billing project API key.'
-        : 'Batas permintaan AI tercapai. Coba lagi beberapa saat.',
+        ? 'Kuota Gemini untuk model atau Google Search grounding belum tersedia atau sudah habis. Cek tier/quota project API key.'
+        : 'Batas permintaan Gemini tercapai. Coba lagi beberapa saat.',
       { status: 429, code: quotaHint ? 'AI_QUOTA_EXHAUSTED' : 'AI_RATE_LIMITED' }
     );
   }
-  console.error('Gemini upstream error', response.status, details.text.slice(0, 300));
-  throw new AIProviderError('AI provider gagal memproses permintaan.', { status: 502, code: 'AI_UPSTREAM_ERROR' });
+
+  if (responseStatus >= 500) {
+    return new AIProviderError('Layanan Gemini sedang bermasalah. Coba lagi beberapa saat.', { status: 502, code: 'AI_UPSTREAM_UNAVAILABLE' });
+  }
+
+  return new AIProviderError('AI provider gagal memproses permintaan.', { status: 502, code: 'AI_UPSTREAM_ERROR' });
 };
 
-const generateContent = async ({ model, env, body }) => {
+const throwProviderError = async (response, stage) => {
+  const details = await readProviderError(response);
+  console.error('Gemini upstream error', {
+    stage,
+    httpStatus: response.status,
+    providerStatus: String(details.status || '').slice(0, 80),
+    providerMessage: String(details.message || '').slice(0, 240)
+  });
+  throw classifyProviderError(response.status, details, stage);
+};
+
+const generateContent = async ({ model, env, body, stage }) => {
   const controller = new AbortController();
   const timeout = setTimeout(() => controller.abort('timeout'), 28000);
   let response;
@@ -127,13 +141,13 @@ const generateContent = async ({ model, env, body }) => {
       body: JSON.stringify(body)
     });
   } catch (error) {
-    if (controller.signal.aborted) throw new AIProviderError('AI provider timeout.', { status: 504, code: 'AI_TIMEOUT' });
-    throw new AIProviderError('Tidak dapat menghubungi AI provider.', { code: 'AI_NETWORK_ERROR' });
+    if (controller.signal.aborted) throw new AIProviderError(`Gemini timeout pada tahap ${stage}.`, { status: 504, code: 'AI_TIMEOUT' });
+    throw new AIProviderError('Tidak dapat menghubungi Gemini API.', { code: 'AI_NETWORK_ERROR' });
   } finally {
     clearTimeout(timeout);
   }
 
-  if (!response.ok) await throwProviderError(response);
+  if (!response.ok) await throwProviderError(response, stage);
   return response.json();
 };
 
@@ -155,25 +169,102 @@ ${String(groundedText || '').slice(0, 18000)}
 ${sourceList}
 </grounded_sources>
 
+OUTPUT WAJIB:
+Kembalikan hanya JSON array. Setiap item harus memiliki tepat field berikut:
+{
+  "brand": "string",
+  "company": "string",
+  "category": "string",
+  "region": "string",
+  "address": "string",
+  "website": "string",
+  "instagram": "string",
+  "phone": "string",
+  "confidence": 0.0,
+  "sourceUrls": ["https://..."]
+}
+
 NORMALISASI:
 1. Bentuk candidate hanya dari fakta yang didukung materi riset di atas.
 2. Jangan membuat bisnis, nomor telepon, URL, perusahaan, atau alamat yang tidak ada di materi riset.
 3. sourceUrls hanya boleh mengambil URL yang tercantum di <grounded_sources>.
 4. Gunakan string kosong bila field tidak ditemukan.
-5. confidence harus 0..1 berdasarkan kekuatan bukti.
-6. Output harus mengikuti JSON schema yang diberikan dan tanpa prose.`;
+5. confidence harus angka 0..1 berdasarkan kekuatan bukti.
+6. Jangan tambahkan prose, markdown, atau code fence.`;
+};
+
+const parseCandidateArray = (text) => {
+  let parsed;
+  try { parsed = JSON.parse(text); } catch {
+    throw new AIProviderError('Format JSON dari Gemini tidak valid.', { code: 'AI_INVALID_JSON' });
+  }
+  if (!Array.isArray(parsed)) throw new AIProviderError('Format candidate Gemini bukan array.', { code: 'AI_INVALID_SCHEMA' });
+  return parsed;
+};
+
+export const getGeminiHealth = async (env) => {
+  const model = env.AI_MODEL || DEFAULT_MODEL;
+  if (!env.GEMINI_API_KEY) {
+    return {
+      configured: false,
+      secretPresent: false,
+      providerReady: false,
+      model,
+      pipeline: 'ground-search-then-json-mode',
+      providerErrorCode: 'AI_NOT_CONFIGURED'
+    };
+  }
+
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort('timeout'), 6000);
+  try {
+    const response = await fetch(`${GEMINI_API}/${encodeURIComponent(model)}`, {
+      method: 'GET',
+      headers: { 'x-goog-api-key': env.GEMINI_API_KEY },
+      signal: controller.signal
+    });
+    if (!response.ok) {
+      const details = await readProviderError(response);
+      const error = classifyProviderError(response.status, details, 'health-check');
+      return {
+        configured: false,
+        secretPresent: true,
+        providerReady: false,
+        model,
+        pipeline: 'ground-search-then-json-mode',
+        providerErrorCode: error.code
+      };
+    }
+    return {
+      configured: true,
+      secretPresent: true,
+      providerReady: true,
+      model,
+      pipeline: 'ground-search-then-json-mode',
+      providerErrorCode: null
+    };
+  } catch {
+    return {
+      configured: false,
+      secretPresent: true,
+      providerReady: false,
+      model,
+      pipeline: 'ground-search-then-json-mode',
+      providerErrorCode: controller.signal.aborted ? 'AI_HEALTH_TIMEOUT' : 'AI_HEALTH_NETWORK_ERROR'
+    };
+  } finally {
+    clearTimeout(timeout);
+  }
 };
 
 const callGemini = async ({ prompt, env, maxResults }) => {
   if (!env.GEMINI_API_KEY) throw new AIProviderError('AI belum dikonfigurasi.', { status: 503, code: 'AI_NOT_CONFIGURED' });
   const model = env.AI_MODEL || DEFAULT_MODEL;
 
-  // Gemini 3.x supports structured outputs together with built-in tools, but Google Search grounding
-  // is not available on the Gemini 3.x free tier. V1 therefore uses a two-step pipeline that also
-  // works with Gemini 2.5 Flash free-tier grounding: grounded research first, structured formatting second.
   const groundedData = await generateContent({
     model,
     env,
+    stage: 'grounding',
     body: {
       contents: [{ role: 'user', parts: [{ text: `${prompt}\n\nBerikan catatan riset faktual yang ringkas. Jangan paksa format JSON pada tahap riset ini.` }] }],
       tools: [{ google_search: {} }],
@@ -184,35 +275,34 @@ const callGemini = async ({ prompt, env, maxResults }) => {
   });
 
   const groundedText = extractText(groundedData);
-  if (!groundedText) throw new AIProviderError('AI tidak mengembalikan hasil riset.', { code: 'AI_EMPTY_RESPONSE' });
+  if (!groundedText) throw new AIProviderError('Gemini tidak mengembalikan hasil riset.', { code: 'AI_EMPTY_RESPONSE' });
   const groundingSources = extractGroundingSources(groundedData);
 
+  // Use JSON mode without responseSchema here. This avoids provider-side schema
+  // compatibility failures while application code still validates and normalizes every field.
   const structuredData = await generateContent({
     model,
     env,
+    stage: 'normalization',
     body: {
       contents: [{ role: 'user', parts: [{ text: buildStructuredPrompt({ taskPrompt: prompt, groundedText, groundingSources }) }] }],
       generationConfig: {
         responseMimeType: 'application/json',
-        responseSchema,
         temperature: 0.1
       }
     }
   });
 
   const text = extractText(structuredData);
-  if (!text) throw new AIProviderError('AI tidak mengembalikan candidate.', { code: 'AI_EMPTY_RESPONSE' });
+  if (!text) throw new AIProviderError('Gemini tidak mengembalikan candidate.', { code: 'AI_EMPTY_RESPONSE' });
 
-  let parsed;
-  try { parsed = JSON.parse(text); } catch { throw new AIProviderError('Format respons AI tidak valid.', { code: 'AI_INVALID_JSON' }); }
-  if (!Array.isArray(parsed)) throw new AIProviderError('Format candidate AI tidak valid.', { code: 'AI_INVALID_SCHEMA' });
-
+  const parsed = parseCandidateArray(text);
   const candidates = parsed.slice(0, maxResults).map((item) => normalizeCandidate(item, groundingSources));
-  return { model, pipeline: 'ground-search-then-structure', candidates, groundingSources };
+  return { model, pipeline: 'ground-search-then-json-mode', candidates, groundingSources };
 };
 
 export const searchWithGemini = async ({ categoryLabel, category, region, limit }, env) => {
-  const prompt = `Anda adalah B2B lead researcher untuk aplikasi SAMSON. Gunakan Google Search untuk menemukan tepat maksimal ${limit} bisnis NYATA dan AKTIF yang sesuai target berikut.
+  const prompt = `Anda adalah B2B lead researcher untuk aplikasi SAMSON. Gunakan Google Search untuk menemukan maksimal ${limit} bisnis NYATA dan AKTIF yang sesuai target berikut.
 
 TARGET TERKONTROL:
 - Kategori: ${categoryLabel}
