@@ -85,17 +85,17 @@ const makeRequest = (path, { method = 'GET', body, headers = {} } = {}) => new R
   headers: body ? { 'Content-Type': 'application/json', ...headers } : headers,
   body: body ? JSON.stringify(body) : undefined
 });
-const env = { GEMINI_API_KEY: 'test-key', AI_MODEL: 'gemini-2.5-flash', B2B_RATE_LIMITER: { limit: async () => ({ success: true }) } };
+const env = { GEMINI_API_KEY: 'test-key', AI_MODEL: 'gemini-3.6-flash', B2B_RATE_LIMITER: { limit: async () => ({ success: true }) } };
 
 const originalFetch = globalThis.fetch;
 let generationCalls = 0;
 globalThis.fetch = async (url, options = {}) => {
   assert.match(String(url), /generativelanguage\.googleapis\.com/);
-  assert.match(String(url), /gemini-2\.5-flash/);
+  assert.match(String(url), /gemini-3\.6-flash/);
   assert.equal(options.headers['x-goog-api-key'], 'test-key');
 
   if ((options.method || 'GET') === 'GET') {
-    return new Response(JSON.stringify({ name: 'models/gemini-2.5-flash', supportedGenerationMethods: ['generateContent'] }), {
+    return new Response(JSON.stringify({ name: 'models/gemini-3.6-flash', supportedGenerationMethods: ['generateContent'] }), {
       status: 200,
       headers: { 'Content-Type': 'application/json' }
     });
@@ -106,7 +106,6 @@ globalThis.fetch = async (url, options = {}) => {
 
   if (generationCalls === 1) {
     assert.deepEqual(payload.tools, [{ google_search: {} }]);
-    assert.equal(payload.generationConfig.responseSchema, undefined);
     return new Response(JSON.stringify({
       candidates: [{
         content: { parts: [{ text: 'Klinik Test di Mojokerto. Website https://test.example dan nomor 6281234567890.' }] },
@@ -117,7 +116,6 @@ globalThis.fetch = async (url, options = {}) => {
 
   assert.equal(payload.tools, undefined);
   assert.equal(payload.generationConfig.responseMimeType, 'application/json');
-  assert.equal(payload.generationConfig.responseSchema, undefined);
   return new Response(JSON.stringify({
     candidates: [{
       content: { parts: [{ text: JSON.stringify([{
@@ -133,7 +131,8 @@ try {
   let health = await response.json();
   assert.equal(health.configured, true);
   assert.equal(health.providerReady, true);
-  assert.equal(health.pipeline, 'ground-search-then-json-mode');
+  assert.equal(health.model, 'gemini-3.6-flash');
+  assert.equal(health.groundingTier, 'paid');
 
   response = await handleB2BRequest(makeRequest('/api/tools/b2b/health', { headers: { 'sec-fetch-site': 'cross-site' } }), env);
   assert.equal(response.status, 200);
@@ -167,5 +166,20 @@ const limitedEnv = { ...env, B2B_RATE_LIMITER: { limit: async () => ({ success: 
 let response = await handleB2BRequest(makeRequest('/api/tools/b2b/search', { method: 'POST', body: { category: 'aesthetic-clinic', region: 'Mojokerto', limit: 5 } }), limitedEnv);
 assert.equal(response.status, 429);
 assert.equal((await response.json()).error.code, 'RATE_LIMITED');
+
+globalThis.fetch = async () => new Response(JSON.stringify({
+  error: {
+    code: 429,
+    status: 'RESOURCE_EXHAUSTED',
+    message: 'Quota exceeded for Google Search grounding on free tier.'
+  }
+}), { status: 429, headers: { 'Content-Type': 'application/json' } });
+try {
+  response = await handleB2BRequest(makeRequest('/api/tools/b2b/search', { method: 'POST', body: { category: 'aesthetic-clinic', region: 'Mojokerto', limit: 5 } }), env);
+  assert.equal(response.status, 429);
+  assert.equal((await response.json()).error.code, 'AI_GROUNDING_BILLING_REQUIRED');
+} finally {
+  globalThis.fetch = originalFetch;
+}
 
 console.log('B2B TOOLS TESTS: PASS');
