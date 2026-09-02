@@ -63,6 +63,8 @@ const health = (env) => jsonResponse({
   status: 'ready',
   configured: Boolean(env.GEMINI_API_KEY),
   provider: 'gemini',
+  model: env.AI_MODEL || 'gemini-2.5-flash',
+  pipeline: 'ground-search-then-structure',
   rateLimit: env.B2B_RATE_LIMITER?.limit ? 'cloudflare-binding' : 'worker-fallback',
   schemaVersion: 1
 });
