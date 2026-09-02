@@ -15,6 +15,12 @@ const readJson = async (response) => {
   }
 };
 
+const sanitizeProviderPayload = (data) => {
+  if (!data || typeof data !== 'object' || Array.isArray(data)) return data;
+  const { groundingSources: _legacyGlobalSources, ...safeData } = data;
+  return safeData;
+};
+
 const requestJson = async (path, { method = 'GET', body, timeout = 25000, signal } = {}) => {
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort('timeout'), timeout);
@@ -39,7 +45,7 @@ const requestJson = async (path, { method = 'GET', body, timeout = 25000, signal
         code: data?.error?.code || `HTTP_${response.status}`
       });
     }
-    return data;
+    return sanitizeProviderPayload(data);
   } catch (error) {
     if (error instanceof B2BApiError) throw error;
     if (controller.signal.aborted) {
