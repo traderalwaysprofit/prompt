@@ -95,7 +95,8 @@ When the secret is missing, `/health` reports `configured: false`; AI buttons ar
 ## Security controls
 
 - strict same-origin browser API surface; existing CSP can retain `connect-src 'self'`
-- Cloudflare Rate Limiting binding before AI calls
+- deployment-safe per-isolate fallback rate limiting before AI calls
+- optional native Cloudflare Rate Limiting binding support when it is added later to the deployed Worker
 - method, media type, payload-size, category, region, and limit validation
 - prompt-injection boundary for enrichment input (`<untrusted_data>`)
 - structured provider response plus application normalization
@@ -105,7 +106,9 @@ When the secret is missing, `/health` reports `configured: false`; AI buttons ar
 - request/provider timeouts and normalized error responses
 - local database has explicit destructive confirmation
 
-Rate limiting currently falls back to `cf-connecting-ip` because V1 has no account/user identity. This protects provider quota but can group users behind a shared network; replace the key with a stable user/account identifier when authentication exists.
+V1 does not declare a new Rate Limiting binding in `wrangler.jsonc`. This keeps Cloudflare non-production `wrangler versions upload` previews compatible with the existing Worker while the feature is under review. The Worker still applies a best-effort 20 requests/minute per `cf-connecting-ip` and API path inside each isolate. This is provider-quota protection, not an exact accounting control. A native `B2B_RATE_LIMITER` binding can replace the fallback after the production Worker settings are deliberately provisioned and verified.
+
+Because V1 has no account/user identity, the fallback key uses `cf-connecting-ip`. Users behind shared networks can be grouped together; replace the key with a stable account/user identifier when authentication exists.
 
 ## Accessibility and responsive behavior
 
@@ -131,7 +134,7 @@ Rate limiting currently falls back to `cf-connecting-ip` because V1 has no accou
 - local-store migration
 - Worker validation
 - Gemini adapter request contract (mocked)
-- rate limiting (mocked)
+- native rate-limit path (mocked)
 
 Browser E2E covers:
 
@@ -149,7 +152,9 @@ No CI test calls the real Gemini API.
 
 ## Deployment dependency
 
-Before merging into a production deployment, configure `GEMINI_API_KEY` in the Cloudflare Worker environment. AI execution must remain disabled if that secret is not present.
+Before enabling AI in production, configure `GEMINI_API_KEY` in the Cloudflare Worker environment. AI execution remains disabled if that secret is not present.
+
+The feature branch is preview-deployable without that secret; local import/database/export/routing remain usable for review.
 
 Do not merge or deploy solely because this document exists; wait for repository validation and browser E2E checks on the pull request.
 
