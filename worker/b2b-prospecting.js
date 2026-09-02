@@ -9,6 +9,10 @@ import {
   validateSearchInput
 } from './validation.js';
 
+const FALLBACK_RATE_LIMIT = 20;
+const FALLBACK_RATE_WINDOW_MS = 60_000;
+const fallbackRateBuckets = new Map();
+
 const enforceSameOrigin = (request) => {
   const url = new URL(request.url);
   const origin = request.headers.get('origin');
@@ -19,18 +23,47 @@ const enforceSameOrigin = (request) => {
   }
 };
 
+const enforceFallbackRateLimit = (key) => {
+  const now = Date.now();
+  const bucket = fallbackRateBuckets.get(key);
+
+  if (!bucket || now >= bucket.resetAt) {
+    fallbackRateBuckets.set(key, { count: 1, resetAt: now + FALLBACK_RATE_WINDOW_MS });
+    return;
+  }
+
+  bucket.count += 1;
+  if (bucket.count > FALLBACK_RATE_LIMIT) {
+    throw new RequestValidationError('Terlalu banyak permintaan. Coba lagi dalam satu menit.', { status: 429, code: 'RATE_LIMITED' });
+  }
+
+  if (fallbackRateBuckets.size > 500) {
+    for (const [bucketKey, value] of fallbackRateBuckets) {
+      if (now >= value.resetAt) fallbackRateBuckets.delete(bucketKey);
+      if (fallbackRateBuckets.size <= 400) break;
+    }
+  }
+};
+
 const enforceRateLimit = async (request, env) => {
-  if (!env.B2B_RATE_LIMITER?.limit) return;
   const url = new URL(request.url);
   const actor = request.headers.get('cf-connecting-ip') || 'anonymous';
-  const { success } = await env.B2B_RATE_LIMITER.limit({ key: `${actor}:${url.pathname}` });
-  if (!success) throw new RequestValidationError('Terlalu banyak permintaan. Coba lagi dalam satu menit.', { status: 429, code: 'RATE_LIMITED' });
+  const key = `${actor}:${url.pathname}`;
+
+  if (env.B2B_RATE_LIMITER?.limit) {
+    const { success } = await env.B2B_RATE_LIMITER.limit({ key });
+    if (!success) throw new RequestValidationError('Terlalu banyak permintaan. Coba lagi dalam satu menit.', { status: 429, code: 'RATE_LIMITED' });
+    return;
+  }
+
+  enforceFallbackRateLimit(key);
 };
 
 const health = (env) => jsonResponse({
   status: 'ready',
   configured: Boolean(env.GEMINI_API_KEY),
   provider: 'gemini',
+  rateLimit: env.B2B_RATE_LIMITER?.limit ? 'cloudflare-binding' : 'worker-fallback',
   schemaVersion: 1
 });
 
