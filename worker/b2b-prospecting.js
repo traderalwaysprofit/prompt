@@ -18,7 +18,7 @@ const enforceSameOrigin = (request) => {
   const origin = request.headers.get('origin');
   const fetchSite = request.headers.get('sec-fetch-site');
   if (origin && origin !== url.origin) throw new RequestValidationError('Cross-origin request ditolak.', { status: 403, code: 'CROSS_ORIGIN_BLOCKED' });
-  if (fetchSite && !['same-origin', 'same-site', 'none'].includes(fetchSite)) {
+  if (fetchSite && !['same-origin', 'none'].includes(fetchSite)) {
     throw new RequestValidationError('Cross-site request ditolak.', { status: 403, code: 'CROSS_SITE_BLOCKED' });
   }
 };
@@ -70,13 +70,15 @@ const health = (env) => jsonResponse({
 export const handleB2BRequest = async (request, env) => {
   const url = new URL(request.url);
   try {
-    enforceSameOrigin(request);
-
+    // Health is read-only and intentionally public so it can be opened directly
+    // from Cloudflare/GitHub preview links or a browser address bar.
     if (url.pathname === '/api/tools/b2b/health') {
       if (request.method !== 'GET') throw new RequestValidationError('Method tidak diizinkan.', { status: 405, code: 'METHOD_NOT_ALLOWED' });
       return health(env);
     }
 
+    // Credential-consuming AI endpoints remain protected against cross-site calls.
+    enforceSameOrigin(request);
     await enforceRateLimit(request, env);
 
     if (url.pathname === '/api/tools/b2b/search') {
