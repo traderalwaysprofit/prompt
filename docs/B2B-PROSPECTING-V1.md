@@ -6,22 +6,22 @@
 
 B2B Prospecting is a Practical Tools Hub module for discovering, reviewing, storing, enriching, and preparing visits to B2B prospects.
 
-V1 intentionally remains local-first for lead storage. The only server-side dependency is a narrow Cloudflare Worker gateway for AI search/enrichment.
+V1 remains local-first for lead storage. Server-side dependencies are narrow Cloudflare Worker adapters for search and AI normalization.
 
 Route: `#tools/b2b-prospecting`
 
 ## V1 workflow
 
 1. Search prospects by controlled category, territory, and limit (5 or 10).
-2. Review AI candidates and source links before saving.
+2. Review candidates and candidate-specific source links before saving.
 3. Detect exact duplicates (phone/domain/Instagram) and probable duplicates (brand/company + region).
 4. Store normalized lead records in local browser storage.
 5. Import XLS/XLSX/CSV through a review gate before commit.
 6. Export the local database as CSV or XLSX.
-7. Enrich BPOM-style brand/company input through the same candidate review gate.
+7. Enrich BPOM-style brand/company input through Serper Search plus Gemini normalization.
 8. Select up to four leads and create a deterministic Google Maps visit route plus WhatsApp briefing.
 
-AI candidates are never auto-saved.
+Candidates are never auto-saved.
 
 ## Lead schema
 
@@ -71,9 +71,9 @@ Bands: `HOT` >= 80, `WARM` >= 60, otherwise `LOW`.
 
 The module follows the Tools Hub `mountTool(root, context)` lifecycle and returns a `destroy()` controller.
 
-## AI gateway
+## Provider architecture
 
-Browser calls are same-origin only:
+Browser calls remain same-origin only:
 
 - `GET /api/tools/b2b/health`
 - `POST /api/tools/b2b/search`
@@ -83,49 +83,79 @@ Worker modules:
 
 - `worker/index.js`
 - `worker/b2b-prospecting.js`
+- `worker/serper-provider.js`
 - `worker/ai-provider.js`
 - `worker/validation.js`
 
-The configured provider is Gemini through an adapter. `AI_MODEL` defaults to `gemini-3.6-flash` for V1.
+### Search provider: Serper
 
-This model choice is intentional. Google currently limits Gemini 2.5 generation access for newly created/inactive projects even though those models can still appear in model metadata. New Gemini API projects are expected to use current Gemini 3-series models. Gemini 3.6 Flash is stable and supports Google Search grounding.
+`SERPER_API_KEY` is the discovery dependency. Prospect search uses the Serper Places endpoint with Indonesian country/language settings. Enrichment uses Serper Search results as bounded evidence.
 
-V1 keeps a two-step AI pipeline:
+The application never exposes the Serper key to browser JavaScript. The key must be stored as a Cloudflare Worker secret.
 
-1. `gemini-3.6-flash` + Google Search performs grounded research and returns source metadata.
-2. A second `gemini-3.6-flash` call, without tools, converts the grounded research into application JSON.
+### AI provider: Gemini
 
-The split keeps external research isolated as untrusted data before it becomes application state.
+`GEMINI_API_KEY` remains the reasoning/normalization dependency. `AI_MODEL` defaults to `gemini-3.6-flash`.
 
-### Billing requirement for prospect discovery
+Gemini is **not** allowed to perform Google Search grounding in this architecture. That removes the Gemini paid-tier Search Grounding dependency. Gemini only receives Serper-returned data and performs JSON review/normalization.
 
-Google Search grounding on Gemini 3.x is not available through the Gemini API Free Tier. The Google Cloud / Gemini API project used by `GEMINI_API_KEY` must have paid-tier billing enabled and grounding quota available. Google currently provides a monthly no-charge allowance for a number of Gemini 3.x Search grounding requests on paid tier; token usage follows the selected model pricing.
+Prospect discovery pipeline:
 
-When Gemini returns provider quota exhaustion during the grounding stage, SAMSON exposes the specific error code `AI_GROUNDING_BILLING_REQUIRED` instead of reporting a generic AI failure.
+1. Serper Places returns concrete local-business records.
+2. Candidate-specific sources are created only from that place's official website and/or Google Maps CID.
+3. Gemini performs a relevance review by `evidenceIndex`; it cannot attach unrelated global citations or add new facts.
+4. If the Gemini review call fails, the Worker can retain the Serper candidates and return `aiReview: "fallback"` rather than losing the search result.
 
-`GEMINI_API_KEY` must be configured as a Cloudflare Worker secret. It must never be committed, exposed to browser JavaScript, logged, or placed in documentation.
+Enrichment pipeline:
 
-When the secret is missing, `/health` reports `configured: false`; AI buttons are disabled while local import/database/export/routing remain usable.
+1. Serper Search returns bounded organic results.
+2. Gemini normalizes those results into candidate fields.
+3. `sourceUrls` are accepted only when they exactly match URLs returned by Serper.
+4. There is no global-source fallback; unrelated evidence is never attached automatically to a candidate.
 
-`/health` reports `groundingTier: "paid"` as a capability requirement. It intentionally does not execute a real Google Search query because a public health endpoint must not consume billable/quota-bearing search requests.
+Required Cloudflare Worker secrets:
+
+- `SERPER_API_KEY`
+- `GEMINI_API_KEY`
+
+Neither secret may be committed, logged, returned in API payloads, or documented with a value.
+
+## Health contract
+
+`GET /api/tools/b2b/health` does not consume a Serper search credit. It verifies Serper secret presence and validates Gemini model access through the Gemini models endpoint.
+
+A healthy deployment reports the important fields:
+
+```json
+{
+  "status": "ready",
+  "configured": true,
+  "provider": "serper+gemini",
+  "searchProvider": "serper",
+  "searchConfigured": true,
+  "aiProvider": "gemini",
+  "providerReady": true,
+  "model": "gemini-3.6-flash",
+  "pipeline": "serper-places-then-gemini-review"
+}
+```
 
 ## Security controls
 
 - strict same-origin browser API surface; existing CSP can retain `connect-src 'self'`
-- deployment-safe per-isolate fallback rate limiting before AI calls
-- optional native Cloudflare Rate Limiting binding support when it is added later to the deployed Worker
+- deployment-safe per-isolate fallback rate limiting before provider calls
+- optional native Cloudflare Rate Limiting binding support when deliberately provisioned later
 - method, media type, payload-size, category, region, and limit validation
-- prompt-injection boundary for enrichment input (`<untrusted_data>`)
-- grounded research is treated as untrusted data during the second formatting call
-- structured provider response plus application normalization
+- prompt-injection boundaries around Serper/enrichment evidence
+- Gemini does not browse the web or execute instructions from search content
+- candidate-specific provenance; no global-source fallback
 - no AI/external data rendered as raw HTML; dynamic values use DOM nodes / `textContent`
 - external links constrained by URL normalization and `noopener noreferrer`
-- no secret values in response payloads
 - request/provider timeouts and normalized error responses
-- Gemini provider errors distinguish model access, grounding billing/quota, provider quota, and Samson's own request limiter
+- separate error codes for Samson rate limit, Serper quota/auth, and Gemini quota/auth/model access
 - local database has explicit destructive confirmation
 
-V1 does not declare a new Rate Limiting binding in `wrangler.jsonc`. This keeps Cloudflare non-production previews compatible with the existing Worker while the feature is under review. The Worker still applies a best-effort 20 requests/minute per `cf-connecting-ip` and API path inside each isolate. This is provider-quota protection, not exact distributed accounting. A native `B2B_RATE_LIMITER` binding can replace the fallback after the production Worker settings are deliberately provisioned and verified.
+V1 does not declare a new Rate Limiting binding in `wrangler.jsonc`. The Worker applies a best-effort 20 requests/minute per `cf-connecting-ip` and API path inside each isolate. A native `B2B_RATE_LIMITER` binding can replace the fallback after production settings are deliberately provisioned and verified.
 
 Because V1 has no account/user identity, the fallback key uses `cf-connecting-ip`. Users behind shared networks can be grouped together; replace the key with a stable account/user identifier when authentication exists.
 
@@ -152,8 +182,10 @@ Because V1 has no account/user identity, the fallback key uses `cf-connecting-ip
 - route and WhatsApp brief
 - local-store migration
 - Worker validation
-- Gemini 3.6 two-step adapter request contract (mocked)
-- Gemini grounding paid-tier/quota error mapping (mocked)
+- Serper Places request contract (mocked)
+- Serper Search enrichment request contract (mocked)
+- Gemini review/normalization without Google Search tools (mocked)
+- candidate-specific provenance/no unrelated source attachment
 - native rate-limit path (mocked)
 
 Browser E2E covers:
@@ -166,21 +198,17 @@ Browser E2E covers:
 - visit route/brief
 - CSV import review
 - compact mobile overflow
-- graceful AI-not-configured state
+- graceful provider-not-configured state
 
-No CI test calls the real Gemini API or Google Search grounding.
+No CI test calls real Serper or Gemini APIs.
 
-## Deployment dependencies
+## Deployment dependency
 
-Before enabling AI in production:
+For preview/production provider functionality, configure both `SERPER_API_KEY` and `GEMINI_API_KEY` as Cloudflare Worker secrets.
 
-1. configure `GEMINI_API_KEY` in the Cloudflare Worker environment;
-2. ensure the underlying Gemini API / Google Cloud project has billing enabled for Gemini 3.x Google Search grounding;
-3. set a conservative Google Cloud budget/quota alert before production traffic.
+The Gemini project does not need Search Grounding billing for this architecture because Gemini no longer invokes Google Search.
 
-The feature branch remains preview-deployable without a usable grounding entitlement; local import/database/export/routing remain usable for review.
-
-Do not merge or deploy solely because this document exists; wait for repository validation, browser E2E, Cloudflare preview, and a live grounded search test.
+Do not merge or deploy solely because this document exists; wait for repository validation, Browser E2E, and a manual live provider test on the pull request preview.
 
 ## Out of scope for V1
 
@@ -189,7 +217,7 @@ Do not merge or deploy solely because this document exists; wait for repository 
 - multi-user synchronization
 - sales ownership/permissions
 - CRM synchronization
-- route optimization/traffic API
+- traffic-aware route optimization
 - automated follow-up
 - Kanban pipeline
 - analytics dashboard
