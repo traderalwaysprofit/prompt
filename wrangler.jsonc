@@ -1,8 +1,27 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "prompt-v5",
-  "compatibility_date": "2026-08-24",
+  "main": "worker/index.js",
+  "compatibility_date": "2026-09-02",
   "assets": {
-    "directory": "./dist"
+    "directory": "./dist",
+    "binding": "ASSETS",
+    "run_worker_first": ["/api/*"]
+  },
+  "vars": {
+    "AI_MODEL": "gemini-2.5-flash"
+  },
+  "ratelimits": [
+    {
+      "name": "B2B_RATE_LIMITER",
+      "namespace_id": "2026090201",
+      "simple": {
+        "limit": 20,
+        "period": 60
+      }
+    }
+  ],
+  "limits": {
+    "subrequests": 10
   }
 }
