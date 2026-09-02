@@ -86,18 +86,28 @@ Worker modules:
 - `worker/ai-provider.js`
 - `worker/validation.js`
 
-The configured provider is Gemini through an adapter. `AI_MODEL` defaults to `gemini-2.5-flash` for V1 because Google Search grounding is available on its free tier (subject to Google's published quota), while Gemini 3.x Search Grounding is paid-tier only.
+The configured provider is Gemini through an adapter. `AI_MODEL` defaults to `gemini-3.6-flash` for V1.
 
-V1 uses a two-step AI pipeline:
+This model choice is intentional. Google currently limits Gemini 2.5 generation access for newly created/inactive projects even though those models can still appear in model metadata. New Gemini API projects are expected to use current Gemini 3-series models. Gemini 3.6 Flash is stable and supports Google Search grounding.
 
-1. `gemini-2.5-flash` + Google Search performs grounded research and returns source metadata.
-2. A second `gemini-2.5-flash` call, without tools, converts the grounded research into the strict application JSON schema.
+V1 keeps a two-step AI pipeline:
 
-This split is deliberate: Google documents Structured Outputs combined with built-in tools as a Gemini 3-series capability, so the free-tier-compatible 2.5 path separates grounding and schema formatting instead of combining both in one call.
+1. `gemini-3.6-flash` + Google Search performs grounded research and returns source metadata.
+2. A second `gemini-3.6-flash` call, without tools, converts the grounded research into application JSON.
+
+The split keeps external research isolated as untrusted data before it becomes application state.
+
+### Billing requirement for prospect discovery
+
+Google Search grounding on Gemini 3.x is not available through the Gemini API Free Tier. The Google Cloud / Gemini API project used by `GEMINI_API_KEY` must have paid-tier billing enabled and grounding quota available. Google currently provides a monthly no-charge allowance for a number of Gemini 3.x Search grounding requests on paid tier; token usage follows the selected model pricing.
+
+When Gemini returns provider quota exhaustion during the grounding stage, SAMSON exposes the specific error code `AI_GROUNDING_BILLING_REQUIRED` instead of reporting a generic AI failure.
 
 `GEMINI_API_KEY` must be configured as a Cloudflare Worker secret. It must never be committed, exposed to browser JavaScript, logged, or placed in documentation.
 
 When the secret is missing, `/health` reports `configured: false`; AI buttons are disabled while local import/database/export/routing remain usable.
+
+`/health` reports `groundingTier: "paid"` as a capability requirement. It intentionally does not execute a real Google Search query because a public health endpoint must not consume billable/quota-bearing search requests.
 
 ## Security controls
 
@@ -112,10 +122,10 @@ When the secret is missing, `/health` reports `configured: false`; AI buttons ar
 - external links constrained by URL normalization and `noopener noreferrer`
 - no secret values in response payloads
 - request/provider timeouts and normalized error responses
-- Gemini 429 responses distinguish provider quota exhaustion from Samson's own request limiter
+- Gemini provider errors distinguish model access, grounding billing/quota, provider quota, and Samson's own request limiter
 - local database has explicit destructive confirmation
 
-V1 does not declare a new Rate Limiting binding in `wrangler.jsonc`. This keeps Cloudflare non-production `wrangler versions upload` previews compatible with the existing Worker while the feature is under review. The Worker still applies a best-effort 20 requests/minute per `cf-connecting-ip` and API path inside each isolate. This is provider-quota protection, not an exact accounting control. A native `B2B_RATE_LIMITER` binding can replace the fallback after the production Worker settings are deliberately provisioned and verified.
+V1 does not declare a new Rate Limiting binding in `wrangler.jsonc`. This keeps Cloudflare non-production previews compatible with the existing Worker while the feature is under review. The Worker still applies a best-effort 20 requests/minute per `cf-connecting-ip` and API path inside each isolate. This is provider-quota protection, not exact distributed accounting. A native `B2B_RATE_LIMITER` binding can replace the fallback after the production Worker settings are deliberately provisioned and verified.
 
 Because V1 has no account/user identity, the fallback key uses `cf-connecting-ip`. Users behind shared networks can be grouped together; replace the key with a stable account/user identifier when authentication exists.
 
@@ -142,7 +152,8 @@ Because V1 has no account/user identity, the fallback key uses `cf-connecting-ip
 - route and WhatsApp brief
 - local-store migration
 - Worker validation
-- two-step Gemini adapter request contract (mocked)
+- Gemini 3.6 two-step adapter request contract (mocked)
+- Gemini grounding paid-tier/quota error mapping (mocked)
 - native rate-limit path (mocked)
 
 Browser E2E covers:
@@ -157,15 +168,19 @@ Browser E2E covers:
 - compact mobile overflow
 - graceful AI-not-configured state
 
-No CI test calls the real Gemini API.
+No CI test calls the real Gemini API or Google Search grounding.
 
-## Deployment dependency
+## Deployment dependencies
 
-Before enabling AI in production, configure `GEMINI_API_KEY` in the Cloudflare Worker environment. AI execution remains disabled if that secret is not present.
+Before enabling AI in production:
 
-The feature branch is preview-deployable without that secret; local import/database/export/routing remain usable for review.
+1. configure `GEMINI_API_KEY` in the Cloudflare Worker environment;
+2. ensure the underlying Gemini API / Google Cloud project has billing enabled for Gemini 3.x Google Search grounding;
+3. set a conservative Google Cloud budget/quota alert before production traffic.
 
-Do not merge or deploy solely because this document exists; wait for repository validation and browser E2E checks on the pull request.
+The feature branch remains preview-deployable without a usable grounding entitlement; local import/database/export/routing remain usable for review.
+
+Do not merge or deploy solely because this document exists; wait for repository validation, browser E2E, Cloudflare preview, and a live grounded search test.
 
 ## Out of scope for V1
 
