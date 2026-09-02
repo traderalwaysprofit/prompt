@@ -17,7 +17,8 @@ const readJson = async (response) => {
 
 const sanitizeProviderPayload = (data) => {
   if (!data || typeof data !== 'object' || Array.isArray(data)) return data;
-  const { groundingSources: _legacyGlobalSources, ...safeData } = data;
+  const safeData = { ...data };
+  delete safeData.groundingSources;
   return safeData;
 };
 
