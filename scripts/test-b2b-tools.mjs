@@ -89,6 +89,16 @@ const env = { GEMINI_API_KEY: 'test-key', AI_MODEL: 'gemini-2.5-flash', B2B_RATE
 let response = await handleB2BRequest(makeRequest('/api/tools/b2b/health'), env);
 assert.equal(response.status, 200);
 assert.equal((await response.json()).configured, true);
+response = await handleB2BRequest(makeRequest('/api/tools/b2b/health', { headers: { 'sec-fetch-site': 'cross-site' } }), env);
+assert.equal(response.status, 200);
+assert.equal((await response.json()).configured, true);
+response = await handleB2BRequest(makeRequest('/api/tools/b2b/search', {
+  method: 'POST',
+  body: { category: 'aesthetic-clinic', region: 'Mojokerto', limit: 5 },
+  headers: { 'sec-fetch-site': 'cross-site' }
+}), env);
+assert.equal(response.status, 403);
+assert.equal((await response.json()).error.code, 'CROSS_SITE_BLOCKED');
 response = await handleB2BRequest(makeRequest('/api/tools/b2b/search', { method: 'POST', body: { category: 'bad', region: 'Mojokerto', limit: 5 } }), env);
 assert.equal(response.status, 400);
 assert.equal((await response.json()).error.code, 'INVALID_CATEGORY');
