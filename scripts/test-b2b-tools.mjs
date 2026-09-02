@@ -85,44 +85,81 @@ const makeRequest = (path, { method = 'GET', body, headers = {} } = {}) => new R
   headers: body ? { 'Content-Type': 'application/json', ...headers } : headers,
   body: body ? JSON.stringify(body) : undefined
 });
-const env = { GEMINI_API_KEY: 'test-key', AI_MODEL: 'gemini-3.6-flash', B2B_RATE_LIMITER: { limit: async () => ({ success: true }) } };
+
+const env = {
+  GEMINI_API_KEY: 'gemini-test-key',
+  SERPER_API_KEY: 'serper-test-key',
+  AI_MODEL: 'gemini-3.6-flash',
+  B2B_RATE_LIMITER: { limit: async () => ({ success: true }) }
+};
 
 const originalFetch = globalThis.fetch;
-let generationCalls = 0;
+let geminiGenerationCalls = 0;
+let serperPlacesCalls = 0;
+let serperSearchCalls = 0;
+
 globalThis.fetch = async (url, options = {}) => {
-  assert.match(String(url), /generativelanguage\.googleapis\.com/);
-  assert.match(String(url), /gemini-3\.6-flash/);
-  assert.equal(options.headers['x-goog-api-key'], 'test-key');
+  const target = String(url);
 
-  if ((options.method || 'GET') === 'GET') {
-    return new Response(JSON.stringify({ name: 'models/gemini-3.6-flash', supportedGenerationMethods: ['generateContent'] }), {
-      status: 200,
-      headers: { 'Content-Type': 'application/json' }
-    });
-  }
+  if (target.includes('generativelanguage.googleapis.com')) {
+    assert.match(target, /gemini-3\.6-flash/);
+    assert.equal(options.headers['x-goog-api-key'], 'gemini-test-key');
 
-  generationCalls += 1;
-  const payload = JSON.parse(options.body);
+    if ((options.method || 'GET') === 'GET') {
+      return new Response(JSON.stringify({ name: 'models/gemini-3.6-flash', supportedGenerationMethods: ['generateContent'] }), {
+        status: 200,
+        headers: { 'Content-Type': 'application/json' }
+      });
+    }
 
-  if (generationCalls === 1) {
-    assert.deepEqual(payload.tools, [{ google_search: {} }]);
+    geminiGenerationCalls += 1;
+    const payload = JSON.parse(options.body);
+    assert.equal(payload.tools, undefined);
+    assert.equal(payload.generationConfig.responseMimeType, 'application/json');
+
+    if (geminiGenerationCalls === 1) {
+      return new Response(JSON.stringify({
+        candidates: [{ content: { parts: [{ text: JSON.stringify([
+          { evidenceIndex: 0, keep: true, confidence: 0.91 },
+          { evidenceIndex: 1, keep: false, confidence: 0.2 }
+        ]) }] } }]
+      }), { status: 200, headers: { 'Content-Type': 'application/json' } });
+    }
+
     return new Response(JSON.stringify({
-      candidates: [{
-        content: { parts: [{ text: 'Klinik Test di Mojokerto. Website https://test.example dan nomor 6281234567890.' }] },
-        groundingMetadata: { groundingChunks: [{ web: { uri: 'https://source.example/a', title: 'Source A' } }] }
-      }]
+      candidates: [{ content: { parts: [{ text: JSON.stringify([{
+        brand: 'Klinik Test', company: 'PT Test', category: 'aesthetic-clinic', region: 'Mojokerto', address: 'Jl Test', website: 'https://test.example/', instagram: 'klinictest', phone: '6281234567890', confidence: 0.9, sourceUrls: ['https://test.example/']
+      }]) }] } }]
     }), { status: 200, headers: { 'Content-Type': 'application/json' } });
   }
 
-  assert.equal(payload.tools, undefined);
-  assert.equal(payload.generationConfig.responseMimeType, 'application/json');
-  return new Response(JSON.stringify({
-    candidates: [{
-      content: { parts: [{ text: JSON.stringify([{
-        brand: 'Klinik Test', company: 'PT Test', category: 'aesthetic-clinic', region: 'Mojokerto', address: 'Jl Test', website: 'https://test.example', instagram: 'klinictest', phone: '6281234567890', confidence: 0.9, sourceUrls: ['https://source.example/a']
-      }]) }] }
-    }]
-  }), { status: 200, headers: { 'Content-Type': 'application/json' } });
+  if (target === 'https://google.serper.dev/places') {
+    serperPlacesCalls += 1;
+    assert.equal(options.headers['X-API-KEY'], 'serper-test-key');
+    const payload = JSON.parse(options.body);
+    assert.equal(payload.gl, 'id');
+    assert.equal(payload.hl, 'id');
+    assert.equal(payload.num, 5);
+    return new Response(JSON.stringify({
+      places: [
+        { title: 'Klinik Test', address: 'Jl Test, Mojokerto', website: 'https://test.example/', phoneNumber: '081234567890', rating: 4.8, ratingCount: 120, type: 'Klinik kecantikan', cid: '123456789' },
+        { title: 'Toko Umum', address: 'Mojokerto', website: 'https://unrelated.example/', rating: 4.1, ratingCount: 10, type: 'Toko', cid: '999999999' }
+      ]
+    }), { status: 200, headers: { 'Content-Type': 'application/json' } });
+  }
+
+  if (target === 'https://google.serper.dev/search') {
+    serperSearchCalls += 1;
+    assert.equal(options.headers['X-API-KEY'], 'serper-test-key');
+    return new Response(JSON.stringify({
+      organic: [
+        { title: 'Klinik Test Official', link: 'https://test.example/', snippet: 'Klinik Test PT Test Mojokerto WhatsApp 081234567890.' },
+        { title: 'Unrelated', link: 'https://unrelated.example/', snippet: 'Tidak terkait.' }
+      ]
+    }), { status: 200, headers: { 'Content-Type': 'application/json' } });
+  }
+
+  throw new Error(`Unexpected fetch: ${target}`);
 };
 
 try {
@@ -130,14 +167,13 @@ try {
   assert.equal(response.status, 200);
   let health = await response.json();
   assert.equal(health.configured, true);
+  assert.equal(health.searchConfigured, true);
   assert.equal(health.providerReady, true);
   assert.equal(health.model, 'gemini-3.6-flash');
-  assert.equal(health.groundingTier, 'paid');
+  assert.equal(health.pipeline, 'serper-places-then-gemini-review');
 
   response = await handleB2BRequest(makeRequest('/api/tools/b2b/health', { headers: { 'sec-fetch-site': 'cross-site' } }), env);
   assert.equal(response.status, 200);
-  health = await response.json();
-  assert.equal(health.configured, true);
 
   response = await handleB2BRequest(makeRequest('/api/tools/b2b/search', {
     method: 'POST',
@@ -153,33 +189,35 @@ try {
 
   response = await handleB2BRequest(makeRequest('/api/tools/b2b/search', { method: 'POST', body: { category: 'aesthetic-clinic', region: 'Mojokerto', limit: 5 } }), env);
   assert.equal(response.status, 200);
-  const data = await response.json();
-  assert.equal(generationCalls, 2);
-  assert.equal(data.pipeline, 'ground-search-then-json-mode');
-  assert.equal(data.candidates.length, 1);
-  assert.equal(data.candidates[0].sources[0].url, 'https://source.example/a');
+  const searchData = await response.json();
+  assert.equal(serperPlacesCalls, 1);
+  assert.equal(searchData.pipeline, 'serper-places-then-gemini-review');
+  assert.equal(searchData.candidates.length, 1);
+  assert.equal(searchData.candidates[0].brand, 'Klinik Test');
+  assert.ok(searchData.candidates[0].sources.some((source) => source.url === 'https://test.example/'));
+  assert.equal(searchData.candidates[0].sources.some((source) => source.url === 'https://unrelated.example/'), false);
+
+  response = await handleB2BRequest(makeRequest('/api/tools/b2b/enrich', { method: 'POST', body: { mode: 'bpom', input: 'Klinik Test - PT Test' } }), env);
+  assert.equal(response.status, 200);
+  const enrichData = await response.json();
+  assert.equal(serperSearchCalls, 1);
+  assert.equal(enrichData.pipeline, 'serper-search-then-gemini-json');
+  assert.equal(enrichData.candidates.length, 1);
+  assert.equal(enrichData.candidates[0].sources.length, 1);
+  assert.equal(enrichData.candidates[0].sources[0].url, 'https://test.example/');
 } finally {
   globalThis.fetch = originalFetch;
 }
+
+const missingSerperEnv = { ...env, SERPER_API_KEY: '' };
+let response = await handleB2BRequest(makeRequest('/api/tools/b2b/health'), missingSerperEnv);
+let health = await response.json();
+assert.equal(health.configured, false);
+assert.equal(health.providerErrorCode, 'SEARCH_NOT_CONFIGURED');
 
 const limitedEnv = { ...env, B2B_RATE_LIMITER: { limit: async () => ({ success: false }) } };
-let response = await handleB2BRequest(makeRequest('/api/tools/b2b/search', { method: 'POST', body: { category: 'aesthetic-clinic', region: 'Mojokerto', limit: 5 } }), limitedEnv);
+response = await handleB2BRequest(makeRequest('/api/tools/b2b/search', { method: 'POST', body: { category: 'aesthetic-clinic', region: 'Mojokerto', limit: 5 } }), limitedEnv);
 assert.equal(response.status, 429);
 assert.equal((await response.json()).error.code, 'RATE_LIMITED');
-
-globalThis.fetch = async () => new Response(JSON.stringify({
-  error: {
-    code: 429,
-    status: 'RESOURCE_EXHAUSTED',
-    message: 'Quota exceeded for Google Search grounding on free tier.'
-  }
-}), { status: 429, headers: { 'Content-Type': 'application/json' } });
-try {
-  response = await handleB2BRequest(makeRequest('/api/tools/b2b/search', { method: 'POST', body: { category: 'aesthetic-clinic', region: 'Mojokerto', limit: 5 } }), env);
-  assert.equal(response.status, 429);
-  assert.equal((await response.json()).error.code, 'AI_GROUNDING_BILLING_REQUIRED');
-} finally {
-  globalThis.fetch = originalFetch;
-}
 
 console.log('B2B TOOLS TESTS: PASS');
