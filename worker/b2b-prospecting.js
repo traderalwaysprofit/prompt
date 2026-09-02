@@ -1,4 +1,4 @@
-import { AIProviderError, enrichWithGemini, searchWithGemini } from './ai-provider.js';
+import { AIProviderError, enrichWithGemini, getGeminiHealth, searchWithGemini } from './ai-provider.js';
 import {
   RequestValidationError,
   errorResponse,
@@ -59,15 +59,16 @@ const enforceRateLimit = async (request, env) => {
   enforceFallbackRateLimit(key);
 };
 
-const health = (env) => jsonResponse({
-  status: 'ready',
-  configured: Boolean(env.GEMINI_API_KEY),
-  provider: 'gemini',
-  model: env.AI_MODEL || 'gemini-2.5-flash',
-  pipeline: 'ground-search-then-structure',
-  rateLimit: env.B2B_RATE_LIMITER?.limit ? 'cloudflare-binding' : 'worker-fallback',
-  schemaVersion: 1
-});
+const health = async (env) => {
+  const provider = await getGeminiHealth(env);
+  return jsonResponse({
+    status: provider.providerReady ? 'ready' : 'degraded',
+    provider: 'gemini',
+    ...provider,
+    rateLimit: env.B2B_RATE_LIMITER?.limit ? 'cloudflare-binding' : 'worker-fallback',
+    schemaVersion: 1
+  });
+};
 
 export const handleB2BRequest = async (request, env) => {
   const url = new URL(request.url);
@@ -76,7 +77,7 @@ export const handleB2BRequest = async (request, env) => {
     // from Cloudflare/GitHub preview links or a browser address bar.
     if (url.pathname === '/api/tools/b2b/health') {
       if (request.method !== 'GET') throw new RequestValidationError('Method tidak diizinkan.', { status: 405, code: 'METHOD_NOT_ALLOWED' });
-      return health(env);
+      return await health(env);
     }
 
     // Credential-consuming AI endpoints remain protected against cross-site calls.
