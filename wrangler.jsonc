@@ -10,18 +10,5 @@
   },
   "vars": {
     "AI_MODEL": "gemini-3.5-flash"
-  },
-  "ratelimits": [
-    {
-      "name": "B2B_RATE_LIMITER",
-      "namespace_id": "2026090201",
-      "simple": {
-        "limit": 20,
-        "period": 60
-      }
-    }
-  ],
-  "limits": {
-    "subrequests": 10
   }
 }
