@@ -19,6 +19,7 @@ import {
   validateEnrichInput,
   validateSearchInput
 } from './validation.js';
+import { sanitizeProspectUrl } from './url-sanitizer.js';
 
 const FALLBACK_RATE_LIMIT = 20;
 const FALLBACK_RATE_WINDOW_MS = 60_000;
@@ -127,6 +128,22 @@ const handleEnrich = async (input, env) => {
   };
 };
 
+const validateProspectTarget = (input) => {
+  const sanitized = sanitizeProspectUrl(input?.targetUrl);
+  if (!sanitized.isValid || !sanitized.sanitizedUrl) {
+    throw new RequestValidationError(sanitized.error || 'Target URL tidak valid.', {
+      status: 422,
+      code: 'INVALID_TARGET_URL'
+    });
+  }
+
+  return {
+    target: sanitized.sanitizedUrl,
+    host: sanitized.hostname,
+    status: 'QUEUED_FOR_PROSPECTING'
+  };
+};
+
 export const handleB2BRequest = async (request, env) => {
   const url = new URL(request.url);
   try {
@@ -137,6 +154,13 @@ export const handleB2BRequest = async (request, env) => {
 
     enforceSameOrigin(request);
     await enforceRateLimit(request, env);
+
+    if (url.pathname === '/api/tools/b2b/prospect') {
+      requirePost(request);
+      const input = await readJsonBody(request, { maxBytes: 16 * 1024 });
+      const result = validateProspectTarget(input);
+      return jsonResponse({ schemaVersion: 1, requestId: crypto.randomUUID(), success: true, ...result });
+    }
 
     if (url.pathname === '/api/tools/b2b/search') {
       requirePost(request);

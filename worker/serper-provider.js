@@ -1,3 +1,5 @@
+import { sanitizeProspectUrl } from './url-sanitizer.js';
+
 const SERPER_BASE = 'https://google.serper.dev';
 
 export class SearchProviderError extends Error {
@@ -10,9 +12,11 @@ export class SearchProviderError extends Error {
 }
 
 const validHttpsUrl = (value) => {
+  const sanitized = sanitizeProspectUrl(value);
+  if (!sanitized.isValid || !sanitized.sanitizedUrl) return '';
   try {
-    const url = new URL(String(value || ''));
-    return url.protocol === 'https:' ? url.toString() : '';
+    const parsed = new URL(sanitized.sanitizedUrl);
+    return parsed.protocol === 'https:' ? sanitized.sanitizedUrl : '';
   } catch {
     return '';
   }
