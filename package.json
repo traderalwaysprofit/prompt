@@ -13,13 +13,15 @@
     "test:run": "vitest run",
     "test:e2e": "playwright test",
     "test:url-sanitizer": "node scripts/test-url-sanitizer.mjs",
-    "test:tools": "node scripts/test-contact-tools.mjs && node scripts/test-b2b-tools.mjs && node scripts/test-url-sanitizer.mjs",
+    "test:tools:core": "node scripts/test-contact-tools.mjs && node scripts/test-b2b-tools.mjs && node scripts/test-url-sanitizer.mjs",
+    "test:tools": "npm run lint && npm run typecheck && npm run test:run && npm run test:tools:core",
     "typecheck": "tsc --noEmit",
     "lint": "eslint \"worker/**/*.js\" \"scripts/**/*.mjs\" \"src/**/*.js\"",
     "verify:worker": "wrangler deploy --dry-run --outdir .wrangler-dry-run",
-    "validate:security-headers": "node scripts/validate-security-headers.mjs",
+    "validate:security-headers:core": "node scripts/validate-security-headers.mjs",
+    "validate:security-headers": "npm run validate:security-headers:core && npm run verify:worker",
     "validate:regression": "node scripts/validate-regression.mjs",
-    "ci:verify": "npm run lint && npm run typecheck && npm run test:run && npm run test:tools && npm run build && npm run verify:worker && npm run validate:security-headers",
+    "ci:verify": "npm run test:tools && npm run build && npm run validate:security-headers",
     "prepare": "husky"
   },
   "lint-staged": {
