@@ -20,6 +20,7 @@ import {
   validateSearchInput
 } from './validation.js';
 import { sanitizeProspectUrl } from './url-sanitizer.js';
+import { ProspectingRequestSchema } from '../src/schemas/prospectingSchema.ts';
 
 const FALLBACK_RATE_LIMIT = 20;
 const FALLBACK_RATE_WINDOW_MS = 60_000;
@@ -129,7 +130,16 @@ const handleEnrich = async (input, env) => {
 };
 
 const validateProspectTarget = (input) => {
-  const sanitized = sanitizeProspectUrl(input?.targetUrl);
+  const parsedInput = ProspectingRequestSchema.safeParse(input);
+  if (!parsedInput.success) {
+    const issue = parsedInput.error.issues[0];
+    throw new RequestValidationError(issue?.message || 'Payload prospecting tidak valid.', {
+      status: 422,
+      code: 'INVALID_PROSPECT_PAYLOAD'
+    });
+  }
+
+  const sanitized = sanitizeProspectUrl(parsedInput.data.targetUrl);
   if (!sanitized.isValid || !sanitized.sanitizedUrl) {
     throw new RequestValidationError(sanitized.error || 'Target URL tidak valid.', {
       status: 422,
@@ -140,6 +150,7 @@ const validateProspectTarget = (input) => {
   return {
     target: sanitized.sanitizedUrl,
     host: sanitized.hostname,
+    source: parsedInput.data.source,
     status: 'QUEUED_FOR_PROSPECTING'
   };
 };
