@@ -14,7 +14,9 @@ import { getToolByRoute, isToolsRoute, TOOLS, TOOLS_HOME_ROUTE } from './tools-r
       <div class="tools-inner" id="tools-view"></div>
     </section>`;
 
-  const toolCardMarkup = (tool) => `
+  const toolCardMarkup = (tool) => {
+    const badges = tool.badges || tool.formats || [];
+    return `
     <a class="tools-catalog-card" href="${tool.route}" data-tool-id="${tool.id}">
       <span class="tools-card-topline">
         <span class="tools-card-icon">${icon(tool.iconPath)}</span>
@@ -23,11 +25,12 @@ import { getToolByRoute, isToolsRoute, TOOLS, TOOLS_HOME_ROUTE } from './tools-r
       <span class="tools-kicker">${tool.category}</span>
       <h3>${tool.title}</h3>
       <p>${tool.description}</p>
-      <span class="tools-card-formats" aria-label="Format yang didukung">
-        ${tool.formats.map((format) => `<span>${format}</span>`).join('')}
+      <span class="tools-card-formats" aria-label="Fitur dan format yang didukung">
+        ${badges.map((badge) => `<span>${badge}</span>`).join('')}
       </span>
       <span class="tools-card-action">Buka Tool ${icon('M5 12h14M13 6l6 6-6 6')}</span>
     </a>`;
+  };
 
   const hubMarkup = () => `
     <header class="tools-page-header tools-hub-header">
@@ -101,6 +104,8 @@ import { getToolByRoute, isToolsRoute, TOOLS, TOOLS_HOME_ROUTE } from './tools-r
     showToolsSection({ focus, scroll });
   };
 
+  const resolveMount = (module) => module?.mountTool || module?.mountGoogleContactsTool;
+
   const renderTool = async (tool, { focus = true, scroll = true } = {}) => {
     const view = getView();
     const section = document.querySelector('#tools');
@@ -116,8 +121,10 @@ import { getToolByRoute, isToolsRoute, TOOLS, TOOLS_HOME_ROUTE } from './tools-r
     try {
       const module = await tool.load();
       if (request !== routeRequest || location.hash !== tool.route) return;
+      const mount = resolveMount(module);
+      if (typeof mount !== 'function') throw new TypeError(`Tool ${tool.id} tidak mengekspor mountTool().`);
       view.removeAttribute('aria-busy');
-      activeController = module.mountGoogleContactsTool(view, { icon });
+      activeController = mount(view, { icon, tool });
       if (focus) focusCurrentTitle();
     } catch (error) {
       if (request !== routeRequest) return;

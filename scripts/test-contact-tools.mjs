@@ -13,12 +13,16 @@ import {
 import { getToolByRoute, TOOLS, TOOLS_HOME_ROUTE } from '../src/tools-registry.js';
 
 assert.equal(TOOLS_HOME_ROUTE, '#tools');
-assert.equal(TOOLS.length, 1);
+assert.equal(TOOLS.length, 2);
 assert.equal(TOOLS[0].id, 'google-contacts');
+assert.equal(TOOLS[1].id, 'b2b-prospecting');
 assert.equal(getToolByRoute('#tools/google-contacts'), TOOLS[0]);
+assert.equal(getToolByRoute('#tools/b2b-prospecting'), TOOLS[1]);
 assert.equal(getToolByRoute('#tools/not-found'), null);
 const googleContactsModule = await TOOLS[0].load();
 assert.equal(typeof googleContactsModule.mountGoogleContactsTool, 'function');
+const b2bModule = await TOOLS[1].load();
+assert.equal(typeof b2bModule.mountTool, 'function');
 
 assert.deepEqual(formatIndonesianPhone('0812-3456-7890'), { valid: true, value: '+6281234567890', reason: '' });
 assert.deepEqual(formatIndonesianPhone('+62 812 3456 7891'), { valid: true, value: '+6281234567891', reason: '' });

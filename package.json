@@ -12,7 +12,7 @@
     "test:e2e": "playwright test",
     "validate:security-headers": "node scripts/validate-security-headers.mjs",
     "validate:regression": "node scripts/validate-regression.mjs",
-    "test:tools": "node scripts/test-contact-tools.mjs"
+    "test:tools": "node scripts/test-contact-tools.mjs && node scripts/test-b2b-tools.mjs"
   },
   "devDependencies": {
     "@playwright/test": "^1.55.0"
