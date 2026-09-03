@@ -1,0 +1,37 @@
+{
+  "systemStatus": "OPTIMIZED",
+  "topicTitle": "RULE EKSEKUSI TRADING & INFRA",
+  "items": [
+    {
+      "tag": "RISK MANAGEMENT",
+      "tagColor": "#FF0055",
+      "lines": [
+        "Max risk per open trade: 1%",
+        "SL wajib terpasang di market order",
+        "Cut loss deterministik tanpa kompromi",
+        "RR minimum 1:2 setup only"
+      ]
+    },
+    {
+      "tag": "EXECUTION PIPELINE",
+      "tagColor": "#00FF66",
+      "lines": [
+        "Check high-impact economic calendar",
+        "Konfirmasi level SnR & liquidity sweep",
+        "Validasi spread & latency VPS",
+        "Entry signal strict checklist"
+      ]
+    },
+    {
+      "tag": "AUTOMATION GUARD",
+      "tagColor": "#FFFF00",
+      "lines": [
+        "Trailing stop otomatis via EA/Script",
+        "Alerting Telegram/WA bila drawdown > 3%",
+        "Auto-disconnect saat weekend roll",
+        "Audit mingguan via trading journal"
+      ]
+    }
+  ],
+  "footerAction": "DEPLOY DISCIPLINE_"
+}
