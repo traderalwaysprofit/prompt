@@ -17,6 +17,7 @@
     "test:tools": "npm run lint && npm run typecheck && npm run test:run && npm run test:tools:core",
     "typecheck": "tsc --noEmit",
     "lint": "eslint \"worker/**/*.js\" \"scripts/**/*.mjs\" \"src/**/*.js\"",
+    "visual:generate": "tsx scripts/renderVisual.ts",
     "verify:worker": "wrangler deploy --dry-run --outdir .wrangler-dry-run",
     "validate:security-headers:core": "node scripts/validate-security-headers.mjs",
     "validate:security-headers": "npm run validate:security-headers:core && npm run verify:worker",
@@ -34,9 +35,12 @@
   },
   "devDependencies": {
     "@playwright/test": "^1.55.0",
+    "@resvg/resvg-js": "^2.6.2",
+    "@types/node": "^26.4.1",
     "eslint": "^9.0.0",
     "husky": "^9.1.0",
     "lint-staged": "^16.0.0",
+    "tsx": "^4.23.13",
     "typescript": "^5.9.0",
     "vitest": "^3.2.0",
     "wrangler": "^4.0.0"
