@@ -8,7 +8,13 @@
     "binding": "ASSETS",
     "run_worker_first": ["/api/*"]
   },
+  "triggers": {
+    "crons": ["*/5 * * * *"]
+  },
   "vars": {
-    "AI_MODEL": "gemini-3.6-flash"
+    "AI_MODEL": "gemini-3.6-flash",
+    "OBSERVABILITY_ENABLED": "false",
+    "OBSERVABILITY_TIMEOUT_MS": "4000",
+    "OBSERVABILITY_TARGETS_JSON": "[]"
   }
 }
