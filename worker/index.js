@@ -1,3 +1,4 @@
+import { runHealthCheckEngine } from '../src/observability/healthCheck.ts';
 import { handleB2BRequest } from './b2b-prospecting.js';
 import { handleSystemToolsRequest } from './system-tools.js';
 
@@ -8,5 +9,14 @@ export default {
     if (url.pathname.startsWith('/api/core/tools')) return handleSystemToolsRequest(request, env);
     if (env.ASSETS?.fetch) return env.ASSETS.fetch(request);
     return new Response('Not Found', { status: 404 });
+  },
+
+  async scheduled(_controller, env, ctx) {
+    if (env.OBSERVABILITY_ENABLED !== 'true') return;
+    ctx.waitUntil(
+      runHealthCheckEngine(env).catch(() => {
+        console.error('[OBSERVABILITY_RUN_FAILURE]');
+      })
+    );
   }
 };
