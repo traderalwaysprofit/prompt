@@ -20,6 +20,8 @@ const BLOCKED_HOSTNAMES = new Set([
   'instance-data'
 ]);
 
+const EXPLICIT_SCHEME = /^[a-z][a-z0-9+.-]*:/i;
+
 /**
  * Normalize and validate a prospect URL before any downstream processing.
  * Safe for Cloudflare Workers / V8 edge runtime.
@@ -35,6 +37,10 @@ export function sanitizeProspectUrl(rawInput) {
   let trimmed = rawInput.trim();
   if (!trimmed) {
     return { isValid: false, sanitizedUrl: null, hostname: null, error: 'Empty input' };
+  }
+
+  if (EXPLICIT_SCHEME.test(trimmed) && !/^https?:\/\//i.test(trimmed)) {
+    return { isValid: false, sanitizedUrl: null, hostname: null, error: 'Unsupported protocol' };
   }
 
   if (!/^https?:\/\//i.test(trimmed)) trimmed = `https://${trimmed}`;
