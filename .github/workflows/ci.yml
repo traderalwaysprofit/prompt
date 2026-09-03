@@ -46,6 +46,9 @@ jobs:
       - name: Build Production Output
         run: npm run build
 
+      - name: Cloudflare Worker Dry-Run Bundle
+        run: npm run verify:worker
+
       - name: Validate Security Headers
         run: npm run validate:security-headers
 
@@ -60,6 +63,7 @@ jobs:
             echo "- Type contract: TypeScript strict noEmit"
             echo "- Runtime schema: Zod"
             echo "- Unit/security tests: Vitest + existing B2B regression suite"
+            echo "- Cloudflare bundle: Wrangler deploy --dry-run"
             echo "- Production build + security-header validation"
             echo "- Production deployment remains native Cloudflare Workers Builds after protected merge to main"
           } >> "$GITHUB_STEP_SUMMARY"
