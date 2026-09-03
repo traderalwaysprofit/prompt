@@ -90,11 +90,14 @@ export async function runAutonomousTask(
       executedTool: toolName,
       data: executionResult,
     };
-  } catch (error) {
+  } catch {
+    // Never expose exception messages, stack traces, provider diagnostics, paths,
+    // tokens, or upstream response bodies to the caller. Detailed diagnostics
+    // belong in controlled server-side observability, not the public tool result.
     return {
       status: "EXECUTION_ERROR",
       executedTool: toolName,
-      error: error instanceof Error ? error.message : String(error),
+      error: "Tool execution failed.",
     };
   }
 }
