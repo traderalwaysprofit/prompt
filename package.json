@@ -9,16 +9,36 @@
     "add:prompt": "node scripts/add-prompt.mjs",
     "report:prompt-coverage": "node scripts/report-prompt-coverage.mjs",
     "validate:data": "node scripts/validate-data.mjs",
+    "test": "vitest",
+    "test:run": "vitest run",
     "test:e2e": "playwright test",
+    "test:url-sanitizer": "node scripts/test-url-sanitizer.mjs",
+    "test:tools": "node scripts/test-contact-tools.mjs && node scripts/test-b2b-tools.mjs && node scripts/test-url-sanitizer.mjs",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint \"worker/**/*.js\" \"scripts/**/*.mjs\" \"src/**/*.js\"",
     "validate:security-headers": "node scripts/validate-security-headers.mjs",
     "validate:regression": "node scripts/validate-regression.mjs",
-    "test:url-sanitizer": "node scripts/test-url-sanitizer.mjs",
-    "test:tools": "node scripts/test-contact-tools.mjs && node scripts/test-b2b-tools.mjs && node scripts/test-url-sanitizer.mjs"
+    "ci:verify": "npm run lint && npm run typecheck && npm run test:run && npm run test:tools && npm run build && npm run validate:security-headers",
+    "prepare": "husky"
+  },
+  "lint-staged": {
+    "*.{js,mjs}": [
+      "eslint --fix"
+    ],
+    "*.{ts,tsx}": [
+      "vitest related --run"
+    ]
   },
   "devDependencies": {
-    "@playwright/test": "^1.55.0"
+    "@playwright/test": "^1.55.0",
+    "eslint": "^9.0.0",
+    "husky": "^9.1.0",
+    "lint-staged": "^16.0.0",
+    "typescript": "^5.9.0",
+    "vitest": "^3.2.0"
   },
   "dependencies": {
-    "xlsx": "https://cdn.sheetjs.com/xlsx-0.20.3/xlsx-0.20.3.tgz"
+    "xlsx": "https://cdn.sheetjs.com/xlsx-0.20.3/xlsx-0.20.3.tgz",
+    "zod": "^4.0.0"
   }
 }
