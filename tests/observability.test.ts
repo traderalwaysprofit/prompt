@@ -64,18 +64,23 @@ describe("AlertManager", () => {
   });
 
   it("posts a sanitized incident payload to a valid HTTPS webhook", async () => {
-    const fetchImpl = vi.fn(async () => new Response("ok", { status: 200 }));
+    let observedUrl: string | undefined;
+    let observedInit: RequestInit | undefined;
+    const fetchImpl = async (input: RequestInfo | URL, init?: RequestInit): Promise<Response> => {
+      observedUrl = String(input);
+      observedInit = init;
+      return new Response("ok", { status: 200 });
+    };
+
     const result = await AlertManager.dispatch(
       incident(),
       "https://alerts.example.com/hook?key=private",
-      { fetchImpl: fetchImpl as unknown as typeof fetch },
+      { fetchImpl: fetchImpl as typeof fetch },
     );
 
     expect(result.delivered).toBe(true);
-    expect(fetchImpl).toHaveBeenCalledTimes(1);
-    const [url, init] = fetchImpl.mock.calls[0];
-    expect(url).toBe("https://alerts.example.com/hook?key=private");
-    expect(init?.redirect).toBe("error");
+    expect(observedUrl).toBe("https://alerts.example.com/hook?key=private");
+    expect(observedInit?.redirect).toBe("error");
   });
 });
 
@@ -99,7 +104,7 @@ describe("runHealthCheckEngine", () => {
 
   it("marks 2xx and 3xx responses healthy without dispatching an incident", async () => {
     const fetchImpl = vi.fn(async () => new Response(null, { status: 302 }));
-    const dispatchIncident = vi.fn(async () => undefined);
+    const dispatchIncident = vi.fn(async (_value: SystemIncident, _webhookUrl?: string) => undefined);
     vi.spyOn(console, "log").mockImplementation(() => undefined);
 
     const result = await runHealthCheckEngine(
@@ -122,13 +127,16 @@ describe("runHealthCheckEngine", () => {
   });
 
   it("verifies a fallback before marking it ready and redacts signed query data", async () => {
-    const fetchImpl = vi.fn(async (input: RequestInfo | URL) => {
+    const fetchImpl = async (input: RequestInfo | URL): Promise<Response> => {
       const url = String(input);
       if (url.startsWith("https://redirect.example.com/")) return new Response("down", { status: 503 });
       if (url.startsWith("https://fallback.example.com/")) return new Response("ok", { status: 200 });
       return new Response("missing", { status: 404 });
+    };
+    let capturedIncident: SystemIncident | undefined;
+    const dispatchIncident = vi.fn(async (value: SystemIncident, _webhookUrl?: string) => {
+      capturedIncident = value;
     });
-    const dispatchIncident = vi.fn(async () => undefined);
     vi.spyOn(console, "log").mockImplementation(() => undefined);
 
     const result = await runHealthCheckEngine(
@@ -144,7 +152,7 @@ describe("runHealthCheckEngine", () => {
         ]),
       },
       {
-        fetchImpl: fetchImpl as unknown as typeof fetch,
+        fetchImpl: fetchImpl as typeof fetch,
         dispatchIncident,
         now: () => FIXED_DATE,
       },
@@ -158,7 +166,7 @@ describe("runHealthCheckEngine", () => {
     });
 
     expect(dispatchIncident).toHaveBeenCalledTimes(1);
-    expect(dispatchIncident.mock.calls[0][0]).toMatchObject({
+    expect(capturedIncident).toMatchObject({
       recoveryAction: "FALLBACK_READY",
       target: "https://redirect.example.com/health",
       fallbackTarget: "https://fallback.example.com/store",
@@ -167,7 +175,10 @@ describe("runHealthCheckEngine", () => {
 
   it("requires manual recovery when a failed target has no verified fallback", async () => {
     const fetchImpl = vi.fn(async () => new Response("down", { status: 500 }));
-    const dispatchIncident = vi.fn(async () => undefined);
+    let capturedIncident: SystemIncident | undefined;
+    const dispatchIncident = vi.fn(async (value: SystemIncident, _webhookUrl?: string) => {
+      capturedIncident = value;
+    });
     vi.spyOn(console, "log").mockImplementation(() => undefined);
 
     await runHealthCheckEngine(
@@ -184,7 +195,7 @@ describe("runHealthCheckEngine", () => {
       },
     );
 
-    expect(dispatchIncident.mock.calls[0][0]).toMatchObject({ recoveryAction: "MANUAL_REQUIRED" });
+    expect(capturedIncident).toMatchObject({ recoveryAction: "MANUAL_REQUIRED" });
   });
 
   it("fails closed on malformed target configuration", async () => {
