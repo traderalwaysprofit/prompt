@@ -16,9 +16,10 @@
     "test:tools": "node scripts/test-contact-tools.mjs && node scripts/test-b2b-tools.mjs && node scripts/test-url-sanitizer.mjs",
     "typecheck": "tsc --noEmit",
     "lint": "eslint \"worker/**/*.js\" \"scripts/**/*.mjs\" \"src/**/*.js\"",
+    "verify:worker": "wrangler deploy --dry-run --outdir .wrangler-dry-run",
     "validate:security-headers": "node scripts/validate-security-headers.mjs",
     "validate:regression": "node scripts/validate-regression.mjs",
-    "ci:verify": "npm run lint && npm run typecheck && npm run test:run && npm run test:tools && npm run build && npm run validate:security-headers",
+    "ci:verify": "npm run lint && npm run typecheck && npm run test:run && npm run test:tools && npm run build && npm run verify:worker && npm run validate:security-headers",
     "prepare": "husky"
   },
   "lint-staged": {
@@ -35,7 +36,8 @@
     "husky": "^9.1.0",
     "lint-staged": "^16.0.0",
     "typescript": "^5.9.0",
-    "vitest": "^3.2.0"
+    "vitest": "^3.2.0",
+    "wrangler": "^4.0.0"
   },
   "dependencies": {
     "xlsx": "https://cdn.sheetjs.com/xlsx-0.20.3/xlsx-0.20.3.tgz",
