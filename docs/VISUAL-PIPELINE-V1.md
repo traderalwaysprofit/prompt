@@ -38,6 +38,8 @@ npm run visual:generate -- \
 
 The generator accepts one to three content blocks. Each block contains a tag, a six-digit hexadecimal accent color, and body lines. Runtime validation uses Zod before any SVG is generated.
 
+The CLI runs as TypeScript through `tsx`; repository type-checking includes Node.js type definitions for filesystem/path/process APIs used by the renderer.
+
 ## Payload contract
 
 ```json
