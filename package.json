@@ -17,6 +17,7 @@
     "test:tools": "npm run lint && npm run typecheck && npm run test:run && npm run test:tools:core",
     "typecheck": "tsc --noEmit",
     "lint": "eslint \"worker/**/*.js\" \"scripts/**/*.mjs\" \"src/**/*.js\"",
+    "visual:generate": "tsx scripts/renderVisual.ts",
     "verify:worker": "wrangler deploy --dry-run --outdir .wrangler-dry-run",
     "validate:security-headers:core": "node scripts/validate-security-headers.mjs",
     "validate:security-headers": "npm run validate:security-headers:core && npm run verify:worker",
