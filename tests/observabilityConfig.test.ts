@@ -9,12 +9,11 @@ type ReviewedTarget = {
 };
 
 describe('observability production config', () => {
-  it('loads the reviewed production targets', async () => {
+  it('loads only currently active production targets', async () => {
     const targets = await loadObservabilityTargets() as ReviewedTarget[];
-    expect(targets).toHaveLength(2);
+    expect(targets).toHaveLength(1);
     expect(targets.map((target) => target.name)).toEqual([
       'SAMSON B2B API Health',
-      'SPM VPS Dashboard',
     ]);
     expect(targets.every((target) => target.url.startsWith('https://'))).toBe(true);
   });
