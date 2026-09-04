@@ -1,0 +1,72 @@
+name: Visual Artifact Generator
+
+on:
+  workflow_dispatch:
+    inputs:
+      input_path:
+        description: Reviewed JSON visual payload path
+        required: true
+        default: examples/visuals/forex-rule-card.json
+        type: string
+      output_name:
+        description: Artifact base filename
+        required: true
+        default: forex-rule-card
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  render:
+    name: render-visual-artifact
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    env:
+      VISUAL_INPUT: ${{ inputs.input_path }}
+      VISUAL_NAME: ${{ inputs.output_name }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+
+      - name: Setup Node.js
+        uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444 # v5
+        with:
+          node-version: 24
+          cache: npm
+
+      - name: Install locked dependencies
+        run: npm ci --no-audit --no-fund
+
+      - name: Validate visual engine
+        run: npx vitest run tests/visualGenerator.test.ts tests/visualRender.test.ts
+
+      - name: Generate SVG and PNG
+        run: npm run visual:generate -- --input "$VISUAL_INPUT" --name "$VISUAL_NAME" --outdir dist-visuals
+
+      - name: Verify generated files
+        run: |
+          test -s "dist-visuals/${VISUAL_NAME}.svg"
+          test -s "dist-visuals/${VISUAL_NAME}.png"
+          ls -lh "dist-visuals/${VISUAL_NAME}.svg" "dist-visuals/${VISUAL_NAME}.png"
+
+      - name: Upload visual artifact
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: visual-${{ github.run_id }}-${{ inputs.output_name }}
+          path: |
+            dist-visuals/${{ inputs.output_name }}.svg
+            dist-visuals/${{ inputs.output_name }}.png
+          if-no-files-found: error
+          retention-days: 14
+
+      - name: Artifact summary
+        if: always()
+        run: |
+          {
+            echo "## Headless Visual Artifact"
+            echo ""
+            echo "- Input: $VISUAL_INPUT"
+            echo "- Output: ${VISUAL_NAME}.svg + ${VISUAL_NAME}.png"
+            echo "- No publish or social scheduling is performed by this workflow."
+          } >> "$GITHUB_STEP_SUMMARY"

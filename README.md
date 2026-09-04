@@ -1,63 +1,170 @@
 # SAMSON
 
-**AI Cheatcodes for Real Work** — prompt library dan guided workflow berbasis web untuk membantu pengguna mengubah tujuan kerja menjadi instruksi AI yang terstruktur, reusable, dan semakin diarahkan menuju outcome yang dapat diverifikasi.
+**AI Cheatcodes for Real Work** — AI work system berbasis web untuk mengubah tujuan kerja menjadi prompt, guided workflow, practical tools, executable tool contracts, dan artifact yang dapat diverifikasi.
 
-**Live:** [samson.web.id](https://samson.web.id)
+**Live:** https://samson.web.id
 
-## Ringkasan
+## Status — September 2026
 
-SAMSON adalah aplikasi **static-first** tanpa backend aplikasi dan tanpa frontend framework. Runtime berjalan dengan Vanilla JavaScript/CSS, file JSON, `localStorage`, build statis, GitHub CI, dan Cloudflare Workers.
+SAMSON berawal sebagai Prompt Library static-first dan sekarang berkembang menjadi **AI-assisted operator platform**. Frontend tetap Vanilla JavaScript/CSS + JSON, sementara capability yang membutuhkan secret/network berjalan melalui Cloudflare Worker.
 
-SAMSON saat ini berfungsi sebagai **Prompt Library + Guided Workflow + Practical Tools**, tetapi arah produknya adalah **AI Work System**:
+Baseline runtime:
 
-```text
-Prompt
-  ↓
-Workflow
-  ↓
-Context
-  ↓
-Quality / Evidence
-  ↓
-Approval
-  ↓
-Artifact
-```
-
-Baseline runtime saat ini:
-
-| Komponen | Jumlah |
+| Komponen | Kondisi |
 |---|---:|
 | Prompt / command | 201 |
-| Contoh penggunaan | 201 |
-| Kategori | 19 |
-| Core workflow | 6 |
-| Trading workflow | 3 |
-| WordPress workflow | 3 |
-| Total guided workflow | 12 |
-| Practical tool | 1 |
+| Example | 201 |
+| Category | 19 |
+| Guided workflow | 12 |
+| Practical Tools | 2 |
+| Core executable system tools | 3 |
 | UI personality | 4 |
+| Headless visual renderer | 1 pipeline |
+| Observability cron | setiap 5 menit, disabled by default |
 
-## Fitur utama
+Practical Tools saat ini:
 
-- Prompt Library dengan pencarian, category filter, dan pagination responsif.
-- 12 Guided Workflow untuk core productivity, Trading educational analysis, dan WordPress/WooCommerce.
-- Detail prompt dengan description, example, template siap salin, dan favorites.
-- Favorites, recently used, theme preference, dan workflow progress disimpan melalui `localStorage`.
-- Runtime statistics berasal dari data aktual, bukan angka statis di UI.
-- Automated prompt intake melalui GitHub workflow dan pull request.
-- Adaptive UI dengan empat personality: **Samson Default, Developer, Swiss, Pixel**.
-- Practical Tools Hub modular dengan katalog `#tools`; Google Contacts Ready memakai template Excel A–C dan memproses data secara lokal di browser.
-- Data validation, regression protection, security-header validation, Browser E2E, dan production verification.
-- Cloudflare preview/build sebelum perubahan masuk production.
+1. **Google Contacts Ready** — import XLSX/XLS/CSV, normalisasi nomor Indonesia, dedupe, review, dan export Google Contacts CSV secara lokal di browser.
+2. **B2B Prospecting V1** — discovery, enrichment evidence, candidate review, lead database lokal, routing kunjungan, dan briefing WhatsApp. Search provider menggunakan Serper server-side dan Gemini digunakan untuk review/normalisasi evidence melalui Worker.
 
-## Development model
+Core executable tool registry saat ini:
 
-SAMSON dibangun menggunakan **AI-assisted / supervised vibe coding**.
+- `sanitize_contact_numbers`
+- `resolve_marketing_route`
+- `audit_domain_dns`
 
-User mengarahkan intent, requirement, acceptance criteria, dan keputusan produk. AI membantu repository inspection, implementasi, debugging, testing, dan dokumentasi. Code generation bukan definition of done.
+Tool registry memiliki Zod runtime contracts serta adapter schema untuk OpenAI/Gemini function calling. Ini adalah **deterministic execution layer**, bukan klaim bahwa seluruh 201 prompt sudah dimigrasikan menjadi autonomous functions.
 
-Workflow development yang digunakan:
+## Product direction
+
+```text
+Prompt Library
+    ↓
+Guided Workflow
+    ↓
+Context / Evidence
+    ↓
+Practical Tool / Function Call
+    ↓
+Validation / Quality Gate
+    ↓
+Human Approval
+    ↓
+Artifact / Operational Action
+```
+
+Prinsip utama:
+
+- outcome > jumlah prompt;
+- workflow > one-shot generation;
+- evidence before confidence;
+- deterministic code untuk logic yang bisa dibuat deterministik;
+- human approval tetap eksplisit untuk publish, deploy, external mutation, dan action berisiko;
+- static-first sampai backend capability benar-benar mempunyai nilai produk.
+
+## Architecture
+
+```text
+Browser
+├─ Prompt Library
+├─ Guided Workflows
+├─ Work Assistant
+├─ Tools Hub
+├─ Vanilla JS/CSS
+├─ JSON runtime data
+└─ localStorage
+       │
+       ▼
+Static build: dist/
+       │
+       ▼
+Cloudflare Worker: prompt-v5
+├─ static assets
+├─ /api/tools/b2b/*
+├─ /api/core/tools/*
+├─ server-side provider adapters
+├─ scheduled observability engine
+└─ production deployment / preview
+```
+
+Server-side secrets tidak boleh masuk frontend atau repository.
+
+## Current capability layers
+
+### Prompt & workflow layer
+
+- 201 runtime commands dengan satu example per command.
+- 19 categories.
+- 12 guided workflows:
+  - 6 core workflows;
+  - 3 Trading educational analysis workflows;
+  - 3 WordPress/WooCommerce workflows.
+- Work Assistant menu untuk outcome kerja seperti WhatsApp Broadcast, Email, Social Content, SEO, Website, Customer Support, dan custom work problem.
+
+### Practical Tools layer
+
+Tools Hub modular menggunakan registry dan deep-link routing. Google Contacts tetap local-first. B2B Prospecting menggunakan Worker gateway agar API key dan provider traffic tidak masuk browser.
+
+### Tool Calling Engine
+
+`src/core/tools/` menyediakan:
+
+- allowlisted tool definitions;
+- Zod payload contracts;
+- deterministic executors;
+- OpenAI/Gemini schema adapters;
+- authorized Worker execution boundary.
+
+`POST /api/core/tools/execute` tetap fail-closed bila execution token belum dikonfigurasi. Tidak ada shell, arbitrary deploy, publish, transaction, atau arbitrary network-write tool di registry.
+
+### Observability Engine
+
+Cloudflare Cron dijadwalkan setiap 5 menit. Engine dapat memonitor HTTPS endpoint publik, mendeteksi timeout/network/status failure, memverifikasi fallback, dan mengirim incident alert melalui operator-configured webhook.
+
+Default production config sengaja aman:
+
+```text
+OBSERVABILITY_ENABLED=false
+OBSERVABILITY_TIMEOUT_MS=4000
+OBSERVABILITY_TARGETS_JSON=[]
+```
+
+V1 melakukan **fallback verification**, bukan silent route mutation. Aktivasi production memerlukan review target serta secret `ALERT_WEBHOOK_URL`.
+
+### Headless Visual Generator
+
+Pipeline visual deterministic menghasilkan poster edukasi 9:16 untuk Belajar Forex Malang:
+
+```text
+JSON payload
+   ↓
+Zod validation
+   ↓
+SVG 1080×1920
+   ↓
+@resvg/resvg-js
+   ↓
+PNG 1080×1920
+```
+
+Contract visual:
+
+- dark retro terminal / 8-bit inspired;
+- high contrast;
+- attribution selalu `by belajarforexmalang`;
+- tanpa logo;
+- tanpa remote font/image dependency dalam SVG.
+
+Generate lokal:
+
+```bash
+npm run visual:generate
+npm run visual:generate -- --input examples/visuals/forex-rule-card.json --name forex-risk-card
+```
+
+## Repository quality gates
+
+Development contract:
 
 ```text
 IDEA / ISSUE
@@ -70,11 +177,13 @@ FEATURE BRANCH
     ↓
 IMPLEMENTATION
     ↓
-VALIDATION + REGRESSION
+LINT + TYPECHECK + UNIT/SECURITY TEST
+    ↓
+BUILD + WRANGLER DRY RUN
     ↓
 BROWSER E2E
     ↓
-SECURITY / CODE SCANNING
+CODEQL / SECURITY
     ↓
 CLOUDFLARE PREVIEW
     ↓
@@ -85,230 +194,117 @@ MERGE
 PRODUCTION VERIFY
 ```
 
-Untuk pekerjaan repository, perubahan dibuat di feature branch dan pull request. `main` tidak digunakan sebagai tempat eksperimen langsung.
+Protected `main` requires pull request review, resolved conversations, required status checks, Cloudflare build, dan CodeQL policy.
 
-## Menjalankan secara lokal
-
-Persyaratan: Node.js 20+ dan npm.
+Main verification commands:
 
 ```bash
 npm ci
 npm run validate:data
-npm run build
-```
-
-Hasil build tersedia di `dist/`. Untuk Browser E2E pertama kali:
-
-```bash
-npx playwright install chromium
-npm run test:e2e
-```
-
-## Perintah proyek
-
-| Perintah | Fungsi |
-|---|---|
-| `npm run build` | Membangun aset statis ke `dist/` |
-| `npm run validate:data` | Memvalidasi command, example, category, workflow, dan referensinya |
-| `npm run validate:regression` | Mendeteksi penghapusan/perubahan data yang tidak disetujui |
-| `npm run validate:security-headers` | Memastikan security-header contract tersedia |
-| `npm run test:tools` | Menguji normalisasi, deduplikasi, limit, dan ekspor Practical Tools |
-| `npm run report:prompt-coverage` | Melaporkan penggunaan prompt di guided workflow |
-| `npm run add:prompt` | Menambahkan prompt melalui tooling terkontrol |
-| `npm run test:e2e` | Menjalankan Playwright Browser E2E |
-
-## Struktur repositori
-
-```text
-.
-├── .github/workflows/     # Validate, Browser E2E, Production Verify
-├── assets/templates/      # Template input Excel yang dapat diunduh dari Tools
-├── data/                  # Commands, examples, categories, workflows
-├── docs/                  # PRD dan dokumentasi teknis
-├── scripts/               # Build, validation, regression, tooling
-├── src/                   # Vanilla JavaScript dan CSS
-├── tests/e2e/             # Playwright browser tests
-├── vendor/                # Metadata dependensi browser yang dipublikasikan saat build
-├── index.html             # Entry point
-├── _headers               # Security-header policy
-└── wrangler.jsonc         # Cloudflare Workers config
-```
-
-## Kontrak data runtime
-
-Command catalog:
-
-- `data/commands.json` — **189 base commands**;
-- `data/commands-extra.json` — **12 extra commands**;
-- total — **201 runtime commands**.
-
-Examples:
-
-- `data/examples.json`;
-- `data/examples-extra.json`;
-- contract: **tepat satu example untuk setiap command**.
-
-Workflow catalog:
-
-- `data/cheatcodes.json` — **6 core workflows**;
-- `data/workflows-trading.json` — **3 Trading workflows**;
-- `data/workflows-wordpress.json` — **3 WordPress workflows**;
-- total — **12 workflows**.
-
-Categories:
-
-- `data/categories.json` — **19 categories**.
-
-Validator memastikan seluruh `promptIds` workflow menunjuk ke command aktif dan seluruh command menunjuk ke category yang valid.
-
-Setiap command minimum memiliki struktur:
-
-```json
-{
-  "id": 184,
-  "name": "/poster",
-  "categoryId": "design",
-  "description": "Konsep poster event/promosi",
-  "template": "Create a structured konsep poster event/promosi."
-}
-```
-
-Command ID harus unik. ID `47`, `48`, `50`, dan `52` telah dipensiunkan dan tidak boleh digunakan kembali.
-
-## Command tambahan strategis
-
-Ekstensi runtime saat ini mencakup capability seperti:
-
-- `/vibecode` — production-oriented AI-assisted coding;
-- `/multimodel` — multi-model orchestration;
-- `/cloudflare` — Cloudflare deployment/optimization;
-- `/github` — GitHub code workflow;
-- `/aiaudit` — independent AI audit;
-- `/autopilot` — end-to-end AI production orchestration;
-- `/sourceradar` — source-first research;
-- `/antislopui` — UI quality / anti-slop review;
-- `/wordpress`, `/woocommerce`, `/wpaudit` — WordPress production domain.
-
-## Menambahkan prompt
-
-Gunakan workflow yang dilindungi; jangan menulis data prompt langsung ke `main`.
-
-1. Buka **Actions → Validate → Run workflow**.
-2. Isi alias, category ID, description, template, dan example.
-3. Pilih workflow tujuan jika prompt memang menjadi bagian dari perjalanan terpandu; jika tidak, gunakan `none`.
-4. Jalankan workflow dan review pull request dari `github-actions[bot]`.
-5. Merge hanya setelah gate yang relevan berhasil.
-
-Panduan lengkap: [Adding Prompts Safely](docs/ADDING-PROMPTS.md).
-
-## Quality gates
-
-Tiga workflow CI utama:
-
-### Validate
-
-Memeriksa data contract, regression, build, security/release contract, dan prompt-workflow coverage.
-
-### Browser E2E
-
-Menjalankan Playwright terhadap source build untuk mengunci behavior penting di desktop/mobile dan mencegah regression UI.
-
-### Production Verify
-
-Memastikan deployment yang live sesuai commit/release yang dituju dan mengecek contract production yang relevan.
-
-Minimum local validation:
-
-```bash
-npm run validate:data
 npm run validate:regression
+npm run test:tools
 npm run build
 npm run validate:security-headers
 npm run test:e2e
 ```
 
-Cloudflare build/preview dan human review tetap menjadi bagian dari release workflow.
+Additional commands:
 
-## Deployment
+| Command | Purpose |
+|---|---|
+| `npm run lint` | ESLint runtime JavaScript |
+| `npm run typecheck` | TypeScript strict `noEmit` |
+| `npm run test:run` | Vitest unit/security suite |
+| `npm run verify:worker` | Wrangler Worker bundle dry-run |
+| `npm run visual:generate` | SVG + PNG headless visual artifact |
+| `npm run observability:validate` | Validate monitored-target production config |
+| `npm run observability:smoke` | Operator-triggered target smoke check |
+| `npm run report:prompt-coverage` | Prompt/workflow coverage report |
+| `npm run add:prompt` | Controlled prompt intake tooling |
 
-Build menghasilkan static assets pada `dist/` dan dideploy melalui Cloudflare Workers sesuai `wrangler.jsonc`.
-
-`_headers` menerapkan kebijakan seperti CSP, HSTS, clickjacking protection, MIME-sniffing protection, referrer policy, permissions policy, dan cross-origin controls.
-
-SAMSON saat ini **belum menggunakan AI provider API pada runtime**. Tidak ada OpenAI, Anthropic, atau Gemini API key yang seharusnya berada di JavaScript frontend.
-
-## Roadmap
-
-Prioritas pengembangan saat ini:
-
-```text
-CURRENT
-Prompt Library + 12 Guided Workflows
-        ↓
-1. Workflow Engine V2
-        ↓
-2. Context Capsule
-        ↓
-3. Quality Engine
-        ↓
-4. Proof Mode
-        ↓
-5. Artifact Output
-        ↓
-6. Premium Workflow Packs
-        ↓
-7. Account / Projects
-        ↓
-8. SAMSON API Layer
-        ↓
-9. AI Execution
-        ↓
-10. Multi-Model Evaluator
-        ↓
-11. Team Workspace
-        ↓
-12. Workflow → SOP
-        ↓
-13. Marketplace
-```
-
-Workflow Engine V2 akan menggunakan contract utama:
+## Runtime data contract
 
 ```text
-INPUT → CONTEXT → PROCESS → AI/TOOL → EXPECTED OUTPUT
-→ EVIDENCE → VALIDATE → SCORE → HUMAN APPROVAL → EXPORT
+data/commands.json              189 base commands
+data/commands-extra.json         12 extra commands
+                                 ───
+                                 201 commands
+
+data/cheatcodes.json              6 core workflows
+data/workflows-trading.json        3 trading workflows
+data/workflows-wordpress.json      3 WordPress workflows
+                                 ───
+                                  12 workflows
 ```
 
-**Personal AI Radar tidak termasuk roadmap aktif** dan tidak pernah masuk `main`/production.
+Validator memastikan:
 
-## Monetization direction
+- command ID unik;
+- satu example per command;
+- category reference valid;
+- workflow prompt references valid;
+- retired IDs `47`, `48`, `50`, `52` tidak digunakan kembali.
 
-SAMSON tidak perlu menunggu full SaaS untuk mulai diuji secara komersial. Tahap monetisasi pertama yang direncanakan adalah **Verified Workflow Packs**, kemudian SAMSON Pro, Team/SOP, dan marketplace setelah product value terbukti.
+## Repository structure
 
-Kandidat pack awal:
+```text
+.
+├── .github/workflows/       # CI, Validate, Browser E2E, Production Verify, ops workflows
+├── assets/
+├── config/                  # reviewed operational config artifacts
+├── data/                    # commands, examples, categories, workflows
+├── docs/                    # PRD, architecture, runbooks, audits
+├── examples/                # reusable visual/tool payload examples
+├── scripts/                 # build, validation, testing, operational CLI
+├── src/                     # frontend + TypeScript core/visual modules
+├── tests/                   # Vitest/security + Playwright E2E
+├── worker/                  # Cloudflare Worker runtime
+├── package.json
+└── wrangler.jsonc
+```
 
-- WordPress Audit / Production;
-- SEO & AI Search;
-- Website Builder;
-- Marketing Launch;
-- Anti-Slop Design.
+## Security model
 
-## Dokumentasi
+- API keys/secrets hanya server-side.
+- B2B target URL menggunakan anti-SSRF sanitizer.
+- Runtime request contracts menggunakan Zod.
+- security headers dan CSP divalidasi sebelum merge.
+- CodeQL menjadi protected-branch policy.
+- tool execution menggunakan allowlist + authorization boundary.
+- observability target/webhook dibatasi ke public HTTPS targets.
+- visual renderer menghindari remote image/font fetch.
 
-- [PRD — SAMSON](docs/PRD-SAMSON.md) — **canonical product PRD**
-- [Frontend Architecture V1](docs/FRONTEND-ARCHITECTURE-V1.md)
-- [Adaptive UI](docs/ADAPTIVE-UI.md)
-- [Adding Prompts Safely](docs/ADDING-PROMPTS.md)
-- [Historical PRD — Merge Kreatif & Design](docs/PRD-MERGE-KREATIF-DESIGN.md)
+## Development model
 
-## Alur kontribusi
+SAMSON dikembangkan dengan **AI-assisted / supervised vibe coding**. User menentukan intent, requirement, acceptance criteria, dan keputusan produk. AI membantu inspection, implementation, debugging, testing, documentation, dan review. Generated code bukan definition of done.
 
-1. Mulai dari `main` terbaru.
-2. Buat feature branch dengan scope kecil dan jelas.
-3. Inspect code/data sebelum mengubah behavior.
-4. Implementasikan perubahan dan test yang relevan.
-5. Jalankan validation, build, regression, security, dan Browser E2E.
-6. Buat pull request dengan ringkasan, risiko, dan bukti validasi.
-7. Review Cloudflare preview/checks.
-8. Merge hanya setelah human approval dan gate yang relevan berhasil.
-9. Verifikasi production setelah merge.
+## Roadmap status
+
+### Foundation — implemented
+
+- Prompt Library + 12 Guided Workflows;
+- Adaptive UI + four personalities;
+- Work Assistant;
+- modular Tools Hub;
+- Google Contacts tool;
+- B2B Prospecting V1.
+
+### Hardening / automation roadmap — implemented
+
+1. URL Sanitizer & Anti-SSRF ✅
+2. CI/CD Guard + Zod + Vitest + Wrangler verification ✅
+3. Deterministic Function Calling Engine ✅
+4. Observability / fallback verification / alerting engine ✅
+5. Headless Visual Generator SVG/PNG ✅
+
+### Current consolidation priority
+
+1. keep README/PRD synchronized with production architecture;
+2. remove stale branches only after ancestry audit and explicit approval;
+3. operationalize observability through reviewed targets + secret configuration;
+4. make visual generation available as repeatable CI artifact workflow;
+5. continue toward Workflow Engine V2 / Context / Quality / Evidence / Artifact orchestration.
+
+## Important scope boundary
+
+SAMSON sudah memiliki server-side AI provider integration untuk B2B evidence review, tetapi **belum merupakan fully autonomous general-purpose agent**. Tool Engine V1 menjalankan allowlisted deterministic tools; full model→tool→result→model iterative orchestration harus ditambahkan dengan explicit policy, iteration limits, audit trail, idempotency, dan side-effect approval gates.

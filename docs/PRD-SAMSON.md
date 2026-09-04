@@ -7,272 +7,353 @@
 | Repository | `traderalwaysprofit/prompt` |
 | Dokumen | Canonical Product Requirements Document |
 | Status | Active / evolving |
-| Baseline | 30 Agustus 2026 |
-| Arsitektur saat ini | Static-first, Vanilla JS/CSS, JSON runtime, Cloudflare Workers |
-| Metode development | AI-assisted / supervised vibe coding |
+| Baseline | September 2026 |
+| Arsitektur | Static-first frontend + Cloudflare Worker API/runtime |
+| Development model | AI-assisted / supervised vibe coding |
 
 ## 1. Product statement
 
-SAMSON adalah **AI Cheatcodes for Real Work**: prompt library dan guided workflow yang membantu pengguna mengubah tujuan kerja menjadi instruksi AI yang terstruktur, dapat digunakan ulang, dan semakin diarahkan menuju outcome yang dapat diverifikasi.
+SAMSON adalah **AI Cheatcodes for Real Work**: AI work system yang membantu operator mengubah tujuan kerja menjadi prompt, guided workflow, practical tools, executable function contracts, evidence, quality gates, dan artifact yang dapat diverifikasi.
 
-SAMSON tidak ditujukan menjadi sekadar katalog prompt. Arah produknya adalah **AI Work System** yang menghubungkan prompt, workflow, context, quality gate, evidence, approval, dan artifact output.
+Produk tidak diposisikan sebagai katalog prompt semata. Arah arsitekturnya adalah:
 
-## 2. Kondisi produk saat ini
+```text
+Intent
+  ↓
+Prompt / Workflow
+  ↓
+Context + Evidence
+  ↓
+AI / Deterministic Tool
+  ↓
+Validation + Quality Gate
+  ↓
+Human Approval
+  ↓
+Artifact / Operational Action
+```
 
-Baseline runtime saat dokumen ini diperbarui:
+## 2. Current production baseline
 
-| Komponen | Kondisi |
+| Komponen | Baseline |
 |---|---:|
 | Prompt / command | 201 |
-| Contoh penggunaan | 201 |
-| Kategori | 19 |
-| Core workflow | 6 |
+| Example | 201 |
+| Category | 19 |
+| Core guided workflow | 6 |
 | Trading workflow | 3 |
 | WordPress workflow | 3 |
 | Total guided workflow | 12 |
-| Practical tool | 1 |
+| Practical Tools | 2 |
+| Core executable system tools | 3 |
 | UI personality | 4 |
+| Headless visual pipeline | 1 |
+| Observability cron | 5 menit; disabled by default |
 
-Enam core workflow melayani outcome umum seperti website, SaaS, marketing, SEO/content, research, dan automation. Domain catalog kemudian diperluas dengan tiga workflow Trading dan tiga workflow WordPress.
+Practical Tools:
 
-UI personality yang aktif:
+1. **Google Contacts Ready** — XLSX/XLS/CSV → review/normalize/dedupe → Google Contacts CSV, diproses lokal di browser.
+2. **B2B Prospecting V1** — prospect discovery, enrichment evidence, candidate review, local lead storage, route planning, dan briefing WhatsApp; provider network berjalan server-side melalui Cloudflare Worker.
 
-- Samson Default — baseline product UI;
-- Developer — technical/developer-oriented presentation;
-- Swiss — editorial/minimal presentation;
-- Pixel — retro wire/editorial presentation.
+Executable system tools:
 
-## 3. Masalah yang diselesaikan
+- `sanitize_contact_numbers`
+- `resolve_marketing_route`
+- `audit_domain_dns`
 
-Penggunaan AI untuk pekerjaan nyata sering mengalami beberapa masalah:
+## 3. Target users
 
-1. pengguna mengetahui tujuan tetapi tidak mengetahui prompt yang tepat;
-2. prompt tunggal tidak cukup untuk pekerjaan multi-step;
-3. context harus diulang pada banyak prompt;
-4. hasil AI sulit dinilai secara konsisten;
-5. evidence dan asumsi sering tercampur;
-6. hasil berhenti sebagai chat dan belum menjadi deliverable;
-7. proses AI sulit dijadikan workflow atau SOP yang dapat digunakan ulang.
+Fokus utama SAMSON adalah **Digital Operators**:
 
-SAMSON memecahkan masalah ini secara bertahap, dimulai dari prompt discovery dan guided workflows, lalu berkembang menuju verified work systems.
-
-## 4. Target pengguna
-
-Fokus utama SAMSON adalah **Digital Operators** yang menggunakan AI sebagai bagian dari pekerjaan sehari-hari, khususnya:
-
-- freelancer dan independent operator;
-- web builder dan developer;
+- freelancer / independent operator;
 - digital marketer;
+- web builder / developer;
 - SEO/content operator;
 - designer yang menggunakan AI;
 - researcher;
 - WordPress/WooCommerce operator;
-- small agency dan small team.
+- small agency / small team.
 
-Domain khusus seperti Trading diposisikan sebagai **educational analysis / decision support**, bukan layanan sinyal atau janji profit.
+Trading tetap diposisikan sebagai educational analysis / structured decision support, bukan layanan sinyal atau jaminan profit.
 
-## 5. Prinsip produk
+## 4. Product principles
 
-### 5.1 Outcome over prompt count
+### 4.1 Outcome over prompt count
+Jumlah prompt bukan moat utama. Prompt harus terhubung ke kebutuhan nyata, workflow, example, validation, dan outcome.
 
-Jumlah prompt bukan moat utama. Prompt harus terhubung ke kebutuhan nyata, contoh, workflow, dan outcome.
+### 4.2 Workflow over one-shot generation
+Pekerjaan kompleks harus mempunyai urutan input → process → output → validation → approval.
 
-### 5.2 Workflow over one-shot generation
+### 4.3 Deterministic logic where possible
+Normalisasi, sanitasi, routing plan, schema validation, DNS comparison, dan artifact rendering harus dijalankan oleh code deterministik bila logic-nya dapat didefinisikan dengan jelas.
 
-Pekerjaan kompleks harus dipecah menjadi langkah, input, output, validation, dan checkpoint yang jelas.
+### 4.4 Evidence before confidence
+Research, B2B enrichment, SEO, audit, dan technical recommendation harus membedakan evidence, assumption, dan model interpretation.
 
-### 5.3 Evidence before confidence
+### 4.5 Human approval remains explicit
+Publish, deploy, external mutation, deletion, transaction, route mutation, dan high-impact action tidak boleh menjadi side effect diam-diam.
 
-Untuk research, audit, SEO, technical recommendation, dan domain faktual lain, evidence harus dapat dibedakan dari asumsi.
+### 4.6 Static-first until backend value is proven
+Frontend tetap sederhana. Secret/network capability hanya masuk Worker ketika dibutuhkan oleh produk.
 
-### 5.4 Human approval remains explicit
+### 4.7 Quality is a product feature
+CI, type checks, schema validation, Browser E2E, CodeQL, production verification, accessibility, dan regression guard adalah bagian dari product contract.
 
-Automation tidak boleh menghapus human review pada perubahan produk, deployment, atau output berisiko tinggi.
-
-### 5.5 Static-first until backend value is proven
-
-SAMSON tidak menambah backend, account system, database, atau AI provider API hanya karena tersedia. Infrastruktur baru ditambahkan ketika capability tersebut diperlukan oleh produk dan sudah memiliki acceptance criteria.
-
-### 5.6 Quality is a product feature
-
-Validation, regression testing, accessibility, security, evidence, dan quality scoring diperlakukan sebagai bagian dari produk, bukan tahap kosmetik terakhir.
-
-## 6. Arsitektur baseline
-
-SAMSON saat ini berjalan tanpa frontend framework dan tanpa backend aplikasi.
+## 5. Architecture baseline
 
 ```text
 Browser
-  ├─ index.html
-  ├─ src/*.js
-  ├─ src/*.css
-  ├─ data/*.json
-  ├─ vendor/xlsx.full.min.js
-  └─ localStorage
-        ↓
+├─ Prompt Library
+├─ Guided Workflows
+├─ Work Assistant
+├─ Tools Hub
+├─ Vanilla JavaScript/CSS
+├─ JSON runtime data
+└─ localStorage
+      │
+      ▼
 Static build: dist/
-        ↓
-Cloudflare Workers
-        ↓
-samson.web.id
+      │
+      ▼
+Cloudflare Worker: prompt-v5
+├─ static assets
+├─ B2B API gateway
+├─ protected system-tool API
+├─ server-side provider adapters
+├─ scheduled observability engine
+└─ Cloudflare preview / production runtime
 ```
 
-Runtime command berasal dari gabungan:
+### 5.1 Runtime data
 
 ```text
-data/commands.json          189 base commands
-data/commands-extra.json     12 extra commands
-                             ──
-                             201 runtime commands
+data/commands.json              189
+data/commands-extra.json         12
+                                 ───
+                                 201 commands
+
+data/cheatcodes.json              6
+data/workflows-trading.json        3
+data/workflows-wordpress.json      3
+                                 ───
+                                  12 workflows
 ```
 
-Workflow berasal dari:
+Personal UI/workflow state tetap disimpan lokal melalui `localStorage` selama belum ada product requirement yang membenarkan account/database layer.
 
-```text
-data/cheatcodes.json             6 core workflows
-data/workflows-trading.json      3 trading workflows
-data/workflows-wordpress.json    3 WordPress workflows
-                                 ──
-                                12 total workflows
-```
+### 5.2 Server-side provider model
 
-Favorites, recently used, theme preference, dan progress workflow yang bersifat personal disimpan di browser melalui `localStorage`.
+B2B Prospecting menggunakan:
 
-## 7. Development model
+- **Serper** untuk prospect discovery / web evidence;
+- **Gemini** untuk relevance review / normalization terhadap bounded evidence;
+- provider secret hanya di Worker environment.
 
-SAMSON dibangun menggunakan **AI-assisted / supervised vibe coding**. User mengarahkan intent, requirement, acceptance criteria, dan keputusan produk; AI membantu inspeksi repository, implementasi, testing, debugging, dan dokumentasi.
+Frontend tidak menerima API key.
 
-Development contract:
+General-purpose autonomous agent loop belum menjadi production baseline. Core Tool Engine menyediakan contract dan deterministic executor yang dapat dipakai model/function-calling adapter secara terkontrol.
 
-```text
-IDEA / ISSUE
-    ↓
-REQUIREMENT
-    ↓
-REPOSITORY INSPECTION
-    ↓
-FEATURE BRANCH
-    ↓
-IMPLEMENTATION
-    ↓
-VALIDATION + REGRESSION
-    ↓
-BROWSER E2E
-    ↓
-SECURITY / CODE SCANNING
-    ↓
-CLOUDFLARE PREVIEW
-    ↓
-HUMAN REVIEW
-    ↓
-MERGE
-    ↓
-PRODUCTION VERIFY
-```
-
-Perubahan tidak boleh langsung dianggap selesai hanya karena code berhasil digenerate.
-
-## 8. Existing functional requirements
+## 6. Functional requirements
 
 ### FR-1 — Prompt Library
 
-- pencarian command;
-- category filter;
+- search dan category filter;
 - responsive pagination;
 - prompt detail;
-- template siap salin;
-- example satu banding satu;
+- template + example;
 - favorites dan recently used;
 - runtime statistics dari data aktual.
 
-### FR-2 — Guided Workflow
+### FR-2 — Guided Workflows
 
-- user dapat memilih workflow berdasarkan outcome/domain;
-- setiap workflow memiliki langkah yang terurut;
-- setiap langkah mempunyai description, expected output, dan satu atau lebih prompt reference;
-- progress dapat disimpan lokal;
-- seluruh prompt reference harus valid terhadap runtime command catalog.
+- 12 workflow berdasarkan outcome/domain;
+- ordered steps;
+- prompt reference harus valid;
+- progress local persistence;
+- Trading dan WordPress domain workflows memakai shared workflow engine.
 
-### FR-3 — Adaptive UI
+### FR-3 — Work Assistant
 
-- empat UI personality tersedia;
-- Samson Default tetap menjadi baseline/reset;
-- mutation visual tidak boleh mengubah data atau behavior inti;
-- layout harus tetap usable pada desktop dan mobile.
+- outcome-first navigation untuk WhatsApp, Email, Social Content, SEO, Website, Customer Support, dan custom work problem;
+- tidak boleh mengaburkan Guided Workflow mode;
+- deep link dan back/forward behavior konsisten.
 
-### FR-4 — Data integrity
+### FR-4 — Adaptive UI
 
-- command ID unik;
-- setiap command memiliki satu example;
-- `categoryId` valid;
-- workflow tidak boleh mereferensikan command yang tidak ada;
-- retired ID `47`, `48`, `50`, dan `52` tidak boleh digunakan kembali.
+Empat personality:
 
-### FR-5 — Safe prompt intake
+- Samson Default;
+- Developer;
+- Swiss;
+- Pixel.
 
-Penambahan prompt harus dilakukan melalui workflow terkontrol dan pull request, bukan edit langsung ke `main`.
+Theme layer tidak boleh mengubah data/behavior inti dan harus tetap usable di mobile/desktop.
 
-### FR-6 — Practical Tools
+### FR-5 — Practical Tools Hub
 
-- menu Tools tersedia di More pada desktop dan menu kerja pada mobile;
-- menu Tools membuka katalog `#tools`, bukan langsung menjalankan salah satu tool;
-- setiap tool terdaftar melalui registry modular, memiliki deep link sendiri, dan dapat kembali ke katalog Tools;
-- tool Excel → Google Contacts menerima `.xlsx`, `.xls`, dan `.csv` dengan urutan kolom Nama, Brand/Perusahaan, dan WhatsApp;
-- template `.xlsx` siap-isi dapat diunduh dengan sheet pertama berurutan `Nama Kontak`, `Brand / Perusahaan`, dan `WhatsApp`;
-- data kontak diproses lokal di browser dan tidak dikirim ke backend;
-- nomor Indonesia dinormalisasi ke format `+62`, nomor duplikat atau tidak valid ditandai, dan hanya baris yang dapat diekspor yang masuk ke CSV;
-- output memakai `First Name`, `Organization Name`, `Phone 1 - Label`, dan `Phone 1 - Value`, serta membatasi satu proses hingga 3.000 kontak;
-- tampilan dan behavior tetap usable pada keempat UI personality.
+- Tools Hub modular dengan registry;
+- setiap tool mempunyai route/deep link sendiri;
+- Google Contacts mempertahankan local-first privacy contract;
+- B2B Prospecting memakai same-origin Worker API untuk provider traffic;
+- untrusted import/provider data harus dirender secara aman;
+- candidate tidak auto-save tanpa review.
 
-## 9. Non-functional requirements
+### FR-6 — B2B URL / request security
 
-- static build harus reproducible;
-- runtime tidak boleh membutuhkan secret di browser;
-- security headers wajib tervalidasi;
-- accessibility dan responsive behavior harus diuji;
-- perubahan UI tidak boleh menurunkan readability atau menyebabkan horizontal overflow;
-- data regression harus terdeteksi sebelum merge;
-- deployment harus dapat diverifikasi terhadap commit yang dirilis;
-- API key AI tidak boleh ditempatkan di JavaScript frontend.
+- HTTP request contract divalidasi dengan Zod;
+- prospect target dinormalisasi dengan WHATWG `URL` API;
+- non-HTTP(S), localhost, private/link-local/metadata literal ditolak;
+- credentials/hash dihapus sebelum processing;
+- provider-returned URLs melalui sanitizer sebelum disimpan/dipakai.
 
-## 10. CI/CD dan release gates
+### FR-7 — Core Tool Engine
 
-Repository menggunakan tiga workflow utama:
+- registry hanya memuat allowlisted tools;
+- payload Zod-validated sebelum dispatch;
+- unknown tool ditolak;
+- execution endpoint fail-closed bila execution token tidak tersedia;
+- tidak ada arbitrary shell/deploy/publish/transaction/network-write executor;
+- provider schema adapter tersedia untuk OpenAI/Gemini function calling formats.
 
-1. **Validate** — data contract, regression, build, release/security validation;
-2. **Browser E2E** — Playwright terhadap build source saat ini;
-3. **Production Verify** — verifikasi deployment production terhadap release/commit yang benar.
+### FR-8 — Observability
 
-Cloudflare build/preview menjadi gate tambahan untuk perubahan yang akan dirilis.
+- Cloudflare Scheduled event setiap 5 menit;
+- engine default disabled sampai config direview;
+- monitoring hanya public HTTPS target;
+- timeout bounded;
+- unsafe/private target ditolak;
+- telemetry/alert tidak boleh membocorkan signed query/token;
+- webhook harus HTTPS dan redirect-protected;
+- primary failure dapat memicu fallback verification;
+- V1 tidak melakukan silent external route mutation.
 
-Minimum validation contract:
+### FR-9 — Headless Visual Generator
 
-```bash
-npm ci
-npm run validate:data
-npm run validate:regression
-npm run build
-npm run validate:security-headers
-npm run test:e2e
+- input divalidasi sebelum render;
+- SVG 1080×1920;
+- PNG 1080×1920 melalui `@resvg/resvg-js`;
+- dark retro terminal / 8-bit visual direction;
+- attribution selalu `by belajarforexmalang`;
+- tidak ada logo;
+- tidak ada remote font/image dependency;
+- dynamic XML escaped;
+- accent color dibatasi `#RRGGBB`;
+- artifact dapat dihasilkan secara repeatable dari CLI/CI.
+
+## 7. Non-functional requirements
+
+### NFR-1 — Reproducibility
+`npm ci` + locked dependencies harus dapat membangun source yang sama secara konsisten.
+
+### NFR-2 — Security
+- secret tidak boleh masuk browser/repo/log;
+- CSP/security headers divalidasi;
+- CodeQL menjadi protected-branch gate;
+- SSRF-sensitive URL handling fail-closed;
+- internal exception detail tidak dikirim ke caller.
+
+### NFR-3 — Testing
+- lint;
+- TypeScript strict noEmit;
+- Vitest unit/security tests;
+- existing regression suites;
+- Playwright Browser E2E;
+- Wrangler bundle dry-run;
+- Cloudflare preview;
+- Production Verify setelah merge.
+
+### NFR-4 — Accessibility/responsive
+- tidak ada horizontal overflow pada supported mobile layouts;
+- actionable mobile controls memenuhi minimum touch target yang ditetapkan UI contract;
+- theme tidak menurunkan readability.
+
+### NFR-5 — Operational safety
+Automation yang hanya memonitor/menyiapkan artifact boleh berjalan unattended. External mutation tetap memerlukan policy/authorization/approval yang eksplisit.
+
+## 8. CI/CD and release contract
+
+```text
+Requirement
+   ↓
+Feature branch
+   ↓
+Implementation
+   ↓
+ESLint
+   ↓
+TypeScript strict
+   ↓
+Zod / Vitest / regression
+   ↓
+Static build
+   ↓
+Wrangler deploy --dry-run
+   ↓
+Security headers
+   ↓
+Browser E2E
+   ↓
+CodeQL
+   ↓
+Cloudflare preview
+   ↓
+Human approval + resolved review threads
+   ↓
+Merge protected main
+   ↓
+Cloudflare production build
+   ↓
+Production Verify
 ```
 
-Merge dilakukan setelah perubahan dapat direview dan gate yang relevan berhasil.
+Protected `main` requires PR review, strict required checks, Browser E2E, Cloudflare Workers Build, review-thread resolution, dan CodeQL policy.
 
-## 11. Product roadmap
+## 9. Current roadmap status
 
-### Phase V1 — Foundation — implemented
+### Foundation — implemented
 
 - Prompt Library;
-- guided workflows;
-- runtime JSON contract;
-- favorites/recently used;
-- automated prompt intake;
-- adaptive UI personalities;
-- CI, Browser E2E, Cloudflare deployment verification.
+- 12 Guided Workflows;
+- Work Assistant navigation;
+- adaptive UI / four personalities;
+- modular Tools Hub;
+- Google Contacts;
+- B2B Prospecting.
 
-### Phase V1.2 — Workflow Engine V2 — next priority
+### Hardening and automation — implemented
 
-Target contract:
+1. **URL Sanitizer & Anti-SSRF** ✅
+2. **CI/CD Guard + Zod + Vitest + Wrangler Verification** ✅
+3. **Deterministic Function Calling Engine** ✅
+4. **Observability / Alerting / Fallback Verification Engine** ✅
+5. **Headless Visual Generator SVG/PNG** ✅
+
+## 10. Current consolidation phase
+
+### P1 — Documentation baseline
+README dan PRD harus mengikuti production architecture, bukan baseline sebelum Tools/Worker automation.
+
+### P2 — Repository hygiene
+Stale branches diaudit berdasarkan ancestry terhadap `main`. Branch hanya boleh dianggap safe-delete bila tidak mempunyai commit unik (`ahead_by=0`) atau sudah diverifikasi melalui merged PR/commit history. Deletion tetap membutuhkan explicit operator approval.
+
+### P3 — Operationalization
+
+Observability:
+
+- production target config disimpan sebagai reviewed non-secret artifact;
+- deterministic config validator masuk CI;
+- manual smoke workflow tersedia untuk menguji target;
+- production activation tetap memerlukan Cloudflare variable/secret configuration.
+
+Visual pipeline:
+
+- manual GitHub workflow menghasilkan SVG+PNG artifact tanpa publish;
+- input berasal dari reviewed JSON payload;
+- artifact dapat direview sebelum social scheduling/publishing.
+
+## 11. Next product phase
+
+Setelah consolidation stabil, prioritas produk kembali ke executable work specification:
 
 ```text
 INPUT
@@ -293,195 +374,31 @@ QUALITY SCORE
   ↓
 HUMAN APPROVAL
   ↓
-EXPORT
+EXPORT / ACTION
 ```
 
-Tujuan: mengubah guided workflow dari daftar langkah menjadi executable work specification yang mempunyai input, output, quality gate, dan artifact contract.
+Kandidat evolusi:
 
-### Phase V2.1 — Context Capsule
+1. Workflow Engine V2;
+2. reusable Context Capsule;
+3. Quality Engine;
+4. Proof / Evidence Mode;
+5. artifact orchestration;
+6. provider/tool policy + audit trail;
+7. account/project persistence hanya jika value produk sudah terbukti.
 
-Context reusable per project:
+## 12. Definition of done
 
-- organization/company;
-- project;
-- audience;
-- brand/tone;
-- products/services;
-- preferred tools/model;
-- technology stack;
-- constraints.
+Feature tidak dianggap selesai hanya karena code berhasil digenerate.
 
-Context Capsule harus dapat dipakai ulang oleh beberapa workflow tanpa copy-paste berulang.
+Definition of done minimum:
 
-### Phase V2.2 — Quality Engine
-
-Output dinilai pada dimensi yang relevan seperti:
-
-- completeness;
-- accuracy/consistency;
-- evidence;
-- actionability;
-- accessibility;
-- anti-slop quality;
-- risk.
-
-Baseline product rule yang akan diuji: **PASS >= 85; REFINE < 85**.
-
-### Phase V2.3 — Proof Mode
-
-Untuk workflow faktual/teknis:
-
-- source requirement;
-- claim verification;
-- explicit assumptions;
-- confidence;
-- unresolved findings;
-- evidence trail.
-
-### Phase V2.4 — Artifact Output
-
-Workflow harus dapat menghasilkan deliverable seperti Markdown, JSON, report, checklist, implementation plan, audit finding, atau project file sesuai use case.
-
-### Phase V2.5 — Premium Workflow Packs
-
-Monetisasi awal tidak membutuhkan full SaaS. Kandidat pack:
-
-- WordPress Audit / Production;
-- SEO & AI Search;
-- Website Builder;
-- Marketing Launch;
-- Anti-Slop Design.
-
-WordPress Audit menjadi kandidat pilot pertama karena domain prompt dan workflow terkait sudah tersedia.
-
-### Phase V3 — SAMSON Pro
-
-Baru setelah penggunaan dan willingness-to-pay tervalidasi:
-
-- account;
-- projects;
-- private context;
-- workflow history;
-- saved/private workflows.
-
-### Phase V3.1 — SAMSON API Layer
-
-Backend abstraction untuk capability server-side:
-
-```text
-SAMSON Frontend
-      ↓
-SAMSON API
-      ↓
-Model / Tool Adapter
-```
-
-Frontend tidak boleh bergantung langsung pada provider tertentu.
-
-### Phase V3.2 — AI Execution
-
-Workflow dapat dieksekusi langsung melalui SAMSON tanpa copy-paste manual ke provider AI.
-
-### Phase V3.3 — Multi-Model Evaluator
-
-Beberapa model dapat menghasilkan candidate output dan SAMSON memilih hasil berdasarkan acceptance criteria/quality evaluation, bukan hanya menampilkan jawaban berdampingan.
-
-### Phase V3.4 — Team Workspace
-
-- shared context;
-- shared workflow;
-- roles/permissions;
-- approval;
-- versioning;
-- audit log.
-
-### Phase V3.5 — Workflow to SOP
-
-Workflow dapat dikonversi menjadi SOP operasional dengan owner, inputs, procedure, AI instructions, human checkpoints, quality control, failure handling, dan expected output.
-
-### Phase V4 — Marketplace
-
-Marketplace hanya dibuka setelah SAMSON membuktikan bahwa verified workflow buatan internal memiliki value dan dapat dijual. Unit marketplace adalah workflow/SOP/playbook yang tervalidasi, bukan sekadar prompt mentah.
-
-## 12. Explicitly out of current roadmap
-
-**Personal AI Radar / AI news feed tidak termasuk roadmap aktif.** Eksperimen tersebut pernah dibuat pada feature branch tetapi ditutup tanpa merge dan tidak menjadi bagian dari `main` atau production.
-
-SAMSON juga belum menggunakan AI provider API pada runtime. Tidak ada OpenAI/Anthropic/Gemini key yang boleh ditambahkan ke frontend pada phase saat ini.
-
-## 13. Monetization hypothesis
-
-Urutan monetisasi yang diuji:
-
-```text
-Free core product
-   ↓
-Verified Workflow Packs
-   ↓
-SAMSON Pro
-   ↓
-Team / SOP
-   ↓
-Marketplace
-```
-
-Hipotesis harga awal untuk validation, bukan harga final:
-
-| Pack | Candidate price |
-|---|---:|
-| Anti-Slop Design | Rp79k |
-| WordPress Production / Audit | Rp99k |
-| SEO & AI Search | Rp99k |
-| Marketing Launch | Rp99k |
-| Website Builder | Rp129k |
-| Bundle | Rp249k–299k |
-
-Pricing harus divalidasi melalui penggunaan dan conversion, bukan dianggap keputusan permanen PRD.
-
-## 14. Success metrics
-
-### Product quality
-
-- data validation pass rate;
-- Browser E2E pass rate;
-- production verification pass rate;
-- regression escape rate;
-- accessibility/mobile regressions;
-- workflow completion rate.
-
-### User value
-
-- prompt-to-workflow adoption;
-- workflow completion;
-- repeat workflow usage;
-- artifact completion;
-- percentage output yang lolos quality gate tanpa manual rewrite besar.
-
-### Business
-
-- workflow pack conversion;
-- repeat purchase / upgrade;
-- Pro activation;
-- team adoption;
-- willingness-to-pay per outcome/domain.
-
-## 15. Definition of Done
-
-Sebuah feature SAMSON dianggap selesai hanya jika:
-
-1. requirement dan scope jelas;
-2. data/behavior contract tetap valid;
-3. responsive dan accessibility tidak mengalami regression;
-4. test yang relevan tersedia dan pass;
-5. security/release checks pass;
-6. Cloudflare preview/deployment sesuai commit;
-7. perubahan direview manusia sebelum merge;
-8. dokumentasi diperbarui jika behavior, architecture, runtime totals, atau roadmap berubah.
-
-## 16. Dokumen terkait
-
-- `README.md` — operator/developer overview;
-- `docs/FRONTEND-ARCHITECTURE-V1.md` — baseline frontend architecture;
-- `docs/ADAPTIVE-UI.md` — UI personality contract;
-- `docs/ADDING-PROMPTS.md` — safe prompt intake;
-- `docs/PRD-MERGE-KREATIF-DESIGN.md` — historical feature PRD untuk deduplikasi kategori design.
+- requirement/acceptance criteria jelas;
+- implementation berada di feature branch;
+- relevant automated tests tersedia dan pass;
+- regression/security gate pass;
+- Cloudflare bundle/preview pass bila runtime terdampak;
+- review conversation resolved;
+- human approval sebelum merge;
+- production verification pass setelah release;
+- documentation diperbarui bila architecture/operational contract berubah.
