@@ -1,0 +1,12 @@
+[
+  {
+    "name": "SAMSON B2B API Health",
+    "url": "https://samson.web.id/api/tools/b2b/health",
+    "type": "API"
+  },
+  {
+    "name": "SPM VPS Dashboard",
+    "url": "https://dashboard.sumberpelitamataram.com",
+    "type": "VPS_DASHBOARD"
+  }
+]
