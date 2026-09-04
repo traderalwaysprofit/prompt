@@ -13,8 +13,8 @@
   },
   "vars": {
     "AI_MODEL": "gemini-3.6-flash",
-    "OBSERVABILITY_ENABLED": "false",
+    "OBSERVABILITY_ENABLED": "true",
     "OBSERVABILITY_TIMEOUT_MS": "4000",
-    "OBSERVABILITY_TARGETS_JSON": "[]"
+    "OBSERVABILITY_TARGETS_JSON": "[{\"name\":\"SAMSON B2B API Health\",\"url\":\"https://samson.web.id/api/tools/b2b/health\",\"type\":\"API\"}]"
   }
 }
