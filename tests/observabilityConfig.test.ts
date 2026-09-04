@@ -1,9 +1,16 @@
 import { describe, expect, it } from 'vitest';
 import { loadObservabilityTargets, validateObservabilityTargets } from '../scripts/lib/observability-config.mjs';
 
+type ReviewedTarget = {
+  name: string;
+  url: string;
+  type: 'REDIRECTOR' | 'VPS_DASHBOARD' | 'API';
+  fallbackUrl?: string;
+};
+
 describe('observability production config', () => {
   it('loads the reviewed production targets', async () => {
-    const targets = await loadObservabilityTargets();
+    const targets = await loadObservabilityTargets() as ReviewedTarget[];
     expect(targets).toHaveLength(2);
     expect(targets.map((target) => target.name)).toEqual([
       'SAMSON B2B API Health',
