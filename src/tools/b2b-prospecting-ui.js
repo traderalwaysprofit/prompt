@@ -1,7 +1,9 @@
 import { mountTool as mountB2BTool } from './b2b-prospecting.js';
 
 const STYLE_ID = 'b2b-prospecting-style';
-const STYLE_HREF = '/src/tools/b2b-prospecting.css?v=2';
+const STYLE_HREF = '/src/tools/b2b-prospecting.css?v=3';
+const POLISH_STYLE_ID = 'b2b-prospecting-polish-style';
+const POLISH_STYLE_HREF = '/src/tools/b2b-prospecting-polish.css?v=1';
 const COMPACT_MAX = 619;
 const MEDIUM_MAX = 959;
 
@@ -11,10 +13,24 @@ const getLayout = (width) => {
   return 'wide';
 };
 
-const refreshStylesheet = () => {
-  const link = document.getElementById(STYLE_ID);
-  if (!link || link.tagName !== 'LINK') return;
-  if (link.getAttribute('href') !== STYLE_HREF) link.setAttribute('href', STYLE_HREF);
+const ensureStylesheet = (id, href) => {
+  let link = document.getElementById(id);
+  if (link && link.tagName === 'LINK') {
+    if (link.getAttribute('href') !== href) link.setAttribute('href', href);
+    return link;
+  }
+
+  link = document.createElement('link');
+  link.id = id;
+  link.rel = 'stylesheet';
+  link.href = href;
+  document.head.appendChild(link);
+  return link;
+};
+
+const refreshStylesheets = () => {
+  ensureStylesheet(STYLE_ID, STYLE_HREF);
+  ensureStylesheet(POLISH_STYLE_ID, POLISH_STYLE_HREF);
 };
 
 const syncContainerLayout = (root) => {
@@ -23,6 +39,8 @@ const syncContainerLayout = (root) => {
 };
 
 const keepSelectedTabVisible = (root) => {
+  if (root.dataset.b2bLayout === 'compact') return;
+
   const tabs = root.querySelector('.b2b-tabs');
   const selected = root.querySelector('[data-b2b-tab][aria-selected="true"]');
   if (!tabs || !selected) return;
@@ -55,7 +73,7 @@ export const mountTool = (root, context) => {
   const uiController = new AbortController();
   let resizeObserver = null;
 
-  refreshStylesheet();
+  refreshStylesheets();
   syncContainerLayout(root);
 
   if (typeof globalThis.ResizeObserver === 'function') {
