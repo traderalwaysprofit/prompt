@@ -11,7 +11,7 @@ const mockHealth = async (page) => {
 };
 
 test.describe('B2B Prospecting responsive layout', () => {
-  test('keeps the desktop hierarchy proportional and loads the revised stylesheets', async ({ page }) => {
+  test('keeps the desktop hierarchy proportional and aligns the product hero with Tools', async ({ page }) => {
     await page.setViewportSize({ width: 1440, height: 1000 });
     await mockHealth(page);
     await page.goto(`${BASE_URL}#tools/b2b-prospecting`, { waitUntil: 'networkidle' });
@@ -20,6 +20,38 @@ test.describe('B2B Prospecting responsive layout', () => {
     await expect(root).toHaveAttribute('data-b2b-layout', 'wide');
     await expect(page.locator('#b2b-prospecting-style')).toHaveAttribute('href', '/src/tools/b2b-prospecting.css?v=3');
     await expect(page.locator('#b2b-prospecting-polish-style')).toHaveAttribute('href', '/src/tools/b2b-prospecting-polish.css?v=1');
+    await expect(page.locator('#b2b-prospecting-hero-style')).toHaveAttribute('href', '/src/tools/b2b-prospecting-hero.css?v=1');
+
+    const heroColumns = await page.locator('.b2b-page-header').evaluate((element) => getComputedStyle(element).gridTemplateColumns.split(' ').map((value) => Number.parseFloat(value)));
+    expect(heroColumns).toHaveLength(2);
+    expect(heroColumns[0]).toBeGreaterThanOrEqual(220);
+    expect(heroColumns[0]).toBeLessThanOrEqual(236);
+
+    const backHeight = await page.locator('.b2b-page-header > .tools-back').evaluate((element) => element.getBoundingClientRect().height);
+    expect(backHeight).toBeGreaterThanOrEqual(64);
+    expect(backHeight).toBeLessThanOrEqual(70);
+
+    const productColumns = await page.locator('.b2b-page-header .tools-product-heading').evaluate((element) => getComputedStyle(element).gridTemplateColumns.split(' ').map((value) => Number.parseFloat(value)));
+    expect(productColumns).toHaveLength(2);
+    expect(productColumns[0]).toBeGreaterThanOrEqual(84);
+    expect(productColumns[0]).toBeLessThanOrEqual(88);
+
+    const heroTitleSize = await page.locator('#tools-title').evaluate((element) => Number.parseFloat(getComputedStyle(element).fontSize));
+    expect(heroTitleSize).toBeGreaterThanOrEqual(38);
+    expect(heroTitleSize).toBeLessThanOrEqual(54);
+
+    const heroSubtitleColor = await page.locator('.b2b-page-header .tools-heading p').evaluate((element) => getComputedStyle(element).color);
+    const toolsAccentColor = await page.locator('#tools').evaluate((element) => getComputedStyle(element).getPropertyValue('--tools-accent').trim());
+    expect(heroSubtitleColor).not.toBe('rgb(89, 89, 89)');
+    expect(toolsAccentColor).not.toBe('');
+
+    const badgeMetrics = await page.locator('#b2b-ai-badge').evaluate((element) => {
+      const rect = element.getBoundingClientRect();
+      return { width: rect.width, height: rect.height, position: getComputedStyle(element).position };
+    });
+    expect(badgeMetrics.width).toBeLessThanOrEqual(1);
+    expect(badgeMetrics.height).toBeLessThanOrEqual(1);
+    expect(badgeMetrics.position).toBe('absolute');
 
     const gridMetrics = await page.locator('.b2b-grid-search').first().evaluate((element) => {
       const columns = getComputedStyle(element).gridTemplateColumns
@@ -42,13 +74,26 @@ test.describe('B2B Prospecting responsive layout', () => {
     expect(Math.max(...statWidths) - Math.min(...statWidths)).toBeLessThanOrEqual(2);
   });
 
-  test('uses a compact two-by-two mobile navigation with proportional controls and no page overflow', async ({ page }) => {
+  test('uses a compact product hero and two-by-two mobile navigation without page overflow', async ({ page }) => {
     await page.setViewportSize({ width: 360, height: 800 });
     await mockHealth(page);
     await page.goto(`${BASE_URL}#tools/b2b-prospecting`, { waitUntil: 'networkidle' });
 
     const root = page.locator('#tools-view');
     await expect(root).toHaveAttribute('data-b2b-layout', 'compact');
+
+    const heroColumns = await page.locator('.b2b-page-header').evaluate((element) => getComputedStyle(element).gridTemplateColumns.split(' '));
+    expect(heroColumns).toHaveLength(1);
+
+    const mobileProductColumns = await page.locator('.b2b-page-header .tools-product-heading').evaluate((element) => getComputedStyle(element).gridTemplateColumns.split(' '));
+    expect(mobileProductColumns).toHaveLength(2);
+
+    const mobileBackHeight = await page.locator('.b2b-page-header > .tools-back').evaluate((element) => element.getBoundingClientRect().height);
+    expect(mobileBackHeight).toBeGreaterThanOrEqual(44);
+    expect(mobileBackHeight).toBeLessThanOrEqual(52);
+
+    const mobileHeroTitleSize = await page.locator('#tools-title').evaluate((element) => Number.parseFloat(getComputedStyle(element).fontSize));
+    expect(mobileHeroTitleSize).toBeLessThanOrEqual(24);
 
     const fieldColumns = await page.locator('.b2b-field-grid').evaluate((element) => getComputedStyle(element).gridTemplateColumns.split(' '));
     expect(fieldColumns).toHaveLength(1);
