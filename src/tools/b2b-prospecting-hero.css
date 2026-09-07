@@ -1,0 +1,241 @@
+/* B2B Prospecting product hero aligned with the Google Contacts tool header pattern. */
+
+#tools-view[data-b2b-layout] .b2b-page-header{
+  min-width:0;
+}
+
+#tools-view[data-b2b-layout] .b2b-page-header>.tools-back{
+  box-sizing:border-box;
+  margin:0;
+}
+
+#tools-view[data-b2b-layout] .b2b-heading-row{
+  min-width:0;
+}
+
+#tools-view[data-b2b-layout] .b2b-heading-row .tools-heading{
+  min-width:0;
+  max-width:920px;
+}
+
+#tools-view[data-b2b-layout] .b2b-heading-row .tools-heading p{
+  max-width:58ch;
+  color:var(--tools-accent);
+  font-weight:800;
+}
+
+/* Preserve the live AI health announcement without letting the badge split the hero composition. */
+#tools-view[data-b2b-layout] .b2b-ai-badge{
+  position:absolute!important;
+  width:1px!important;
+  min-width:1px!important;
+  max-width:1px!important;
+  height:1px!important;
+  min-height:1px!important;
+  max-height:1px!important;
+  padding:0!important;
+  margin:-1px!important;
+  overflow:hidden!important;
+  clip:rect(0,0,0,0)!important;
+  clip-path:inset(50%)!important;
+  white-space:nowrap!important;
+  border:0!important;
+  line-height:1!important;
+}
+
+#tools-view[data-b2b-layout="wide"] .b2b-page-header{
+  display:grid;
+  grid-template-columns:228px minmax(0,1fr);
+  align-items:center;
+  gap:32px;
+  margin-bottom:28px;
+}
+
+#tools-view[data-b2b-layout="wide"] .b2b-page-header>.tools-back{
+  width:100%;
+  min-height:66px;
+  padding:0 18px;
+  justify-content:center;
+  border-radius:16px;
+  background:var(--ui-surface);
+  color:var(--ui-text);
+  font-size:14px;
+  box-shadow:var(--ui-shadow-1);
+}
+
+#tools-view[data-b2b-layout="wide"] .b2b-heading-row{
+  display:block;
+  position:relative;
+}
+
+#tools-view[data-b2b-layout="wide"] .b2b-heading-row .tools-product-heading{
+  display:grid;
+  grid-template-columns:86px minmax(0,1fr);
+  align-items:center;
+  gap:24px;
+}
+
+#tools-view[data-b2b-layout="wide"] .b2b-heading-row .tools-product-icon{
+  width:86px;
+  height:86px;
+  flex-basis:86px;
+  border-radius:22px;
+  box-shadow:0 12px 30px color-mix(in srgb,var(--tools-accent) 20%,transparent);
+}
+
+#tools-view[data-b2b-layout="wide"] .b2b-heading-row .tools-product-icon .tool-icon{
+  width:40px;
+  height:40px;
+}
+
+#tools-view[data-b2b-layout="wide"] .b2b-heading-row .tools-kicker{
+  font-size:11px;
+  letter-spacing:.18em;
+}
+
+#tools-view[data-b2b-layout="wide"] .b2b-heading-row .tools-heading h1{
+  margin:7px 0 6px;
+  font-size:clamp(38px,4vw,52px);
+  line-height:1.02;
+  letter-spacing:-.048em;
+}
+
+#tools-view[data-b2b-layout="wide"] .b2b-heading-row .tools-heading p{
+  font-size:clamp(16px,1.65vw,20px);
+  line-height:1.35;
+}
+
+#tools-view[data-b2b-layout="medium"] .b2b-page-header{
+  display:grid;
+  grid-template-columns:190px minmax(0,1fr);
+  align-items:center;
+  gap:26px;
+  margin-bottom:24px;
+}
+
+#tools-view[data-b2b-layout="medium"] .b2b-page-header>.tools-back{
+  width:100%;
+  min-height:58px;
+  padding:0 16px;
+  justify-content:center;
+  border-radius:15px;
+  background:var(--ui-surface);
+  color:var(--ui-text);
+  font-size:13px;
+}
+
+#tools-view[data-b2b-layout="medium"] .b2b-heading-row{
+  display:block;
+  position:relative;
+}
+
+#tools-view[data-b2b-layout="medium"] .b2b-heading-row .tools-product-heading{
+  display:grid;
+  grid-template-columns:72px minmax(0,1fr);
+  align-items:center;
+  gap:20px;
+}
+
+#tools-view[data-b2b-layout="medium"] .b2b-heading-row .tools-product-icon{
+  width:72px;
+  height:72px;
+  flex-basis:72px;
+  border-radius:19px;
+}
+
+#tools-view[data-b2b-layout="medium"] .b2b-heading-row .tools-product-icon .tool-icon{
+  width:34px;
+  height:34px;
+}
+
+#tools-view[data-b2b-layout="medium"] .b2b-heading-row .tools-heading h1{
+  margin:5px 0 5px;
+  font-size:clamp(32px,4vw,40px);
+  line-height:1.04;
+}
+
+#tools-view[data-b2b-layout="medium"] .b2b-heading-row .tools-heading p{
+  font-size:15px;
+  line-height:1.4;
+}
+
+#tools-view[data-b2b-layout="compact"] .b2b-page-header{
+  display:grid;
+  grid-template-columns:minmax(0,1fr);
+  align-items:start;
+  gap:14px;
+  margin-bottom:14px;
+}
+
+#tools-view[data-b2b-layout="compact"] .b2b-page-header>.tools-back{
+  width:max-content;
+  max-width:100%;
+  min-height:44px;
+  padding:0 12px;
+  justify-content:flex-start;
+  border-radius:12px;
+  background:var(--ui-surface);
+  color:var(--ui-text);
+  font-size:11px;
+  box-shadow:none;
+}
+
+#tools-view[data-b2b-layout="compact"] .b2b-heading-row{
+  display:block;
+  position:relative;
+}
+
+#tools-view[data-b2b-layout="compact"] .b2b-heading-row .tools-product-heading{
+  display:grid;
+  grid-template-columns:50px minmax(0,1fr);
+  align-items:start;
+  gap:12px;
+}
+
+#tools-view[data-b2b-layout="compact"] .b2b-heading-row .tools-product-icon{
+  width:50px;
+  height:50px;
+  flex-basis:50px;
+  border-radius:14px;
+}
+
+#tools-view[data-b2b-layout="compact"] .b2b-heading-row .tools-product-icon .tool-icon{
+  width:25px;
+  height:25px;
+}
+
+#tools-view[data-b2b-layout="compact"] .b2b-heading-row .tools-kicker{
+  font-size:8.5px;
+  letter-spacing:.14em;
+}
+
+#tools-view[data-b2b-layout="compact"] .b2b-heading-row .tools-heading h1{
+  margin:4px 0 4px;
+  font-size:24px;
+  line-height:1.06;
+  letter-spacing:-.035em;
+}
+
+#tools-view[data-b2b-layout="compact"] .b2b-heading-row .tools-heading p{
+  max-width:36ch;
+  font-size:12.5px;
+  line-height:1.4;
+}
+
+@media(max-width:380px){
+  #tools-view[data-b2b-layout="compact"] .b2b-heading-row .tools-product-heading{
+    grid-template-columns:46px minmax(0,1fr);
+    gap:10px;
+  }
+
+  #tools-view[data-b2b-layout="compact"] .b2b-heading-row .tools-product-icon{
+    width:46px;
+    height:46px;
+    flex-basis:46px;
+    border-radius:12px;
+  }
+
+  #tools-view[data-b2b-layout="compact"] .b2b-heading-row .tools-heading h1{
+    font-size:22px;
+  }
+}

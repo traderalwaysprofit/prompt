@@ -27,7 +27,7 @@ export const TOOLS = Object.freeze([
     status: 'ready',
     statusLabel: 'V1 siap',
     iconPath: 'M3 21h18M5 21V7l7-4 7 4v14M9 21v-6h6v6M8 9h.01M12 9h.01M16 9h.01',
-    load: () => import('./tools/b2b-prospecting.js')
+    load: () => import('./tools/b2b-prospecting-ui.js')
   })
 ]);
 
