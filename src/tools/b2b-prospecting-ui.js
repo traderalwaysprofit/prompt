@@ -4,6 +4,8 @@ const STYLE_ID = 'b2b-prospecting-style';
 const STYLE_HREF = '/src/tools/b2b-prospecting.css?v=3';
 const POLISH_STYLE_ID = 'b2b-prospecting-polish-style';
 const POLISH_STYLE_HREF = '/src/tools/b2b-prospecting-polish.css?v=1';
+const HERO_STYLE_ID = 'b2b-prospecting-hero-style';
+const HERO_STYLE_HREF = '/src/tools/b2b-prospecting-hero.css?v=1';
 const COMPACT_MAX = 619;
 const MEDIUM_MAX = 959;
 
@@ -31,6 +33,7 @@ const ensureStylesheet = (id, href) => {
 const refreshStylesheets = () => {
   ensureStylesheet(STYLE_ID, STYLE_HREF);
   ensureStylesheet(POLISH_STYLE_ID, POLISH_STYLE_HREF);
+  ensureStylesheet(HERO_STYLE_ID, HERO_STYLE_HREF);
 };
 
 const syncContainerLayout = (root) => {
