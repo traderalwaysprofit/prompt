@@ -11,14 +11,15 @@ const mockHealth = async (page) => {
 };
 
 test.describe('B2B Prospecting responsive layout', () => {
-  test('keeps the desktop hierarchy proportional and loads the revised stylesheet', async ({ page }) => {
+  test('keeps the desktop hierarchy proportional and loads the revised stylesheets', async ({ page }) => {
     await page.setViewportSize({ width: 1440, height: 1000 });
     await mockHealth(page);
     await page.goto(`${BASE_URL}#tools/b2b-prospecting`, { waitUntil: 'networkidle' });
 
-    const root = page.locator('#tools');
+    const root = page.locator('#tools-view');
     await expect(root).toHaveAttribute('data-b2b-layout', 'wide');
-    await expect(page.locator('#b2b-prospecting-style')).toHaveAttribute('href', '/src/tools/b2b-prospecting.css?v=2');
+    await expect(page.locator('#b2b-prospecting-style')).toHaveAttribute('href', '/src/tools/b2b-prospecting.css?v=3');
+    await expect(page.locator('#b2b-prospecting-polish-style')).toHaveAttribute('href', '/src/tools/b2b-prospecting-polish.css?v=1');
 
     const gridMetrics = await page.locator('.b2b-grid-search').first().evaluate((element) => {
       const columns = getComputedStyle(element).gridTemplateColumns
@@ -34,20 +35,45 @@ test.describe('B2B Prospecting responsive layout', () => {
     const fieldColumns = await page.locator('.b2b-field-grid').evaluate((element) => getComputedStyle(element).gridTemplateColumns.split(' '));
     expect(fieldColumns).toHaveLength(3);
 
+    const panelPadding = await page.locator('.b2b-form-panel').evaluate((element) => Number.parseFloat(getComputedStyle(element).paddingLeft));
+    expect(panelPadding).toBeGreaterThanOrEqual(20);
+
     const statWidths = await page.locator('.b2b-stats > div').evaluateAll((cards) => cards.map((card) => card.getBoundingClientRect().width));
     expect(Math.max(...statWidths) - Math.min(...statWidths)).toBeLessThanOrEqual(2);
   });
 
-  test('collapses by container width without page overflow and keeps the active tab visible', async ({ page }) => {
+  test('uses a compact two-by-two mobile navigation with proportional controls and no page overflow', async ({ page }) => {
     await page.setViewportSize({ width: 360, height: 800 });
     await mockHealth(page);
     await page.goto(`${BASE_URL}#tools/b2b-prospecting`, { waitUntil: 'networkidle' });
 
-    const root = page.locator('#tools');
+    const root = page.locator('#tools-view');
     await expect(root).toHaveAttribute('data-b2b-layout', 'compact');
 
     const fieldColumns = await page.locator('.b2b-field-grid').evaluate((element) => getComputedStyle(element).gridTemplateColumns.split(' '));
     expect(fieldColumns).toHaveLength(1);
+
+    const tabColumns = await page.locator('.b2b-tabs').evaluate((element) => getComputedStyle(element).gridTemplateColumns.split(' '));
+    expect(tabColumns).toHaveLength(2);
+
+    const tabMetrics = await page.locator('.b2b-tabs').evaluate((element) => ({
+      clientWidth: element.clientWidth,
+      scrollWidth: element.scrollWidth,
+      overflowX: getComputedStyle(element).overflowX
+    }));
+    expect(tabMetrics.scrollWidth).toBeLessThanOrEqual(tabMetrics.clientWidth + 1);
+    expect(tabMetrics.overflowX).not.toBe('scroll');
+
+    const panelPadding = await page.locator('.b2b-form-panel').evaluate((element) => Number.parseFloat(getComputedStyle(element).paddingLeft));
+    expect(panelPadding).toBeGreaterThanOrEqual(14);
+    expect(panelPadding).toBeLessThanOrEqual(18);
+
+    const searchButtonHeight = await page.locator('#b2b-search-button').evaluate((button) => button.getBoundingClientRect().height);
+    expect(searchButtonHeight).toBeGreaterThanOrEqual(44);
+    expect(searchButtonHeight).toBeLessThanOrEqual(54);
+
+    const headingSize = await page.locator('#b2b-search-title').evaluate((element) => Number.parseFloat(getComputedStyle(element).fontSize));
+    expect(headingSize).toBeLessThanOrEqual(22);
 
     await page.locator('[data-b2b-tab="leads"]').click();
     const actionButtons = page.locator('.b2b-lead-heading .tool-button');
@@ -57,14 +83,6 @@ test.describe('B2B Prospecting responsive layout', () => {
 
     await page.locator('[data-b2b-tab="route"]').click();
     await expect(page.locator('[data-b2b-tab="route"]')).toHaveAttribute('aria-selected', 'true');
-    await page.waitForTimeout(250);
-    const tabVisibility = await page.locator('[data-b2b-tab="route"]').evaluate((tab) => {
-      const tabRect = tab.getBoundingClientRect();
-      const listRect = tab.parentElement.getBoundingClientRect();
-      return { tabLeft: tabRect.left, tabRight: tabRect.right, listLeft: listRect.left, listRight: listRect.right };
-    });
-    expect(tabVisibility.tabLeft).toBeGreaterThanOrEqual(tabVisibility.listLeft - 1);
-    expect(tabVisibility.tabRight).toBeLessThanOrEqual(tabVisibility.listRight + 1);
 
     const dimensions = await page.evaluate(() => ({
       viewport: document.documentElement.clientWidth,
