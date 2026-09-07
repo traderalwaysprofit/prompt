@@ -35,7 +35,7 @@ test.describe('B2B Prospecting responsive layout', () => {
     const fieldColumns = await page.locator('.b2b-field-grid').evaluate((element) => getComputedStyle(element).gridTemplateColumns.split(' '));
     expect(fieldColumns).toHaveLength(3);
 
-    const panelPadding = await page.locator('.b2b-form-panel').evaluate((element) => Number.parseFloat(getComputedStyle(element).paddingLeft));
+    const panelPadding = await page.locator('#b2b-panel-search .b2b-form-panel').evaluate((element) => Number.parseFloat(getComputedStyle(element).paddingLeft));
     expect(panelPadding).toBeGreaterThanOrEqual(20);
 
     const statWidths = await page.locator('.b2b-stats > div').evaluateAll((cards) => cards.map((card) => card.getBoundingClientRect().width));
@@ -64,7 +64,7 @@ test.describe('B2B Prospecting responsive layout', () => {
     expect(tabMetrics.scrollWidth).toBeLessThanOrEqual(tabMetrics.clientWidth + 1);
     expect(tabMetrics.overflowX).not.toBe('scroll');
 
-    const panelPadding = await page.locator('.b2b-form-panel').evaluate((element) => Number.parseFloat(getComputedStyle(element).paddingLeft));
+    const panelPadding = await page.locator('#b2b-panel-search .b2b-form-panel').evaluate((element) => Number.parseFloat(getComputedStyle(element).paddingLeft));
     expect(panelPadding).toBeGreaterThanOrEqual(14);
     expect(panelPadding).toBeLessThanOrEqual(18);
 
