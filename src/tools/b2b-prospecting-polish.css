@@ -1,0 +1,259 @@
+/* B2B Prospecting visual polish layered on top of the base module stylesheet. */
+
+#tools-view[data-b2b-layout] .b2b-panel .tool-panel{
+  padding:clamp(20px,2.2vw,26px);
+}
+
+#tools-view[data-b2b-layout] .b2b-form-panel h2,
+#tools-view[data-b2b-layout] .b2b-section-heading h2,
+#tools-view[data-b2b-layout] .b2b-brief-panel h2,
+#tools-view[data-b2b-layout] #b2b-panel-route>.b2b-grid>.tool-panel>h2{
+  line-height:1.16;
+  letter-spacing:-.025em;
+}
+
+#tools-view[data-b2b-layout="compact"] .b2b-page-header{
+  margin-bottom:14px;
+}
+
+#tools-view[data-b2b-layout="compact"] .b2b-page-header .tools-back{
+  min-height:44px;
+  padding-inline:11px;
+}
+
+#tools-view[data-b2b-layout="compact"] .b2b-heading-row{
+  gap:10px;
+}
+
+#tools-view[data-b2b-layout="compact"] .b2b-heading-row .tools-product-heading{
+  gap:12px;
+}
+
+#tools-view[data-b2b-layout="compact"] .b2b-heading-row .tools-product-icon{
+  width:46px;
+  height:46px;
+  flex-basis:46px;
+  border-radius:12px;
+}
+
+#tools-view[data-b2b-layout="compact"] .b2b-heading-row .tools-product-icon .tool-icon{
+  width:24px;
+  height:24px;
+}
+
+#tools-view[data-b2b-layout="compact"] .b2b-heading-row .tools-heading h1{
+  margin:2px 0 4px;
+  font-size:24px;
+  line-height:1.08;
+}
+
+#tools-view[data-b2b-layout="compact"] .b2b-heading-row .tools-heading p{
+  max-width:34ch;
+  font-size:12px;
+  line-height:1.4;
+}
+
+#tools-view[data-b2b-layout="compact"] .b2b-ai-badge{
+  min-height:30px;
+  padding:5px 9px;
+  font-size:10px;
+}
+
+#tools-view[data-b2b-layout="compact"] .b2b-stats{
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:8px;
+  margin:12px 0 14px;
+}
+
+#tools-view[data-b2b-layout="compact"] .b2b-stats>div{
+  min-height:66px;
+  padding:10px 12px;
+  border-radius:12px;
+}
+
+#tools-view[data-b2b-layout="compact"] .b2b-stats span{
+  font-size:10px;
+  line-height:1.25;
+}
+
+#tools-view[data-b2b-layout="compact"] .b2b-stats strong{
+  margin-top:3px;
+  font-size:18px;
+  line-height:1;
+}
+
+#tools-view[data-b2b-layout="compact"] .b2b-tabs{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:6px;
+  overflow:visible;
+  margin:0 0 14px;
+  padding:0;
+  border:0;
+  scrollbar-width:none;
+}
+
+#tools-view[data-b2b-layout="compact"] .b2b-tabs::-webkit-scrollbar{
+  display:none;
+}
+
+#tools-view[data-b2b-layout="compact"] .b2b-tabs button{
+  min-width:0;
+  min-height:44px;
+  padding:8px 9px;
+  border:1px solid var(--ui-border);
+  border-radius:10px;
+  background:var(--ui-surface);
+  font-size:11px;
+  line-height:1.2;
+  text-align:center;
+  white-space:normal;
+}
+
+#tools-view[data-b2b-layout="compact"] .b2b-tabs button[aria-selected="true"]{
+  border-color:var(--ui-accent);
+  background:var(--ui-bg-muted);
+  color:var(--ui-text);
+  box-shadow:inset 0 -2px 0 var(--ui-accent);
+}
+
+#tools-view[data-b2b-layout="compact"] .b2b-grid{
+  gap:12px;
+}
+
+#tools-view[data-b2b-layout="compact"] .b2b-panel .tool-panel{
+  padding:16px;
+  border-radius:14px;
+}
+
+#tools-view[data-b2b-layout="compact"] .b2b-form-panel h2,
+#tools-view[data-b2b-layout="compact"] .b2b-section-heading h2,
+#tools-view[data-b2b-layout="compact"] .b2b-brief-panel h2,
+#tools-view[data-b2b-layout="compact"] #b2b-panel-route>.b2b-grid>.tool-panel>h2{
+  margin:3px 0 7px;
+  font-size:22px;
+}
+
+#tools-view[data-b2b-layout="compact"] .b2b-form-panel>p,
+#tools-view[data-b2b-layout="compact"] .b2b-section-heading p{
+  margin-bottom:14px;
+  font-size:12.5px;
+  line-height:1.5;
+}
+
+#tools-view[data-b2b-layout="compact"] .b2b-panel .tools-kicker{
+  font-size:8px;
+  letter-spacing:.12em;
+}
+
+#tools-view[data-b2b-layout="compact"] .b2b-field-grid{
+  gap:11px;
+  margin:14px 0;
+}
+
+#tools-view[data-b2b-layout="compact"] .b2b-form-panel label,
+#tools-view[data-b2b-layout="compact"] .b2b-toolbar label,
+#tools-view[data-b2b-layout="compact"] .b2b-route-controls label{
+  gap:6px;
+  font-size:11px;
+  line-height:1.3;
+}
+
+#tools-view[data-b2b-layout="compact"] .b2b-form-panel select,
+#tools-view[data-b2b-layout="compact"] .b2b-form-panel input,
+#tools-view[data-b2b-layout="compact"] .b2b-toolbar input,
+#tools-view[data-b2b-layout="compact"] .b2b-toolbar select,
+#tools-view[data-b2b-layout="compact"] .b2b-route-controls input,
+#tools-view[data-b2b-layout="compact"] .b2b-route-controls select,
+#tools-view[data-b2b-layout="compact"] .b2b-status-select{
+  min-height:46px;
+  padding:8px 10px;
+  border-radius:10px;
+  font-size:13px;
+}
+
+#tools-view[data-b2b-layout="compact"] .b2b-form-panel textarea,
+#tools-view[data-b2b-layout="compact"] .b2b-brief-panel textarea{
+  padding:10px;
+  font-size:13px;
+}
+
+#tools-view[data-b2b-layout="compact"] .b2b-form-panel>.tool-button{
+  min-height:46px;
+  font-size:12px;
+}
+
+#tools-view[data-b2b-layout="compact"] .b2b-status{
+  margin-top:10px;
+  padding:10px 11px;
+  font-size:11px;
+  line-height:1.4;
+}
+
+#tools-view[data-b2b-layout="compact"] .b2b-section-heading{
+  gap:10px;
+  margin-bottom:10px;
+}
+
+#tools-view[data-b2b-layout="compact"] .b2b-section-heading .tool-button{
+  min-height:44px;
+  font-size:11px;
+}
+
+#tools-view[data-b2b-layout="compact"] .b2b-empty{
+  min-height:116px;
+  padding:20px 14px;
+  gap:4px;
+  font-size:11px;
+}
+
+#tools-view[data-b2b-layout="compact"] .b2b-empty span{
+  max-width:32ch;
+  line-height:1.4;
+}
+
+#tools-view[data-b2b-layout="compact"] .b2b-candidate-card{
+  gap:10px;
+  padding:11px;
+}
+
+#tools-view[data-b2b-layout="compact"] .b2b-candidate-detail strong{
+  font-size:13px;
+}
+
+#tools-view[data-b2b-layout="compact"] .b2b-candidate-detail span,
+#tools-view[data-b2b-layout="compact"] .b2b-contact-line a{
+  font-size:11px;
+}
+
+#tools-view[data-b2b-layout="compact"] .b2b-toolbar,
+#tools-view[data-b2b-layout="compact"] .b2b-route-controls{
+  gap:10px;
+  margin:12px 0;
+}
+
+#tools-view[data-b2b-layout="compact"] .b2b-table{
+  min-width:650px;
+}
+
+#tools-view[data-b2b-layout="compact"] .b2b-table th,
+#tools-view[data-b2b-layout="compact"] .b2b-table td{
+  padding:10px;
+  font-size:11px;
+}
+
+#tools-view[data-b2b-layout="compact"] .b2b-brief-panel textarea{
+  min-height:180px;
+}
+
+#tools-view[data-b2b-layout="compact"] .b2b-dialog form{
+  padding:16px;
+}
+
+@media(max-width:380px){
+  #tools-view[data-b2b-layout="compact"] .b2b-panel .tool-panel{padding:14px}
+  #tools-view[data-b2b-layout="compact"] .b2b-form-panel h2,
+  #tools-view[data-b2b-layout="compact"] .b2b-section-heading h2,
+  #tools-view[data-b2b-layout="compact"] .b2b-brief-panel h2{font-size:20px}
+  #tools-view[data-b2b-layout="compact"] .b2b-tabs button{font-size:10.5px}
+}
