@@ -47,9 +47,10 @@ const [html, css, appScript, headerFile, wranglerText] = await Promise.all([
 ]);
 
 assert.match(html, /<html lang="id" data-theme="default">/);
-assert.equal((html.match(/<option value=/g) || []).length, 4);
-assert.doesNotMatch(html, /data prospek contoh|contoh prospek/i);
-assert.match(css, /@media\(max-width:520px\)/);
+assert.equal((html.match(/<option value="(?:default|developer|swiss|pixel)">/g) || []).length, 4);
+assert.doesNotMatch(html, /Brand Seed|PIC Seed|PT Contoh/i);
+assert.match(html, /id="lead-form"/);
+assert.match(css, /@media\(max-width:760px\)/);
 assert.match(css, /min-width:320px/);
 assert.doesNotMatch(appScript, /innerHTML|insertAdjacentHTML/);
 assert.match(headerFile, /Content-Security-Policy:/);

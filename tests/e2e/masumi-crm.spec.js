@@ -38,6 +38,8 @@ test.describe('MASUMI Sales CRM tool', () => {
     await expect(page.locator('#crm-lead-empty')).toBeVisible();
     await expect(page.locator('#crm-lead-body tr')).toHaveCount(0);
     await expect(page.locator('#crm-record-count')).toContainText('0 dari 2.000');
+    await expect(page.getByRole('link', { name: 'Buka CRM Cloud' })).toHaveAttribute('href', 'https://crm.samson.web.id/');
+    await expect(page.getByRole('link', { name: 'Buka CRM Cloud' })).toHaveAttribute('rel', 'noopener');
     expect(await page.evaluate(() => localStorage.getItem('samsonMasumiCrmV1'))).toBeNull();
   });
 

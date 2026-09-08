@@ -1,6 +1,6 @@
 # MASUMI Sales CRM Cloud
 
-Status: **Authenticated local API / Draft PR**
+Status: **Operational cloud lead register / Draft PR**
 
 Canonical requirements: [GitHub Issue #53](https://github.com/traderalwaysprofit/prompt/issues/53)
 
@@ -28,12 +28,14 @@ This branch introduces only reversible repository foundations:
 - `wrangler.crm.jsonc` with preview/production environment boundaries;
 - a public, non-sensitive health endpoint at `/api/crm/v1/health`;
 - authenticated session and lead endpoints behind Cloudflare Access JWT verification;
-- a four-theme foundation screen with no sample prospect data;
+- an operational four-theme lead-register interface with no sample prospect data;
 - security headers specific to the CRM hostname;
 - an executable D1 migration for `app_users`, `leads`, `import_jobs`, and `audit_logs`;
 - database constraints for canonical pipeline stages, Lost reason, score ranges, ownership references, the 2,000-active-lead limit, and committed-import idempotency;
 - network-free SQLite integration tests that execute the D1-compatible migration in CI.
 - Admin/Sales ownership enforcement, bounded list queries, strict JSON input, optimistic concurrency, soft delete, and atomic mutation audit events.
+- session-aware owner selection plus cloud CRUD, search, filter, pagination, loading/error/empty states, and version-conflict recovery;
+- a Tools Hub launcher to `https://crm.samson.web.id/` while retaining the local CRM as a migration fallback.
 
 No online D1 database, Access policy, user email, secret, production route, or CRM data is created by committing these files. The all-zero database ID in the base Wrangler configuration is a local-only placeholder. Preview and production D1 bindings remain intentionally absent until their manual gates are approved. A custom domain becomes active only after an explicitly approved Cloudflare deployment.
 
@@ -56,6 +58,7 @@ Base path: `/api/crm/v1`
 |---|---|---|
 | `GET /health` | Public | Returns non-sensitive component configuration state |
 | `GET /session` | Active app user | Returns the mapped application user and role |
+| `GET /users` | Active app user | Admin receives active assignable users; Sales receives only self; email is not exposed |
 | `GET /leads` | Admin or Sales | Search, pipeline/owner filter, and bounded `limit`/`offset` pagination |
 | `POST /leads` | Admin or Sales | Validates and creates a lead with an atomic audit event |
 | `GET /leads/:id` | Admin or owning Sales | Returns one active lead; cross-owner access resolves as not found |
@@ -64,7 +67,7 @@ Base path: `/api/crm/v1`
 
 All non-health endpoints require a valid RS256 Cloudflare Access assertion, configured issuer/audience, and an active matching row in `app_users`. Mutations require `X-Request-ID`. Dynamic SQL values use bound parameters; list results are limited to 100 rows per request. Admin may request `includeDeleted=1`; Sales queries always receive a server-side ownership predicate.
 
-Import/export, dashboard, audit-list access, restore UI, rate limiting, and the operational CRM interface remain outside Step 6. Cloudflare Access policy and online user provisioning remain blocked by the manual infrastructure gates.
+Import/export, dashboard, follow-up workspace, audit-list access, restore UI, and rate limiting remain outside Step 7. Cloudflare Access policy and online user provisioning remain blocked by the manual infrastructure gates.
 
 ### Step 6 verification trace
 
@@ -77,6 +80,18 @@ Import/export, dashboard, audit-list access, restore UI, rate limiting, and the 
 | FUN-013, DAT-004 | soft-delete timestamp; no API hard-delete operation | delete and include-deleted tests; UI confirmation remains pending |
 | FUN-023, SEC-003, SEC-011 | bound statements and atomic create/update/delete audit rows | injection and audit-count tests |
 | API-003–006 | request ID, stable errors, same-origin routes, bounded list | API contract integration tests |
+
+### Step 7 verification trace
+
+| Requirement | Implemented control | Verification |
+|---|---|---|
+| FUN-001, FUN-024 | Tools Hub cloud launcher; explicit loading, empty, success, error, and retry states | registry/core tests and cloud UI static checks |
+| FUN-003–005 | authenticated session identity, role label, minimal owner directory, Sales self-scope | Admin/Sales API integration tests |
+| FUN-006–009, AC-004–006 | lead form, canonical pipeline, Lost reason, 0–5 score preview, search/filter, CRUD | cloud client contract tests plus server integration tests |
+| FUN-012–013, AC-010 | version sent on update/delete, conflict recovery, explicit delete confirmation | cloud UI source checks and client contract tests |
+| SEC-003, NFR-004 | dynamic rows use DOM text nodes; no CRM data in browser storage; mobile card reflow | no-`innerHTML`/storage assertions and responsive CSS checks |
+
+The Step 7 interface only calls same-origin `/api/crm/v1/*` routes. It does not create Cloudflare resources, provision users, import local CRM records, or write production data.
 
 ## Planned boundaries
 

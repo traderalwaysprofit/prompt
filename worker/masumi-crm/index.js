@@ -1,6 +1,7 @@
 import { authenticateAppUser } from './auth.js';
 import { CrmApiError, methodNotAllowed } from './errors.js';
 import { routeLeadApi } from './lead-api.js';
+import { listAssignableUsers } from './user-api.js';
 
 const API_PREFIX = '/api/crm/v1';
 
@@ -74,6 +75,9 @@ export const handleMasumiCrmRequest = async (request, env = {}, dependencies = {
     try {
       const user = await authenticateAppUser(request, env, dependencies);
       if (url.pathname === `${API_PREFIX}/session`) return apiResponse(handleSession(request, user));
+      if (url.pathname === `${API_PREFIX}/users`) {
+        return apiResponse(await listAssignableUsers(request, user, env.CRM_DB));
+      }
       if (url.pathname === `${API_PREFIX}/leads` || url.pathname.startsWith(`${API_PREFIX}/leads/`)) {
         return apiResponse(await routeLeadApi(request, url, user, env, dependencies));
       }

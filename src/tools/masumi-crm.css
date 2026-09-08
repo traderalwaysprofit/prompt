@@ -14,6 +14,9 @@
 .crm-local-notice strong,.crm-local-notice span{display:block}
 .crm-local-notice strong{font-size:11px}
 .crm-local-notice span{margin-top:3px;color:var(--ui-text-secondary,#5e6a7c);font-size:10px;line-height:1.5}
+.crm-local-notice>div{min-width:0;flex:1}
+.crm-local-notice>a{display:inline-flex;min-height:40px;padding:0 13px;border:1px solid var(--crm-accent);border-radius:var(--ui-radius-control,9px);align-items:center;justify-content:center;align-self:center;color:var(--crm-accent);font-size:10px;font-weight:850;text-decoration:none;white-space:nowrap}
+.crm-local-notice>a:hover,.crm-local-notice>a:focus-visible{background:var(--crm-accent);color:#fff;outline:3px solid color-mix(in srgb,var(--crm-accent) 18%,transparent);outline-offset:2px}
 
 .crm-kpi-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;margin-bottom:18px}
 .crm-kpi-card{position:relative;min-height:132px;padding:20px;overflow:hidden}
@@ -177,6 +180,8 @@ html[data-theme="pixel"] .crm-form-body{background:var(--pixel-void)!important}
   .crm-score-grid output{grid-column:span 2}
 }
 @media(max-width:560px){
+  .crm-local-notice{flex-wrap:wrap}
+  .crm-local-notice>a{width:100%}
   .crm-local-notice{margin-top:0}
   .crm-kpi-grid{grid-template-columns:1fr 1fr;gap:9px}
   .crm-kpi-card{min-height:126px;padding:15px}

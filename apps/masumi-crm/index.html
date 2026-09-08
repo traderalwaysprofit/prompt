@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="MASUMI Sales CRM — ruang kerja internal untuk lead, pipeline, dan follow-up.">
+  <meta name="description" content="MASUMI Sales CRM — ruang kerja internal untuk lead dan pipeline Masumi Beauty Indonesia.">
   <meta name="theme-color" content="#7d2038">
   <link rel="icon" type="image/svg+xml" href="/favicon.svg">
   <link rel="stylesheet" href="/app.css">
@@ -15,52 +15,164 @@
       <span class="brand-mark" aria-hidden="true">M</span>
       <span><strong>MASUMI</strong><small>Sales CRM</small></span>
     </a>
-    <label class="theme-control">
-      <span>Tampilan</span>
-      <select id="theme-select" aria-label="Pilih tema tampilan">
-        <option value="default">Default</option>
-        <option value="developer">Developer</option>
-        <option value="swiss">Swiss</option>
-        <option value="pixel">Pixel</option>
-      </select>
-    </label>
+    <div class="app-bar-actions">
+      <div class="session-chip" id="session-chip" hidden>
+        <span id="session-initial" aria-hidden="true">M</span>
+        <span><strong id="session-name"></strong><small id="session-role"></small></span>
+      </div>
+      <label class="theme-control">
+        <span>Tampilan</span>
+        <select id="theme-select" aria-label="Pilih tema tampilan">
+          <option value="default">Default</option>
+          <option value="developer">Developer</option>
+          <option value="swiss">Swiss</option>
+          <option value="pixel">Pixel</option>
+        </select>
+      </label>
+    </div>
   </header>
 
-  <main class="foundation-shell">
-    <section class="foundation-intro" aria-labelledby="page-title">
-      <p class="eyebrow">INTERNAL SALES SYSTEM / CLOUD FOUNDATION</p>
-      <h1 id="page-title">Ruang kerja sales yang terhubung, dengan akses yang terkontrol.</h1>
-      <p class="intro-copy">Fondasi aplikasi cloud telah dipisahkan dari Tools Hub. Data lead belum diaktifkan pada tahap ini dan tidak ada data contoh yang ditampilkan.</p>
+  <main class="crm-shell">
+    <section class="page-heading" aria-labelledby="page-title">
+      <div>
+        <p class="eyebrow">MASUMI / SALES OPERATIONS</p>
+        <h1 id="page-title">Lead Register</h1>
+        <p>Kelola data lead bersama tim. Perubahan disimpan ke database CRM setelah server mengonfirmasi.</p>
+      </div>
+      <button class="button button-primary" id="add-lead" type="button" disabled>Tambah lead</button>
     </section>
 
-    <section class="system-status" aria-labelledby="status-title">
-      <div class="status-heading">
-        <span class="status-indicator" id="status-indicator" aria-hidden="true"></span>
+    <div class="notice" id="app-status" role="status" aria-live="polite" data-tone="loading">
+      <span class="notice-mark" aria-hidden="true"></span>
+      <span id="app-status-copy">Memeriksa sesi dan memuat lead…</span>
+      <button id="retry-app" type="button" hidden>Coba lagi</button>
+    </div>
+
+    <section class="register" id="register" aria-labelledby="register-title" aria-busy="true">
+      <header class="register-header">
         <div>
-          <p class="eyebrow">SYSTEM CHECK</p>
-          <h2 id="status-title">Memeriksa fondasi aplikasi…</h2>
+          <p class="eyebrow">SHARED DATABASE</p>
+          <h2 id="register-title">Daftar lead</h2>
+          <p id="record-count">Memuat data…</p>
+        </div>
+        <button class="button button-secondary" id="refresh-leads" type="button" disabled>Perbarui data</button>
+      </header>
+
+      <div class="filters" aria-label="Cari dan filter lead">
+        <label class="search-field">
+          <span>Cari lead</span>
+          <input id="lead-search" type="search" maxlength="120" placeholder="Brand atau nama PIC" autocomplete="off" disabled>
+        </label>
+        <label>
+          <span>Pipeline</span>
+          <select id="pipeline-filter" disabled>
+            <option value="">Semua pipeline</option>
+            <option>New</option><option>Contacted</option><option>Qualified</option>
+            <option>Needs Discovery</option><option>Proposal Sent</option><option>Negotiation</option>
+            <option>Won</option><option>Lost</option><option>Nurture</option>
+          </select>
+        </label>
+        <label id="owner-filter-field" hidden>
+          <span>Owner</span>
+          <select id="owner-filter" disabled><option value="">Semua owner</option></select>
+        </label>
+      </div>
+
+      <div class="table-wrap" id="lead-table-wrap" hidden>
+        <table class="lead-table">
+          <thead><tr><th scope="col">Prioritas</th><th scope="col">Brand &amp; PIC</th><th scope="col">Pipeline</th><th scope="col">Next action</th><th scope="col">Potensi nilai</th><th scope="col"><span class="sr-only">Aksi</span></th></tr></thead>
+          <tbody id="lead-rows"></tbody>
+        </table>
+      </div>
+
+      <div class="empty-state" id="lead-empty">
+        <span class="empty-mark" aria-hidden="true">M</span>
+        <h3 id="empty-title">Memuat lead</h3>
+        <p id="empty-copy">Data contoh tidak digunakan. Daftar ini hanya akan menampilkan data dari database CRM.</p>
+        <button class="button button-primary" id="empty-add" type="button" hidden>Tambah lead pertama</button>
+      </div>
+
+      <footer class="pagination" id="pagination" hidden>
+        <button class="button button-secondary" id="previous-page" type="button">Sebelumnya</button>
+        <span id="page-copy"></span>
+        <button class="button button-secondary" id="next-page" type="button">Berikutnya</button>
+      </footer>
+    </section>
+
+    <p class="data-boundary">Data pada aplikasi ini tersimpan di database hosting dan tidak disalin ke <code>localStorage</code>. CRM lokal di SAMSON Tools tetap tersedia sebagai sumber migrasi sampai verifikasi produksi selesai.</p>
+  </main>
+
+  <dialog class="lead-dialog" id="lead-dialog" aria-labelledby="form-title">
+    <form id="lead-form" novalidate>
+      <header class="dialog-header">
+        <div><p class="eyebrow">MASUMI SALES CRM</p><h2 id="form-title">Tambah lead</h2></div>
+        <button class="icon-button" id="close-form" type="button" aria-label="Tutup form">×</button>
+      </header>
+
+      <div class="form-body">
+        <fieldset>
+          <legend>Identitas lead</legend>
+          <div class="form-grid">
+            <label><span>Tanggal lead</span><input name="leadDate" type="date"></label>
+            <label><span>Sumber lead</span><input name="source" type="text" maxlength="120"></label>
+            <label class="span-2"><span>Perusahaan / brand <b>*</b></span><input name="company" type="text" maxlength="180" required></label>
+            <label><span>Nama PIC <b>*</b></span><input name="picName" type="text" maxlength="140" required></label>
+            <label><span>Jabatan PIC</span><input name="picRole" type="text" maxlength="120"></label>
+            <label><span>Status decision maker</span><select name="decisionMakerStatus"><option>Unknown</option><option>Influencer</option><option>Recommender</option><option>Decision Maker</option></select></label>
+            <label><span>WhatsApp / telepon</span><input name="contact" type="tel" maxlength="80"></label>
+            <label><span>Kota</span><input name="city" type="text" maxlength="120"></label>
+            <label><span>Owner <b>*</b></span><select name="ownerUserId" required></select></label>
+          </div>
+        </fieldset>
+
+        <fieldset>
+          <legend>Peluang &amp; pipeline</legend>
+          <div class="form-grid">
+            <label><span>Status brand</span><select name="brandStatus"><option>Idea</option><option>New Brand</option><option>Existing Brand</option><option>Rebrand</option></select></label>
+            <label><span>Pipeline</span><select id="form-pipeline" name="pipeline"><option>New</option><option>Contacted</option><option>Qualified</option><option>Needs Discovery</option><option>Proposal Sent</option><option>Negotiation</option><option>Won</option><option>Lost</option><option>Nurture</option></select></label>
+            <label class="span-2"><span>Produk / kebutuhan</span><textarea name="needs" rows="3" maxlength="500"></textarea></label>
+            <label><span>Estimasi quantity</span><input name="estimatedQuantity" type="number" min="0" max="100000000" step="1" inputmode="numeric"></label>
+            <label><span>Potensi nilai (Rp)</span><input name="potentialValue" type="number" min="0" max="999999999999" step="1" inputmode="numeric"></label>
+            <label class="span-2"><span>Target launch</span><input name="targetLaunch" type="text" maxlength="80"></label>
+            <label class="span-2 lost-field" id="lost-field" hidden><span>Alasan Lost <b>*</b></span><textarea name="lostReason" rows="2" maxlength="500"></textarea></label>
+          </div>
+        </fieldset>
+
+        <fieldset>
+          <legend>Follow-up &amp; compliance</legend>
+          <div class="form-grid">
+            <label><span>Kontak terakhir</span><input name="lastContact" type="date"></label>
+            <label><span>Jadwal next action</span><input name="nextActionDate" type="date"></label>
+            <label class="span-2"><span>Next action</span><textarea name="nextAction" rows="3" maxlength="500"></textarea></label>
+            <label><span>Status compliance</span><select name="complianceStatus"><option>Not Checked</option><option>Ready</option><option>Needs Review</option><option>Blocked</option></select></label>
+            <label><span>Blocker</span><input name="blocker" type="text" maxlength="500"></label>
+            <label class="span-2"><span>Catatan</span><textarea name="notes" rows="4" maxlength="3000"></textarea></label>
+          </div>
+        </fieldset>
+
+        <fieldset>
+          <legend>Priority scoring <small>0 = rendah, 5 = sangat tinggi</small></legend>
+          <div class="score-grid">
+            <label><span>Fit</span><select name="fit"><option>0</option><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option></select></label>
+            <label><span>Readiness</span><select name="readiness"><option>0</option><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option></select></label>
+            <label><span>Urgency</span><select name="urgency"><option>0</option><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option></select></label>
+            <label><span>Value</span><select name="valueScore"><option>0</option><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option></select></label>
+            <output id="score-preview" aria-live="polite"><strong>0/20</strong><span>Low</span></output>
+          </div>
+        </fieldset>
+
+        <div class="form-status" id="form-status" role="alert" hidden>
+          <span id="form-status-copy"></span>
+          <button id="reload-conflict" type="button" hidden>Muat data terbaru</button>
         </div>
       </div>
-      <p id="status-detail" class="status-detail" role="status" aria-live="polite">Menghubungi Worker CRM tanpa membaca data pengguna.</p>
 
-      <dl class="component-list">
-        <div><dt>Aplikasi</dt><dd id="component-app">Siap</dd></div>
-        <div><dt>Worker API</dt><dd id="component-api">Memeriksa</dd></div>
-        <div><dt>Database D1</dt><dd id="component-database">Belum dibuat</dd></div>
-        <div><dt>Login Access</dt><dd id="component-access">Belum dikonfigurasi</dd></div>
-      </dl>
-
-      <div class="status-actions">
-        <button id="retry-health" type="button">Periksa ulang</button>
-        <a href="https://samson.web.id/#tools">Kembali ke SAMSON Tools</a>
-      </div>
-    </section>
-
-    <aside class="release-boundary" aria-label="Batas tahap pengembangan">
-      <strong>Tahap saat ini</strong>
-      <p>Struktur aplikasi, build terpisah, Worker entrypoint, dan batas keamanan awal. Pembuatan D1, login pengguna, dan migrasi data menunggu gate berikutnya.</p>
-    </aside>
-  </main>
+      <footer class="dialog-footer">
+        <button class="button button-secondary" id="cancel-form" type="button">Batal</button>
+        <button class="button button-primary" id="save-lead" type="submit">Simpan lead</button>
+      </footer>
+    </form>
+  </dialog>
 
   <script type="module" src="/app.js"></script>
 </body>

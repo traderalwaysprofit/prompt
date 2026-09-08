@@ -171,6 +171,28 @@ try {
     role: 'admin'
   });
 
+  const adminUsers = await callApi('/api/crm/v1/users');
+  assert.equal(adminUsers.response.status, 200);
+  assert.deepEqual(adminUsers.payload.data, [
+    { id: 'user-admin', displayName: 'TEST-user-admin', role: 'admin' },
+    { id: 'user-sales-a', displayName: 'TEST-user-sales-a', role: 'sales' },
+    { id: 'user-sales-b', displayName: 'TEST-user-sales-b', role: 'sales' }
+  ]);
+  assert.equal(Object.hasOwn(adminUsers.payload.data[0], 'email'), false);
+
+  const salesUsers = await callApi('/api/crm/v1/users', { token: salesAToken });
+  assert.deepEqual(salesUsers.payload.data, [
+    { id: 'user-sales-a', displayName: 'TEST-user-sales-a', role: 'sales' }
+  ]);
+
+  const usersWithQuery = await callApi('/api/crm/v1/users?active=1');
+  assert.equal(usersWithQuery.response.status, 422);
+  assert.equal(usersWithQuery.payload.code, 'UNKNOWN_QUERY_PARAMETER');
+
+  const wrongUsersMethod = await callApi('/api/crm/v1/users', { method: 'POST' });
+  assert.equal(wrongUsersMethod.response.status, 405);
+  assert.equal(wrongUsersMethod.response.headers.get('allow'), 'GET');
+
   const missingRequestId = await callApi('/api/crm/v1/leads', {
     method: 'POST',
     body: { company: 'TEST-COMPANY', picName: 'TEST-PIC' }
