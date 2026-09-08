@@ -16,7 +16,7 @@ Baseline runtime:
 | Example | 201 |
 | Category | 19 |
 | Guided workflow | 12 |
-| Practical Tools | 2 |
+| Practical Tools | 3 |
 | Core executable system tools | 3 |
 | UI personality | 4 |
 | Headless visual renderer | 1 pipeline |
@@ -26,6 +26,7 @@ Practical Tools saat ini:
 
 1. **Google Contacts Ready** — import XLSX/XLS/CSV, normalisasi nomor Indonesia, dedupe, review, dan export Google Contacts CSV secara lokal di browser.
 2. **B2B Prospecting V1** — discovery, enrichment evidence, candidate review, lead database lokal, routing kunjungan, dan briefing WhatsApp. Search provider menggunakan Serper server-side dan Gemini digunakan untuk review/normalisasi evidence melalui Worker.
+3. **MASUMI Sales CRM** — lead register, pipeline, priority scoring, KPI, follow-up, backup JSON, dan laporan CSV; seluruh data disimpan lokal pada perangkat pengguna.
 
 Core executable tool registry saat ini:
 
@@ -103,7 +104,7 @@ Server-side secrets tidak boleh masuk frontend atau repository.
 
 ### Practical Tools layer
 
-Tools Hub modular menggunakan registry dan deep-link routing. Google Contacts tetap local-first. B2B Prospecting menggunakan Worker gateway agar API key dan provider traffic tidak masuk browser.
+Tools Hub modular menggunakan registry dan deep-link routing. Google Contacts serta MASUMI Sales CRM tetap local-first. B2B Prospecting menggunakan Worker gateway agar API key dan provider traffic tidak masuk browser.
 
 ### Tool Calling Engine
 
@@ -287,7 +288,8 @@ SAMSON dikembangkan dengan **AI-assisted / supervised vibe coding**. User menent
 - Work Assistant;
 - modular Tools Hub;
 - Google Contacts tool;
-- B2B Prospecting V1.
+- B2B Prospecting V1;
+- MASUMI Sales CRM V1.
 
 ### Hardening / automation roadmap — implemented
 

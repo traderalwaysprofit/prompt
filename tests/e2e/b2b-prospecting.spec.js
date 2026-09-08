@@ -30,9 +30,10 @@ test.describe('SAMSON B2B Prospecting V1', () => {
 
   test('opens as the second Tools Hub module and reviews AI candidates before save', async ({ page }) => {
     await page.goto(`${BASE_URL}#tools`, { waitUntil: 'networkidle' });
-    await expect(page.locator('.tools-count-pill')).toContainText('2 tool tersedia');
+    await expect(page.locator('.tools-count-pill')).toContainText('3 tool tersedia');
     await expect(page.locator('[data-tool-id="google-contacts"]')).toBeVisible();
     await expect(page.locator('[data-tool-id="b2b-prospecting"]')).toBeVisible();
+    await expect(page.locator('[data-tool-id="masumi-sales-crm"]')).toBeVisible();
 
     await page.locator('[data-tool-id="b2b-prospecting"]').click();
     await expect(page.locator('#tools')).toHaveAttribute('data-tools-view', 'b2b-prospecting');

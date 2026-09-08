@@ -2,6 +2,7 @@ export const TOOLS_HOME_ROUTE = '#tools';
 
 const googleContactFormats = Object.freeze(['XLSX', 'XLS', 'CSV']);
 const b2bBadges = Object.freeze(['AI', 'LEADS', 'CSV', 'XLSX']);
+const masumiCrmFormats = Object.freeze(['LOCAL', 'JSON', 'CSV']);
 
 export const TOOLS = Object.freeze([
   Object.freeze({
@@ -28,6 +29,19 @@ export const TOOLS = Object.freeze([
     statusLabel: 'V1 siap',
     iconPath: 'M3 21h18M5 21V7l7-4 7 4v14M9 21v-6h6v6M8 9h.01M12 9h.01M16 9h.01',
     load: () => import('./tools/b2b-prospecting-ui.js')
+  }),
+  Object.freeze({
+    id: 'masumi-sales-crm',
+    route: '#tools/masumi-sales-crm',
+    category: 'Sales & CRM',
+    title: 'MASUMI Sales CRM',
+    description: 'Kelola lead, pipeline, prioritas, dan follow-up Masumi Beauty Indonesia.',
+    formats: masumiCrmFormats,
+    badges: masumiCrmFormats,
+    status: 'ready',
+    statusLabel: 'Siap digunakan',
+    iconPath: 'M3 21h18M5 21V7l7-4 7 4v14M8 11h8M8 15h8',
+    load: () => import('./tools/masumi-crm.js')
   })
 ]);
 
