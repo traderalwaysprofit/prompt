@@ -17,7 +17,6 @@ jobs:
     if: >-
       github.event_name == 'workflow_dispatch' ||
       (github.event.pull_request.head.repo.full_name == github.repository &&
-      github.event.pull_request.head.ref == 'feat/masumi-crm-cloud' &&
       ((github.event.action == 'labeled' && github.event.label.name == 'deploy-masumi-preview') ||
       (github.event.action == 'synchronize' && contains(github.event.pull_request.labels.*.name, 'deploy-masumi-preview'))))
     name: deploy-preview
