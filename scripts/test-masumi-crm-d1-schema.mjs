@@ -1,25 +1,13 @@
 import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
-import { DatabaseSync } from 'node:sqlite';
+import { createSqliteD1 } from './helpers/sqlite-d1.mjs';
 
 const migrationSql = await readFile(
   new URL('../migrations/masumi-crm/0001_initial.sql', import.meta.url),
   'utf8'
 );
 
-const sqlite = new DatabaseSync(':memory:', { enableForeignKeyConstraints: true });
-
-const wrapStatement = (statement, parameters = []) => ({
-  bind: (...nextParameters) => wrapStatement(statement, nextParameters),
-  run: () => statement.run(...parameters),
-  all: () => ({ results: statement.all(...parameters) }),
-  first: () => statement.get(...parameters)
-});
-
-const database = {
-  exec: (sql) => sqlite.exec(sql),
-  prepare: (sql) => wrapStatement(sqlite.prepare(sql))
-};
+const { database, close } = createSqliteD1();
 
 const timestamp = '2026-09-08T12:00:00.000Z';
 
@@ -277,5 +265,5 @@ try {
 
   console.log('MASUMI CRM D1 SCHEMA TESTS: PASS');
 } finally {
-  sqlite.close();
+  close();
 }

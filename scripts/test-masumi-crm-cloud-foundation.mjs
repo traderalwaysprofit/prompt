@@ -8,7 +8,7 @@ const health = await handleMasumiCrmRequest(request('/api/crm/v1/health'), { CRM
 const healthPayload = await health.json();
 assert.equal(health.status, 200);
 assert.equal(healthPayload.service, 'masumi-crm');
-assert.equal(healthPayload.status, 'foundation-ready');
+assert.equal(healthPayload.status, 'api-ready');
 assert.equal(healthPayload.environment, 'preview');
 assert.equal(healthPayload.databaseConfigured, false);
 assert.equal(healthPayload.accessConfigured, false);
@@ -17,7 +17,8 @@ assert.equal(health.headers.get('cache-control'), 'no-store');
 const configured = await handleMasumiCrmRequest(request('/api/crm/v1/health'), {
   CRM_ENVIRONMENT: 'production',
   CRM_DB: {},
-  CRM_ACCESS_AUD: 'configured'
+  CRM_ACCESS_AUD: 'configured',
+  CRM_ACCESS_ISSUER: 'https://configured.cloudflareaccess.com'
 });
 const configuredPayload = await configured.json();
 assert.equal(configuredPayload.databaseConfigured, true);
@@ -27,9 +28,9 @@ const wrongMethod = await handleMasumiCrmRequest(request('/api/crm/v1/health', {
 assert.equal(wrongMethod.status, 405);
 assert.equal(wrongMethod.headers.get('allow'), 'GET');
 
-const inactiveEndpoint = await handleMasumiCrmRequest(request('/api/crm/v1/leads'), {});
-assert.equal(inactiveEndpoint.status, 503);
-assert.equal((await inactiveEndpoint.json()).code, 'CLOUD_FOUNDATION_ONLY');
+const unconfiguredEndpoint = await handleMasumiCrmRequest(request('/api/crm/v1/leads'), {});
+assert.equal(unconfiguredEndpoint.status, 503);
+assert.equal((await unconfiguredEndpoint.json()).code, 'SERVICE_NOT_CONFIGURED');
 
 const assetResponse = await handleMasumiCrmRequest(request('/'), {
   CRM_ASSETS: { fetch: () => new Response('CRM shell', { status: 200 }) }
