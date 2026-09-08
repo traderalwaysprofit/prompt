@@ -27,7 +27,7 @@
     "verify:worker": "wrangler deploy --dry-run --outdir .wrangler-dry-run",
     "verify:masumi-crm-worker": "npm run build:masumi-crm-cloud && wrangler deploy --dry-run --config wrangler.crm.jsonc --env preview --outdir .wrangler-crm-dry-run",
     "validate:security-headers:core": "node scripts/validate-security-headers.mjs",
-    "validate:security-headers": "npm run validate:security-headers:core && npm run verify:worker",
+    "validate:security-headers": "npm run validate:security-headers:core && npm run verify:worker && npm run verify:masumi-crm-worker",
     "validate:regression": "node scripts/validate-regression.mjs",
     "ci:verify": "npm run test:tools && npm run build && npm run validate:security-headers",
     "prepare": "husky"
