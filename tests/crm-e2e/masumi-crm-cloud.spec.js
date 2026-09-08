@@ -140,7 +140,7 @@ test('dashboard, follow-up, themes, safe rendering, import, and export work', as
   await expect(page.locator('img[src="x"]')).toHaveCount(0);
 
   await page.getByRole('button', { name: /Follow-up/ }).click();
-  await expect(page.getByText('E2E follow-up aman')).toBeVisible();
+  await expect(page.locator('#follow-up-list').getByText('E2E follow-up aman')).toBeVisible();
   await expect(page.locator('.follow-up-card')).toHaveClass(/is-overdue/);
 
   for (const theme of ['default', 'developer', 'swiss', 'pixel']) {
