@@ -57,6 +57,11 @@ assert.match(headerFile, /frame-ancestors 'none'/);
 const wranglerConfig = JSON.parse(wranglerText);
 assert.equal(wranglerConfig.main, 'worker/masumi-crm/index.js');
 assert.equal(wranglerConfig.assets.directory, './dist-crm');
+assert.equal(wranglerConfig.d1_databases[0].binding, 'CRM_DB');
+assert.equal(wranglerConfig.d1_databases[0].database_name, 'masumi-crm-local');
+assert.equal(wranglerConfig.d1_databases[0].database_id, '00000000-0000-0000-0000-000000000000');
+assert.equal(Object.hasOwn(wranglerConfig.env.preview, 'd1_databases'), false);
+assert.equal(Object.hasOwn(wranglerConfig.env.production, 'd1_databases'), false);
 assert.equal(wranglerConfig.env.preview.vars.CRM_ENVIRONMENT, 'preview');
 assert.equal(wranglerConfig.env.production.routes[0].pattern, 'crm.samson.web.id');
 

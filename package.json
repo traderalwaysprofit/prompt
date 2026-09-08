@@ -7,6 +7,7 @@
   "scripts": {
     "build": "node scripts/build-static.mjs",
     "build:masumi-crm-cloud": "node scripts/build-masumi-crm-cloud.mjs",
+    "db:migrate:masumi-crm:local": "wrangler d1 migrations apply masumi-crm-local --local --config wrangler.crm.jsonc",
     "add:prompt": "node scripts/add-prompt.mjs",
     "report:prompt-coverage": "node scripts/report-prompt-coverage.mjs",
     "validate:data": "node scripts/validate-data.mjs && node scripts/validate-observability-config.mjs",
@@ -16,7 +17,8 @@
     "test:url-sanitizer": "node scripts/test-url-sanitizer.mjs",
     "test:masumi-crm": "node scripts/test-masumi-crm.mjs",
     "test:masumi-crm-cloud": "node scripts/test-masumi-crm-cloud-foundation.mjs",
-    "test:tools:core": "node scripts/test-contact-tools.mjs && node scripts/test-b2b-tools.mjs && node scripts/test-masumi-crm.mjs && node scripts/test-masumi-crm-cloud-foundation.mjs && node scripts/test-url-sanitizer.mjs",
+    "test:masumi-crm-d1": "node scripts/test-masumi-crm-d1-schema.mjs",
+    "test:tools:core": "node scripts/test-contact-tools.mjs && node scripts/test-b2b-tools.mjs && node scripts/test-masumi-crm.mjs && node scripts/test-masumi-crm-cloud-foundation.mjs && node scripts/test-masumi-crm-d1-schema.mjs && node scripts/test-url-sanitizer.mjs",
     "test:tools": "npm run lint && npm run typecheck && npm run test:run && npm run test:tools:core",
     "typecheck": "tsc --noEmit",
     "lint": "eslint \"apps/**/*.js\" \"worker/**/*.js\" \"scripts/**/*.mjs\" \"src/**/*.js\"",
