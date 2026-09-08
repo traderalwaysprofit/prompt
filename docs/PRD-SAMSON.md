@@ -44,7 +44,7 @@ Artifact / Operational Action
 | Trading workflow | 3 |
 | WordPress workflow | 3 |
 | Total guided workflow | 12 |
-| Practical Tools | 2 |
+| Practical Tools | 3 |
 | Core executable system tools | 3 |
 | UI personality | 4 |
 | Headless visual pipeline | 1 |
@@ -54,6 +54,7 @@ Practical Tools:
 
 1. **Google Contacts Ready** — XLSX/XLS/CSV → review/normalize/dedupe → Google Contacts CSV, diproses lokal di browser.
 2. **B2B Prospecting V1** — prospect discovery, enrichment evidence, candidate review, local lead storage, route planning, dan briefing WhatsApp; provider network berjalan server-side melalui Cloudflare Worker.
+3. **MASUMI Sales CRM** — CRUD lead, sembilan tahap pipeline, scoring prioritas, KPI, follow-up, backup/pemulihan JSON, dan laporan CSV; data tetap lokal pada perangkat pengguna.
 
 Executable system tools:
 
@@ -195,6 +196,9 @@ Theme layer tidak boleh mengubah data/behavior inti dan harus tetap usable di mo
 - setiap tool mempunyai route/deep link sendiri;
 - Google Contacts mempertahankan local-first privacy contract;
 - B2B Prospecting memakai same-origin Worker API untuk provider traffic;
+- MASUMI Sales CRM memakai key `samsonMasumiCrmV1`, maksimum 2.000 lead, dan tidak mengirim data CRM ke server;
+- impor CRM hanya menerima backup JSON tervalidasi maksimal 5 MB dan memerlukan konfirmasi sebelum mengganti data;
+- ekspor CRM harus melindungi spreadsheet dari formula injection;
 - untrusted import/provider data harus dirender secara aman;
 - candidate tidak auto-save tanpa review.
 
@@ -318,7 +322,8 @@ Protected `main` requires PR review, strict required checks, Browser E2E, Cloudf
 - adaptive UI / four personalities;
 - modular Tools Hub;
 - Google Contacts;
-- B2B Prospecting.
+- B2B Prospecting;
+- MASUMI Sales CRM.
 
 ### Hardening and automation — implemented
 

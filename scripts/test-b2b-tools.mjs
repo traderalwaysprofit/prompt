@@ -22,7 +22,7 @@ import {
 import { handleB2BRequest } from '../worker/b2b-prospecting.js';
 import { getToolByRoute, TOOLS } from '../src/tools-registry.js';
 
-assert.equal(TOOLS.length, 2);
+assert.equal(TOOLS.length, 3);
 assert.equal(TOOLS[1].id, 'b2b-prospecting');
 assert.equal(getToolByRoute('#tools/b2b-prospecting'), TOOLS[1]);
 const b2bModule = await TOOLS[1].load();

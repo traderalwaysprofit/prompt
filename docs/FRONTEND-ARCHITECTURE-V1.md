@@ -1,6 +1,6 @@
 # Frontend Architecture V1 — Current Implementation
 
-**Status:** current-state documentation, updated 2 September 2026.
+**Status:** current-state documentation, updated 8 September 2026.
 
 ## 1. Objective
 
@@ -25,9 +25,12 @@ SAMSON is a static-first prompt, workflow, and practical-tools application for `
 | B2B schema, normalization, dedupe, scoring, import/export, route contract | `/src/tools/b2b-prospecting-core.js` |
 | B2B local persistence/migration | `/src/tools/b2b-prospecting-storage.js` |
 | B2B same-origin API client | `/src/tools/b2b-prospecting-api.js` |
+| MASUMI Sales CRM UI/controller | `/src/tools/masumi-crm.js` |
+| MASUMI CRM schema, validation, scoring, KPI, backup, and CSV contract | `/src/tools/masumi-crm-core.js` |
 | Shared Tools Hub styling | `/src/tools.css` |
 | Google Contacts responsive/adaptive styling | `/src/tools/google-contacts.css` |
 | B2B Prospecting responsive/adaptive styling | `/src/tools/b2b-prospecting.css` |
+| MASUMI Sales CRM responsive/adaptive styling | `/src/tools/masumi-crm.css` |
 | Ordered contact input template | `/assets/templates/samson-template-kontak.xlsx` |
 | Pinned spreadsheet parser | `package.json` / `package-lock.json`; published as `/vendor/xlsx.full.min.js` (SheetJS CE 0.20.3) |
 | Cloudflare Worker entry | `/worker/index.js` |
@@ -50,6 +53,7 @@ Static files are still generated into `dist/`. Cloudflare invokes `worker/index.
 - Practical Tools: `#tools` opens a registry-driven catalog.
 - `#tools/google-contacts`: local Excel/CSV normalization and Google Contacts CSV export.
 - `#tools/b2b-prospecting`: local-first prospect database with AI candidate review, dedupe, import/export, enrichment, and visit briefing.
+- `#tools/masumi-sales-crm`: local-only lead register, pipeline, priority scoring, KPI, follow-up, backup JSON, and safe CSV reporting.
 - Creator/footer sections.
 
 Tool modules follow the generic `mountTool(root, context)` lifecycle. `tools.js` retains a temporary compatibility fallback for the older Google Contacts mount export.
@@ -67,6 +71,7 @@ A command uses the fields `id`, `name`, `categoryId`, `description`, and `templa
 Command IDs 47, 48, 50, and 52 are retired and reserved; validation rejects future reuse.
 
 B2B Prospecting uses a separate schema-versioned local record contract and does not modify the prompt catalog data files.
+MASUMI Sales CRM uses a separate schema-versioned record contract under `samsonMasumiCrmV1`, caps storage at 2,000 leads, and does not call a server endpoint.
 
 ## 5. Interaction model
 
@@ -89,6 +94,7 @@ B2B Prospecting uses a separate schema-versioned local record contract and does 
 4. Keep local-only processing in the browser where possible.
 5. Route credentialed AI operations through same-origin `/api/tools/b2b/*` endpoints.
 6. Never auto-save AI candidates; review and duplicate detection occur before persistence.
+7. Validate MASUMI CRM backup schema, version, IDs, pipeline values, and record limits before confirmed replacement.
 
 ## 6. Build and Worker contract
 
@@ -101,7 +107,7 @@ The Gemini API key is an environment secret (`GEMINI_API_KEY`) and must never be
 ## 7. Validation layers
 
 - `npm run validate:data`: validates the prompt runtime contract, categories, examples, unique IDs, and cross-references.
-- `npm run test:tools`: validates Google Contacts plus B2B core/storage/Worker/provider contracts with mocked provider calls.
+- `npm run test:tools`: validates Google Contacts, B2B core/storage/Worker/provider contracts, and MASUMI CRM scoring/KPI/import/export security rules.
 - Baseline build: verifies static output.
 - `npm run validate:security-headers`: preserves strict CSP and required response headers.
 - Browser E2E on push/PR: builds and tests the current branch locally, with B2B API routes mocked.

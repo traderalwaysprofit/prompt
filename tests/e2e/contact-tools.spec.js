@@ -15,9 +15,10 @@ test.describe('SAMSON Tools Hub and Google Contacts tool', () => {
     await expect(page.locator('#tools')).toBeVisible();
     await expect(page.locator('#tools')).toHaveAttribute('data-tools-view', 'catalog');
     await expect(page.locator('#tools-title')).toHaveText('Tools');
-    await expect(page.locator('.tools-count-pill')).toContainText('2 tool tersedia');
+    await expect(page.locator('.tools-count-pill')).toContainText('3 tool tersedia');
     await expect(page.locator('[data-tool-id="google-contacts"]')).toBeVisible();
     await expect(page.locator('[data-tool-id="b2b-prospecting"]')).toBeVisible();
+    await expect(page.locator('[data-tool-id="masumi-sales-crm"]')).toBeVisible();
     await expect(page.locator('#contact-file-input')).toHaveCount(0);
     await expect(page.locator('.hero')).toBeHidden();
     await expect(page).toHaveURL(/#tools$/);
@@ -116,6 +117,7 @@ test.describe('SAMSON Tools Hub and Google Contacts tool', () => {
       await expect(page.locator('#tools')).toBeVisible();
       await expect(page.locator('[data-tool-id="google-contacts"]')).toBeVisible();
       await expect(page.locator('[data-tool-id="b2b-prospecting"]')).toBeVisible();
+      await expect(page.locator('[data-tool-id="masumi-sales-crm"]')).toBeVisible();
       const height = await page.locator('[data-tools-exit]').evaluate((element) => element.getBoundingClientRect().height);
       expect(height).toBeGreaterThanOrEqual(44);
 
