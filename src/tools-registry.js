@@ -36,6 +36,7 @@ export const TOOLS = Object.freeze([
     category: 'Sales & CRM',
     title: 'MASUMI Sales CRM',
     description: 'Kelola lead, pipeline, prioritas, dan follow-up Masumi Beauty Indonesia.',
+    cloudUrl: 'https://crm.samson.web.id/',
     formats: masumiCrmFormats,
     badges: masumiCrmFormats,
     status: 'ready',

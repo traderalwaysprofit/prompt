@@ -1,0 +1,42 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "samson-masumi-crm",
+  "main": "worker/masumi-crm/index.js",
+  "compatibility_date": "2026-09-08",
+  "assets": {
+    "directory": "./dist-crm",
+    "binding": "CRM_ASSETS",
+    "run_worker_first": ["/api/*"]
+  },
+  "vars": {
+    "CRM_ENVIRONMENT": "local"
+  },
+  "d1_databases": [
+    {
+      "binding": "CRM_DB",
+      "database_name": "masumi-crm-local",
+      "database_id": "00000000-0000-0000-0000-000000000000",
+      "migrations_dir": "migrations/masumi-crm"
+    }
+  ],
+  "env": {
+    "preview": {
+      "name": "samson-masumi-crm-preview",
+      "vars": {
+        "CRM_ENVIRONMENT": "preview"
+      }
+    },
+    "production": {
+      "name": "samson-masumi-crm",
+      "routes": [
+        {
+          "pattern": "crm.samson.web.id",
+          "custom_domain": true
+        }
+      ],
+      "vars": {
+        "CRM_ENVIRONMENT": "production"
+      }
+    }
+  }
+}

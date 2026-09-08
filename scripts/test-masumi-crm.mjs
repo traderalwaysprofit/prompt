@@ -43,6 +43,7 @@ assert.deepEqual(PIPELINE_PROBABILITIES, {
 assert.equal(TOOLS.length, 3);
 assert.equal(TOOLS[2].id, 'masumi-sales-crm');
 assert.equal(getToolByRoute('#tools/masumi-sales-crm'), TOOLS[2]);
+assert.equal(TOOLS[2].cloudUrl, 'https://crm.samson.web.id/');
 const crmModule = await TOOLS[2].load();
 assert.equal(typeof crmModule.mountTool, 'function');
 

@@ -36,7 +36,7 @@ const ensureStylesheet = () => {
   document.head.appendChild(link);
 };
 
-const crmMarkup = (icon) => `
+const crmMarkup = (icon, cloudUrl) => `
   <div class="masumi-crm">
     <header class="tools-page-header crm-page-header">
       <a class="tools-back" href="#tools" data-tools-catalog-back>${icon('M15 18l-6-6 6-6')}<span>Kembali ke Tools</span></a>
@@ -53,6 +53,7 @@ const crmMarkup = (icon) => `
     <div class="crm-local-notice" role="note">
       ${icon('M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10zM9 12l2 2 4-4')}
       <div><strong>Data tersimpan hanya di perangkat ini</strong><span>Tidak ada data CRM yang dikirim ke server. Gunakan Backup JSON secara berkala agar data dapat dipulihkan.</span></div>
+      <a href="${cloudUrl}" target="_blank" rel="noopener">Buka CRM Cloud</a>
     </div>
 
     <section class="crm-kpi-grid" aria-label="Ringkasan kinerja CRM">
@@ -266,9 +267,9 @@ const openDialog = (dialog) => {
   else dialog.setAttribute('open', '');
 };
 
-export const mountTool = (root, { icon }) => {
+export const mountTool = (root, { icon, tool }) => {
   ensureStylesheet();
-  root.innerHTML = crmMarkup(icon);
+  root.innerHTML = crmMarkup(icon, tool.cloudUrl);
 
   const controller = new AbortController();
   const { signal } = controller;

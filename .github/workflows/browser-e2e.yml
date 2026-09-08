@@ -20,6 +20,7 @@ jobs:
     timeout-minutes: 15
     env:
       PROD_URL: ${{ github.event_name == 'workflow_dispatch' && 'https://samson.web.id' || 'http://127.0.0.1:4173' }}
+      CRM_BASE_URL: http://127.0.0.1:4174
     steps:
       - name: Checkout repository
         uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
@@ -34,7 +35,9 @@ jobs:
         run: npm ci --no-audit --no-fund
 
       - name: Build current source
-        run: npm run build
+        run: |
+          npm run build
+          npm run build:masumi-crm-cloud
 
       - name: Validate security policy artifact
         run: npm run validate:security-headers
@@ -43,13 +46,15 @@ jobs:
         if: github.event_name != 'workflow_dispatch'
         run: |
           python3 -m http.server 4173 --directory dist > /tmp/samson-http.log 2>&1 &
+          python3 -m http.server 4174 --directory dist-crm > /tmp/masumi-crm-http.log 2>&1 &
           for attempt in {1..20}; do
-            if curl --fail --silent http://127.0.0.1:4173/ > /dev/null; then
+            if curl --fail --silent http://127.0.0.1:4173/ > /dev/null && curl --fail --silent http://127.0.0.1:4174/ > /dev/null; then
               exit 0
             fi
             sleep 1
           done
           cat /tmp/samson-http.log
+          cat /tmp/masumi-crm-http.log
           exit 1
 
       - name: Install Chromium
@@ -57,6 +62,10 @@ jobs:
 
       - name: Run browser E2E
         run: npm run test:e2e
+
+      - name: Run MASUMI CRM browser E2E
+        if: github.event_name != 'workflow_dispatch'
+        run: npm run test:e2e:masumi-crm
 
       - name: Upload Playwright report
         if: always()
