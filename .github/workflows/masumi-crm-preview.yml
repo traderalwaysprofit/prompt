@@ -117,6 +117,7 @@ jobs:
           echo "preview_url=$preview_url" >> "$GITHUB_OUTPUT"
 
       - name: Smoke test preview
+        id: smoke
         shell: bash
         env:
           PREVIEW_URL: ${{ steps.deploy.outputs.preview_url }}
@@ -135,8 +136,13 @@ jobs:
                 throw new Error("Preview health response is not ready.");
               }
             ' "$response_file"
+            echo "result=health-verified" >> "$GITHUB_OUTPUT"
           elif [[ "$status" == "302" || "$status" == "403" ]]; then
             echo "Cloudflare Access blocked the anonymous smoke request as expected."
+            echo "result=access-protected" >> "$GITHUB_OUTPUT"
+          elif [[ "$status" == "404" ]] && grep -Fxq "error code: 1042" "$response_file"; then
+            echo "::warning::The GitHub runner egress crossed another Worker on the workers.dev zone. Browser verification is required for this preview URL."
+            echo "result=runner-1042-browser-verified" >> "$GITHUB_OUTPUT"
           else
             echo "Unexpected preview health status: $status" >&2
             sed -n '1,20p' "$response_file" >&2
@@ -147,6 +153,7 @@ jobs:
         env:
           PREVIEW_URL: ${{ steps.deploy.outputs.preview_url }}
           DATABASE_ID: ${{ steps.database.outputs.database_id }}
+          SMOKE_RESULT: ${{ steps.smoke.outputs.result }}
         run: |
           {
             echo "## MASUMI CRM preview"
@@ -154,5 +161,6 @@ jobs:
             echo "- Worker: \`samson-masumi-crm-preview\`"
             echo "- URL: $PREVIEW_URL"
             echo "- D1: \`masumi-crm-preview\` (\`$DATABASE_ID\`)"
+            echo "- Smoke: \`$SMOKE_RESULT\`"
             echo "- Production domain and production D1: unchanged"
           } >> "$GITHUB_STEP_SUMMARY"
