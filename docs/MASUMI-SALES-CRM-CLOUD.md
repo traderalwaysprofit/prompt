@@ -143,6 +143,36 @@ npm run verify:masumi-crm-worker
 
 `verify:masumi-crm-worker` is a dry run. It does not deploy or create Cloudflare resources.
 
+## Preview deployment without interactive Cloudflare login
+
+Use `.github/workflows/masumi-crm-preview.yml` when an interactive Cloudflare login is
+blocked by a repeated browser verification challenge. The workflow is deliberately
+inactive until PR #54 receives the `deploy-masumi-preview` label. A later manual
+`workflow_dispatch` run is also supported after the workflow exists on the default branch.
+
+One-time manual setup in a normal local browser:
+
+1. Create a Cloudflare API token restricted to the target account with only
+   `Workers Scripts: Edit` and `D1: Edit` account permissions.
+2. In the GitHub repository, create an Actions environment named
+   `masumi-crm-preview`. Add `CLOUDFLARE_API_TOKEN` and
+   `CLOUDFLARE_ACCOUNT_ID` as environment secrets. Configure a required reviewer
+   when the repository plan supports environment protection.
+3. Add the `deploy-masumi-preview` label to PR #54 and approve the environment
+   deployment if GitHub requests it.
+
+Never paste the API token into chat, a PR, an issue, a commit, or a workflow input.
+After the gate is approved, the workflow automatically validates the token, runs the
+CRM test suite, creates or reuses the isolated `masumi-crm-preview` D1 database,
+generates an ephemeral Wrangler binding, applies migrations, deploys
+`samson-masumi-crm-preview`, and checks its health response. The generated config is
+ignored by Git and the workflow never targets the production database or custom domain.
+
+Cloudflare Access, real application users, and the production hostname remain separate
+manual gates. Until Access is configured, the preview database is empty and protected
+API operations remain unusable because Access issuer/audience settings and application
+users are absent.
+
 ## Manual gates
 
 1. Approve creation of preview D1/Worker resources.
