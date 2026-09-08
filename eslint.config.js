@@ -2,6 +2,7 @@ export default [
   {
     ignores: [
       'dist/**',
+      'dist-crm/**',
       'node_modules/**',
       'playwright-report/**',
       'test-results/**',
@@ -9,7 +10,7 @@ export default [
     ]
   },
   {
-    files: ['worker/**/*.js', 'scripts/**/*.mjs', 'src/**/*.js'],
+    files: ['apps/**/*.js', 'worker/**/*.js', 'scripts/**/*.mjs', 'src/**/*.js'],
     languageOptions: {
       ecmaVersion: 'latest',
       sourceType: 'module'
