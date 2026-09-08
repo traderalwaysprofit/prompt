@@ -2,5 +2,6 @@ node_modules/
 dist/
 dist-crm/
 .wrangler-crm-dry-run/
+.wrangler-dry-run/
 test-results/
 playwright-report/

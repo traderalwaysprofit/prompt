@@ -25,6 +25,13 @@ for (const name of [
   assert.match(html, new RegExp(`name="${name}"`));
 }
 assert.match(html, /id="reload-conflict"/);
+for (const id of [
+  'kpi-active', 'kpi-qualified', 'kpi-overdue', 'kpi-forecast',
+  'follow-up-list', 'backup-json', 'import-json', 'export-csv',
+  'import-file', 'owner-mappings', 'validate-import', 'commit-import'
+]) {
+  assert.match(html, new RegExp(`id="${id}"`));
+}
 assert.match(html, /Data contoh tidak digunakan/);
 assert.match(css, /@media\(max-width:760px\)/);
 assert.match(css, /overflow-x:hidden/);
@@ -85,6 +92,45 @@ await mutationClient.deleteLead('lead-1', 2);
 assert.equal(mutationCalls[1].options.method, 'DELETE');
 assert.equal(mutationCalls[1].options.headers['If-Match'], '2');
 assert.equal(mutationCalls[1].options.body, undefined);
+
+await mutationClient.validateImport({ backup: {}, mode: 'append', ownerMappings: [] });
+assert.equal(mutationCalls[2].url, '/api/crm/v1/imports/validate');
+assert.equal(mutationCalls[2].options.method, 'POST');
+
+await mutationClient.commitImport({
+  backup: {}, mode: 'append', ownerMappings: [], checksum: 'a'.repeat(64), confirm: true
+});
+assert.equal(mutationCalls[3].url, '/api/crm/v1/imports/commit');
+assert.equal(mutationCalls[3].options.method, 'POST');
+
+const dashboardClient = createCrmClient({
+  fetchImpl: async (url) => {
+    assert.equal(url, '/api/crm/v1/dashboard');
+    return Response.json({
+      success: true,
+      data: {
+        kpis: { activeLeads: 1, qualifiedRate: 50, overdueFollowUps: 0, weightedForecast: 100 },
+        followUps: []
+      }
+    });
+  }
+});
+assert.equal((await dashboardClient.dashboard()).kpis.activeLeads, 1);
+
+const downloadClient = createCrmClient({
+  fetchImpl: async (url) => new Response('TEST-DOWNLOAD', {
+    status: 200,
+    headers: {
+      'Content-Type': url.endsWith('.csv') ? 'text/csv' : 'application/json',
+      'Content-Disposition': `attachment; filename="${url.endsWith('.csv') ? 'safe.csv' : 'safe.json'}"`
+    }
+  })
+});
+const csvDownload = await downloadClient.downloadCsv();
+assert.equal(csvDownload.filename, 'safe.csv');
+assert.equal(await csvDownload.blob.text(), 'TEST-DOWNLOAD');
+const backupDownload = await downloadClient.downloadBackup();
+assert.equal(backupDownload.filename, 'safe.json');
 
 const errorClient = createCrmClient({
   fetchImpl: async () => Response.json(

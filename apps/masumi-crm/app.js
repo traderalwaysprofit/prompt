@@ -1,4 +1,10 @@
-import { getPriority } from '/crm-core.js';
+import {
+  cleanCrmText,
+  CRM_SCHEMA,
+  CRM_SCHEMA_VERSION,
+  getPriority,
+  MAX_IMPORT_BYTES
+} from '/crm-core.js';
 import { createCrmClient, CrmApiClientError } from '/crm-client.js';
 
 const THEME_STORAGE_KEY = 'samsonTheme';
@@ -9,6 +15,8 @@ const client = createCrmClient();
 const element = (selector) => document.querySelector(selector);
 const form = element('#lead-form');
 const dialog = element('#lead-dialog');
+const importDialog = element('#import-dialog');
+const importForm = element('#import-form');
 const state = {
   session: null,
   users: [],
@@ -18,6 +26,10 @@ const state = {
   editing: null,
   loading: false,
   saving: false,
+  dashboard: null,
+  importBackup: null,
+  importPreview: null,
+  importBusy: false,
   listRequest: 0,
   searchTimer: 0
 };
@@ -105,6 +117,9 @@ const setLoading = (loading) => {
   element('#lead-search').disabled = loading || !state.session;
   element('#pipeline-filter').disabled = loading || !state.session;
   element('#owner-filter').disabled = loading || state.session?.role !== 'admin';
+  for (const button of document.querySelectorAll('[data-admin-action]')) {
+    button.disabled = loading || state.session?.role !== 'admin';
+  }
 };
 
 const replaceOptions = (select, users, firstLabel = '') => {
@@ -136,6 +151,38 @@ const renderSession = () => {
   ownerFilterField.hidden = state.session.role !== 'admin';
   replaceOptions(element('#owner-filter'), state.users, 'Semua owner');
   replaceOptions(form.elements.ownerUserId, state.users);
+  for (const button of document.querySelectorAll('[data-admin-action]')) {
+    button.hidden = state.session.role !== 'admin';
+  }
+};
+
+const renderDashboard = () => {
+  if (!state.dashboard) return;
+  const { kpis, followUps } = state.dashboard;
+  element('#kpi-active').textContent = kpis.activeLeads.toLocaleString('id-ID');
+  element('#kpi-qualified').textContent = `${kpis.qualifiedRate.toLocaleString('id-ID', { maximumFractionDigits: 1 })}%`;
+  element('#kpi-overdue').textContent = kpis.overdueFollowUps.toLocaleString('id-ID');
+  element('#kpi-forecast').textContent = formatCurrency(kpis.weightedForecast);
+  element('#kpi-grid').setAttribute('aria-busy', 'false');
+  element('#follow-up-count').textContent = followUps.length.toLocaleString('id-ID');
+
+  const list = element('#follow-up-list');
+  list.replaceChildren();
+  const fragment = document.createDocumentFragment();
+  for (const lead of followUps) {
+    const card = document.createElement('article');
+    card.className = `follow-up-card${lead.overdue ? ' is-overdue' : ''}`;
+    const heading = textNode('h3', '', lead.company);
+    const date = textNode('time', '', lead.nextActionDate ? formatDate(lead.nextActionDate) : 'Belum dijadwalkan');
+    if (lead.nextActionDate) date.dateTime = lead.nextActionDate;
+    const action = textNode('p', 'follow-action', lead.nextAction);
+    const detail = textNode('small', '', `${lead.picName} · ${lead.owner}`);
+    card.append(heading, date, action, detail);
+    fragment.appendChild(card);
+  }
+  list.appendChild(fragment);
+  element('#follow-up-empty').hidden = followUps.length > 0;
+  list.hidden = followUps.length === 0;
 };
 
 const actionButton = (label, action, lead) => {
@@ -238,11 +285,16 @@ const loadLeads = async ({ successCopy = '' } = {}) => {
   setLoading(true);
   setAppStatus('Memuat data terbaru dari database…', 'loading');
   try {
-    const result = await client.listLeads(filters());
+    const [result, dashboardResult] = await Promise.all([
+      client.listLeads(filters()),
+      client.dashboard()
+    ]);
     if (request !== state.listRequest) return;
     state.leads = result.leads;
     state.total = result.meta.total;
+    state.dashboard = dashboardResult;
     renderLeads();
+    renderDashboard();
     setAppStatus(successCopy || 'Data tersinkron dengan database CRM.', 'success');
   } catch (error) {
     if (request !== state.listRequest) return;
@@ -382,6 +434,215 @@ const saveLead = async () => {
   }
 };
 
+const setImportStatus = (copy = '', tone = 'error') => {
+  const status = element('#import-status');
+  status.hidden = !copy;
+  status.dataset.tone = tone;
+  element('#import-status-copy').textContent = copy;
+};
+
+const clearImportPreview = () => {
+  state.importPreview = null;
+  element('#import-preview').hidden = true;
+  element('#commit-import').disabled = true;
+};
+
+const setImportBusy = (busy) => {
+  state.importBusy = busy;
+  element('#import-file').disabled = busy;
+  element('#import-mode').disabled = busy;
+  element('#validate-import').disabled = busy || !state.importBackup;
+  for (const select of element('#owner-mappings').querySelectorAll('select')) select.disabled = busy;
+  if (busy) element('#commit-import').disabled = true;
+};
+
+const resetImport = () => {
+  importForm.reset();
+  state.importBackup = null;
+  state.importPreview = null;
+  element('#owner-mappings').replaceChildren();
+  element('#owner-map-fieldset').hidden = true;
+  element('#import-preview').hidden = true;
+  element('#validate-import').disabled = true;
+  element('#commit-import').disabled = true;
+  setImportStatus();
+};
+
+const renderOwnerMappings = (owners) => {
+  const container = element('#owner-mappings');
+  container.replaceChildren();
+  const fragment = document.createDocumentFragment();
+  for (const owner of owners) {
+    const label = document.createElement('label');
+    const copy = textNode('span', '', owner || 'Tanpa owner');
+    const select = document.createElement('select');
+    select.dataset.sourceOwner = owner;
+    select.setAttribute('aria-label', `Owner cloud untuk ${owner || 'lead tanpa owner'}`);
+    replaceOptions(select, state.users);
+    const match = state.users.find((user) => user.displayName === owner);
+    select.value = match?.id || state.session.id;
+    label.append(copy, select);
+    fragment.appendChild(label);
+  }
+  container.appendChild(fragment);
+  element('#owner-map-fieldset').hidden = false;
+};
+
+const importPayload = () => ({
+  backup: state.importBackup,
+  mode: element('#import-mode').value,
+  ownerMappings: [...element('#owner-mappings').querySelectorAll('select')].map((select) => ({
+    sourceOwner: select.dataset.sourceOwner,
+    ownerUserId: select.value
+  }))
+});
+
+const openImport = () => {
+  resetImport();
+  if (typeof importDialog.showModal === 'function') importDialog.showModal();
+  else importDialog.setAttribute('open', '');
+};
+
+const closeImport = () => {
+  if (state.importBusy) return;
+  if (typeof importDialog.close === 'function' && importDialog.open) importDialog.close();
+  else importDialog.removeAttribute('open');
+  resetImport();
+};
+
+const readImportFile = async () => {
+  clearImportPreview();
+  setImportStatus();
+  state.importBackup = null;
+  element('#owner-mappings').replaceChildren();
+  element('#owner-map-fieldset').hidden = true;
+  const file = element('#import-file').files?.[0];
+  if (!file) {
+    element('#validate-import').disabled = true;
+    return;
+  }
+  if (!file.name.toLocaleLowerCase('id').endsWith('.json')) {
+    setImportStatus('Pilih file dengan ekstensi .json.');
+    element('#validate-import').disabled = true;
+    return;
+  }
+  if (file.size > MAX_IMPORT_BYTES) {
+    setImportStatus('Ukuran file melebihi batas 5 MB.');
+    element('#validate-import').disabled = true;
+    return;
+  }
+
+  try {
+    const backup = JSON.parse(await file.text());
+    if (
+      !backup || typeof backup !== 'object' || Array.isArray(backup) ||
+      backup.schema !== CRM_SCHEMA || backup.version !== CRM_SCHEMA_VERSION ||
+      !Array.isArray(backup.leads)
+    ) {
+      throw new Error('Schema atau versi backup tidak didukung.');
+    }
+    const owners = [...new Set(backup.leads.map((lead) => cleanCrmText(lead?.owner, 120)))]
+      .sort((a, b) => a.localeCompare(b, 'id'));
+    state.importBackup = backup;
+    renderOwnerMappings(owners.length ? owners : ['']);
+    element('#validate-import').disabled = false;
+    setImportStatus(`${file.name} siap divalidasi. Data belum diubah.`, 'success');
+  } catch (error) {
+    setImportStatus(error.message || 'File JSON tidak dapat dibaca.');
+    element('#validate-import').disabled = true;
+  }
+};
+
+const renderImportPreview = (preview) => {
+  state.importPreview = preview;
+  element('#preview-total').textContent = preview.total.toLocaleString('id-ID');
+  element('#preview-valid').textContent = preview.valid.toLocaleString('id-ID');
+  element('#preview-invalid').textContent = preview.invalid.toLocaleString('id-ID');
+  element('#preview-duplicate').textContent = (preview.duplicateFile + preview.duplicateTarget).toLocaleString('id-ID');
+  element('#preview-final').textContent = preview.finalCount.toLocaleString('id-ID');
+  const matchCopy = preview.targetMatches && element('#import-mode').value === 'replace'
+    ? ` ${preview.targetMatches.toLocaleString('id-ID')} ID yang sudah ada akan diperbarui.`
+    : '';
+  element('#preview-copy').textContent = preview.canCommit
+    ? `Validasi server lulus.${matchCopy} Periksa ringkasan sebelum mengimpor.`
+    : 'Impor belum dapat dilanjutkan. Perbaiki data tidak valid atau ID duplikat, lalu validasi ulang.';
+  element('#import-preview').hidden = false;
+  element('#commit-import').disabled = !preview.canCommit;
+};
+
+const validateImport = async () => {
+  if (!state.importBackup || state.importBusy) return;
+  setImportBusy(true);
+  clearImportPreview();
+  setImportStatus('Server sedang memvalidasi schema, owner, pipeline, skor, tanggal, dan ID…', 'success');
+  try {
+    const preview = await client.validateImport(importPayload());
+    renderImportPreview(preview);
+    setImportStatus(preview.canCommit ? 'Validasi selesai. Belum ada data yang diubah.' : 'Validasi menemukan masalah pada file.', preview.canCommit ? 'success' : 'error');
+  } catch (error) {
+    setImportStatus(errorMessage(error));
+  } finally {
+    setImportBusy(false);
+    if (state.importPreview?.canCommit) element('#commit-import').disabled = false;
+  }
+};
+
+const commitImport = async () => {
+  if (!state.importPreview?.canCommit || state.importBusy) return;
+  const mode = element('#import-mode').value;
+  const warning = mode === 'replace'
+    ? `Ganti seluruh data aktif dengan ${state.importPreview.valid} lead dari backup? Operasi dijalankan secara atomik.`
+    : `Tambahkan ${state.importPreview.valid} lead dari backup ke database CRM?`;
+  if (!window.confirm(warning)) return;
+
+  setImportBusy(true);
+  setImportStatus('Mengimpor data dalam satu transaksi…', 'success');
+  try {
+    const result = await client.commitImport({
+      ...importPayload(),
+      checksum: state.importPreview.checksum,
+      confirm: true
+    });
+    setImportBusy(false);
+    closeImport();
+    state.offset = 0;
+    await loadLeads({
+      successCopy: `${result.rowCount.toLocaleString('id-ID')} lead berhasil diimpor. Backup lokal tidak dihapus.`
+    });
+  } catch (error) {
+    setImportStatus(errorMessage(error));
+  } finally {
+    setImportBusy(false);
+  }
+};
+
+const downloadFile = async (loader, progressCopy, successCopy) => {
+  setAppStatus(progressCopy, 'loading');
+  try {
+    const { blob, filename } = await loader();
+    const url = URL.createObjectURL(blob);
+    const anchor = document.createElement('a');
+    anchor.href = url;
+    anchor.download = filename;
+    document.body.appendChild(anchor);
+    anchor.click();
+    anchor.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 0);
+    setAppStatus(successCopy, 'success');
+  } catch (error) {
+    setAppStatus(errorMessage(error), 'error', true);
+  }
+};
+
+const switchPanel = (targetId) => {
+  for (const button of document.querySelectorAll('[data-panel-target]')) {
+    const active = button.dataset.panelTarget === targetId;
+    button.classList.toggle('is-active', active);
+    button.setAttribute('aria-selected', String(active));
+  }
+  for (const panel of document.querySelectorAll('.workspace-panel')) panel.hidden = panel.id !== targetId;
+};
+
 const bootstrap = async () => {
   setLoading(true);
   setAppStatus('Memeriksa sesi dan memuat lead…', 'loading');
@@ -404,11 +665,42 @@ const bootstrap = async () => {
 element('#theme-select').addEventListener('change', (event) => applyTheme(event.target.value));
 element('#retry-app').addEventListener('click', bootstrap);
 element('#refresh-leads').addEventListener('click', () => loadLeads());
+element('#backup-json').addEventListener('click', () => downloadFile(
+  () => client.downloadBackup(),
+  'Menyiapkan backup JSON dari seluruh data aktif…',
+  'Backup JSON berhasil diunduh.'
+));
+element('#export-csv').addEventListener('click', () => downloadFile(
+  () => client.downloadCsv(),
+  'Menyiapkan laporan CSV yang aman untuk spreadsheet…',
+  'Laporan CSV berhasil diunduh.'
+));
+element('#import-json').addEventListener('click', openImport);
 element('#add-lead').addEventListener('click', () => openForm());
 element('#empty-add').addEventListener('click', () => openForm());
 element('#close-form').addEventListener('click', closeForm);
 element('#cancel-form').addEventListener('click', closeForm);
 element('#form-pipeline').addEventListener('change', updateLostField);
+element('#close-import').addEventListener('click', closeImport);
+element('#cancel-import').addEventListener('click', closeImport);
+element('#import-file').addEventListener('change', readImportFile);
+element('#import-mode').addEventListener('change', () => {
+  clearImportPreview();
+  setImportStatus(state.importBackup ? 'Mode berubah. Validasi ulang diperlukan.' : '');
+});
+element('#owner-mappings').addEventListener('change', () => {
+  clearImportPreview();
+  setImportStatus('Pemetaan owner berubah. Validasi ulang diperlukan.');
+});
+importForm.addEventListener('submit', (event) => {
+  event.preventDefault();
+  validateImport();
+});
+element('#commit-import').addEventListener('click', commitImport);
+
+for (const button of document.querySelectorAll('[data-panel-target]')) {
+  button.addEventListener('click', () => switchPanel(button.dataset.panelTarget));
+}
 
 for (const name of ['fit', 'readiness', 'urgency', 'valueScore']) {
   form.elements[name].addEventListener('change', updateScore);

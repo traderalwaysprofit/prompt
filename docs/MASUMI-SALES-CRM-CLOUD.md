@@ -1,6 +1,6 @@
 # MASUMI Sales CRM Cloud
 
-Status: **Operational cloud lead register / Draft PR**
+Status: **Step 8 application-complete / Draft PR**
 
 Canonical requirements: [GitHub Issue #53](https://github.com/traderalwaysprofit/prompt/issues/53)
 
@@ -18,7 +18,7 @@ Baseline: MASUMI Sales CRM local-only from PR #52
 - Preview and production resources must remain isolated.
 - No production data may enter fixtures, logs, screenshots, issues, or PR comments.
 
-## Current foundation
+## Current implementation
 
 This branch introduces only reversible repository foundations:
 
@@ -35,7 +35,12 @@ This branch introduces only reversible repository foundations:
 - network-free SQLite integration tests that execute the D1-compatible migration in CI.
 - Admin/Sales ownership enforcement, bounded list queries, strict JSON input, optimistic concurrency, soft delete, and atomic mutation audit events.
 - session-aware owner selection plus cloud CRUD, search, filter, pagination, loading/error/empty states, and version-conflict recovery;
-- a Tools Hub launcher to `https://crm.samson.web.id/` while retaining the local CRM as a migration fallback.
+- a Tools Hub launcher to `https://crm.samson.web.id/` while retaining the local CRM as a migration fallback;
+- dashboard KPI and an ordered active follow-up workspace calculated by the shared deterministic CRM core;
+- Admin-only JSON backup, safe CSV export, and two-phase JSON import with explicit owner mapping;
+- server-side schema/option/date/score/ID/count validation, SHA-256 validation checksum, and idempotent commit;
+- append and atomic replace modes with a single D1 batch, import job record, and non-sensitive audit event;
+- a separate mocked browser E2E suite for CRM desktop/mobile behavior, four themes, XSS-safe rendering, Access expiry, import, export, and horizontal-overflow checks.
 
 No online D1 database, Access policy, user email, secret, production route, or CRM data is created by committing these files. The all-zero database ID in the base Wrangler configuration is a local-only placeholder. Preview and production D1 bindings remain intentionally absent until their manual gates are approved. A custom domain becomes active only after an explicitly approved Cloudflare deployment.
 
@@ -64,10 +69,15 @@ Base path: `/api/crm/v1`
 | `GET /leads/:id` | Admin or owning Sales | Returns one active lead; cross-owner access resolves as not found |
 | `PUT /leads/:id` | Admin or owning Sales | Full replacement using mandatory `version`; stale updates return 409 |
 | `DELETE /leads/:id` | Admin or owning Sales | Soft delete using mandatory `If-Match` version |
+| `GET /dashboard` | Admin or Sales | Returns role-scoped KPI and active follow-up ordered by nearest schedule |
+| `POST /imports/validate` | Admin | Validates backup and owner mapping without changing data; returns counts and SHA-256 checksum |
+| `POST /imports/commit` | Admin | Revalidates and commits append/replace atomically; requires checksum, confirmation, and request ID |
+| `GET /exports/backup.json` | Admin | Creates a versioned JSON backup from all active database rows |
+| `GET /exports/leads.csv` | Admin | Creates a BOM-prefixed CSV with spreadsheet-formula neutralization |
 
 All non-health endpoints require a valid RS256 Cloudflare Access assertion, configured issuer/audience, and an active matching row in `app_users`. Mutations require `X-Request-ID`. Dynamic SQL values use bound parameters; list results are limited to 100 rows per request. Admin may request `includeDeleted=1`; Sales queries always receive a server-side ownership predicate.
 
-Import/export, dashboard, follow-up workspace, audit-list access, restore UI, and rate limiting remain outside Step 7. Cloudflare Access policy and online user provisioning remain blocked by the manual infrastructure gates.
+Audit-list access, restore UI, and an online rate-limiter binding are not exposed in Step 8. Cloudflare Access policy, online user provisioning, and every online database/domain action remain blocked by the manual infrastructure gates.
 
 ### Step 6 verification trace
 
@@ -93,6 +103,20 @@ Import/export, dashboard, follow-up workspace, audit-list access, restore UI, an
 
 The Step 7 interface only calls same-origin `/api/crm/v1/*` routes. It does not create Cloudflare resources, provision users, import local CRM records, or write production data.
 
+### Step 8 verification trace
+
+| Requirement | Implemented control | Verification |
+|---|---|---|
+| FUN-010–011, AC-011 | shared scoring/KPI rules; Won/Lost excluded from forecast and active follow-up | role-scoped API calculations and browser KPI/follow-up checks |
+| FUN-014–017, NFR-005 | 5 MB/2,000 limits; schema, canonical option, date, score, ID, owner, file/target duplicate validation | invalid pipeline, duplicate-file, duplicate-target, oversized-file, and permission tests |
+| FUN-018–019, NFR-002, SEC-009 | Admin-only validate/commit, explicit confirmation, checksum match, idempotent retry, one D1 batch | authorization, missing-confirmation, changed-checksum, retry, and forced mid-transaction rollback tests |
+| FUN-020, FUN-022, NFR-003 | versioned server backup independent of table filters; local CRM key is never deleted | backup round-trip test and client source assertion |
+| FUN-021 | every CSV cell is quoted and formula-leading values are prefixed safely | byte-order-mark and formula-injection regression tests |
+| FUN-023, SEC-011 | import job plus audit actor/action/entity/request/timestamp and bounded metadata | audit counts and sensitive-content exclusion tests |
+| FUN-024–025, NFR-004, AC-013 | explicit UI states, four themes, DOM-only dynamic content, responsive layout | static source checks plus dedicated desktop/mobile Playwright suite |
+
+Step 8 still uses only synthetic `TEST-`/`E2E-` records in automated verification. It creates no Cloudflare resource and does not touch production data.
+
 ## Planned boundaries
 
 | Concern | Location |
@@ -112,6 +136,8 @@ npm run db:migrate:masumi-crm:local
 npm run test:masumi-crm-cloud
 npm run test:masumi-crm-d1
 npm run test:masumi-crm-api
+npm run test:masumi-crm-ui
+npm run test:e2e:masumi-crm
 npm run verify:masumi-crm-worker
 ```
 

@@ -14,6 +14,7 @@
     "test": "vitest",
     "test:run": "vitest run",
     "test:e2e": "playwright test",
+    "test:e2e:masumi-crm": "playwright test --config playwright.crm.config.cjs",
     "test:url-sanitizer": "node scripts/test-url-sanitizer.mjs",
     "test:masumi-crm": "node scripts/test-masumi-crm.mjs",
     "test:masumi-crm-cloud": "node scripts/test-masumi-crm-cloud-foundation.mjs",

@@ -24,6 +24,12 @@ const readPayload = async (response) => {
 
 const requestId = () => crypto.randomUUID();
 
+const filenameFrom = (response, fallback) => {
+  const disposition = response.headers.get('content-disposition') || '';
+  const match = disposition.match(/filename="([^"\\/]+)"/i);
+  return match?.[1] || fallback;
+};
+
 export const createCrmClient = ({ fetchImpl = fetch } = {}) => {
   const request = async (path, options = {}) => {
     let response;
@@ -61,9 +67,31 @@ export const createCrmClient = ({ fetchImpl = fetch } = {}) => {
     body: body === undefined ? undefined : JSON.stringify(body)
   });
 
+  const download = async (path, fallbackName) => {
+    let response;
+    try {
+      response = await fetchImpl(`${API_BASE}${path}`, {
+        credentials: 'same-origin',
+        headers: { Accept: 'application/json, text/csv' }
+      });
+    } catch {
+      throw new CrmApiClientError('CRM tidak dapat terhubung ke server. Periksa koneksi lalu coba lagi.');
+    }
+    if (!response.ok) {
+      const payload = await readPayload(response);
+      throw new CrmApiClientError(payload?.message || 'Unduhan CRM gagal.', {
+        status: response.status,
+        code: payload?.code || 'DOWNLOAD_FAILED',
+        requestId: response.headers.get('x-request-id') || ''
+      });
+    }
+    return { blob: await response.blob(), filename: filenameFrom(response, fallbackName) };
+  };
+
   return Object.freeze({
     session: () => request('/session').then(({ data }) => data),
     users: () => request('/users').then(({ data }) => data),
+    dashboard: () => request('/dashboard').then(({ data }) => data),
     listLeads: (filters = {}) => {
       const query = new URLSearchParams();
       for (const [key, value] of Object.entries(filters)) {
@@ -80,6 +108,10 @@ export const createCrmClient = ({ fetchImpl = fetch } = {}) => {
       `/leads/${encodeURIComponent(id)}`,
       undefined,
       { 'If-Match': String(version) }
-    ).then(({ data }) => data)
+    ).then(({ data }) => data),
+    validateImport: (payload) => mutation('POST', '/imports/validate', payload).then(({ data }) => data),
+    commitImport: (payload) => mutation('POST', '/imports/commit', payload).then(({ data }) => data),
+    downloadBackup: () => download('/exports/backup.json', 'masumi-crm-backup.json'),
+    downloadCsv: () => download('/exports/leads.csv', 'masumi-crm-leads.csv')
   });
 };

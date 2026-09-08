@@ -1,6 +1,8 @@
 import { authenticateAppUser } from './auth.js';
 import { CrmApiError, methodNotAllowed } from './errors.js';
+import { routeImportApi } from './import-api.js';
 import { routeLeadApi } from './lead-api.js';
+import { routeReportingApi } from './reporting-api.js';
 import { listAssignableUsers } from './user-api.js';
 
 const API_PREFIX = '/api/crm/v1';
@@ -42,6 +44,8 @@ const apiResponse = (result) => jsonResponse({
   ...(result.meta ? { meta: result.meta } : {})
 }, result.status, result.requestId ? { 'X-Request-ID': result.requestId } : {});
 
+const finalizeResponse = (result) => result instanceof Response ? result : apiResponse(result);
+
 const errorResponse = (error) => {
   if (error instanceof CrmApiError) {
     return jsonResponse({ success: false, code: error.code, message: error.message }, error.status, error.headers);
@@ -78,6 +82,10 @@ export const handleMasumiCrmRequest = async (request, env = {}, dependencies = {
       if (url.pathname === `${API_PREFIX}/users`) {
         return apiResponse(await listAssignableUsers(request, user, env.CRM_DB));
       }
+      const reportingResult = await routeReportingApi(request, url, user, env, dependencies);
+      if (reportingResult) return finalizeResponse(reportingResult);
+      const importResult = await routeImportApi(request, url, user, env, dependencies);
+      if (importResult) return finalizeResponse(importResult);
       if (url.pathname === `${API_PREFIX}/leads` || url.pathname.startsWith(`${API_PREFIX}/leads/`)) {
         return apiResponse(await routeLeadApi(request, url, user, env, dependencies));
       }

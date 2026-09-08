@@ -20,6 +20,7 @@
         <span id="session-initial" aria-hidden="true">M</span>
         <span><strong id="session-name"></strong><small id="session-role"></small></span>
       </div>
+      <a class="logout-link" href="/cdn-cgi/access/logout">Keluar</a>
       <label class="theme-control">
         <span>Tampilan</span>
         <select id="theme-select" aria-label="Pilih tema tampilan">
@@ -48,14 +49,31 @@
       <button id="retry-app" type="button" hidden>Coba lagi</button>
     </div>
 
-    <section class="register" id="register" aria-labelledby="register-title" aria-busy="true">
+    <section class="kpi-grid" id="kpi-grid" aria-label="Ringkasan pipeline" aria-busy="true">
+      <article><span>Active Leads</span><strong id="kpi-active">—</strong><small>Open pipeline</small></article>
+      <article><span>Qualified Rate</span><strong id="kpi-qualified">—</strong><small>Di luar Lost</small></article>
+      <article><span>Overdue Follow-up</span><strong id="kpi-overdue">—</strong><small>Lewat jadwal</small></article>
+      <article><span>Weighted Forecast</span><strong id="kpi-forecast">—</strong><small>Open lead × bobot tahap</small></article>
+    </section>
+
+    <nav class="workspace-tabs" aria-label="Area kerja CRM">
+      <button type="button" class="is-active" data-panel-target="register" aria-selected="true">Lead Register</button>
+      <button type="button" data-panel-target="follow-up" aria-selected="false">Follow-up <span id="follow-up-count">0</span></button>
+    </nav>
+
+    <section class="register workspace-panel" id="register" aria-labelledby="register-title" aria-busy="true">
       <header class="register-header">
         <div>
           <p class="eyebrow">SHARED DATABASE</p>
           <h2 id="register-title">Daftar lead</h2>
           <p id="record-count">Memuat data…</p>
         </div>
-        <button class="button button-secondary" id="refresh-leads" type="button" disabled>Perbarui data</button>
+        <div class="register-actions">
+          <button class="button button-secondary admin-action" id="backup-json" type="button" data-admin-action hidden disabled>Backup JSON</button>
+          <button class="button button-secondary admin-action" id="import-json" type="button" data-admin-action hidden disabled>Impor JSON</button>
+          <button class="button button-secondary admin-action" id="export-csv" type="button" data-admin-action hidden disabled>Ekspor CSV</button>
+          <button class="button button-secondary" id="refresh-leads" type="button" disabled>Perbarui data</button>
+        </div>
       </header>
 
       <div class="filters" aria-label="Cari dan filter lead">
@@ -97,6 +115,22 @@
         <span id="page-copy"></span>
         <button class="button button-secondary" id="next-page" type="button">Berikutnya</button>
       </footer>
+    </section>
+
+    <section class="register workspace-panel follow-up-panel" id="follow-up" aria-labelledby="follow-up-title" hidden>
+      <header class="register-header">
+        <div>
+          <p class="eyebrow">NEXT ACTION</p>
+          <h2 id="follow-up-title">Follow-up aktif</h2>
+          <p>Urutan paling dekat ditampilkan lebih dulu. Won dan Lost tidak masuk daftar ini.</p>
+        </div>
+      </header>
+      <div class="follow-up-list" id="follow-up-list"></div>
+      <div class="empty-state" id="follow-up-empty">
+        <span class="empty-mark" aria-hidden="true">M</span>
+        <h3>Belum ada follow-up aktif</h3>
+        <p>Next action yang masih terbuka akan muncul di sini setelah dijadwalkan.</p>
+      </div>
     </section>
 
     <p class="data-boundary">Data pada aplikasi ini tersimpan di database hosting dan tidak disalin ke <code>localStorage</code>. CRM lokal di SAMSON Tools tetap tersedia sebagai sumber migrasi sampai verifikasi produksi selesai.</p>
@@ -170,6 +204,45 @@
       <footer class="dialog-footer">
         <button class="button button-secondary" id="cancel-form" type="button">Batal</button>
         <button class="button button-primary" id="save-lead" type="submit">Simpan lead</button>
+      </footer>
+    </form>
+  </dialog>
+
+  <dialog class="lead-dialog import-dialog" id="import-dialog" aria-labelledby="import-title">
+    <form id="import-form" novalidate>
+      <header class="dialog-header">
+        <div><p class="eyebrow">ADMIN / DATA PORTABILITY</p><h2 id="import-title">Impor backup JSON</h2></div>
+        <button class="icon-button" id="close-import" type="button" aria-label="Tutup impor">×</button>
+      </header>
+      <div class="form-body">
+        <p class="import-intro">File diperiksa di browser dan divalidasi ulang oleh server. Maksimum 5 MB dan 2.000 lead.</p>
+        <div class="form-grid">
+          <label class="span-2"><span>File backup <b>*</b></span><input id="import-file" type="file" accept=".json,application/json" required></label>
+          <label><span>Mode impor</span><select id="import-mode"><option value="append">Tambah ke data aktif</option><option value="replace">Ganti seluruh data aktif</option></select></label>
+        </div>
+        <fieldset class="owner-map-fieldset" id="owner-map-fieldset" hidden>
+          <legend>Pemetaan owner <small>pilih user cloud untuk setiap owner sumber</small></legend>
+          <div class="owner-mappings" id="owner-mappings"></div>
+        </fieldset>
+        <div class="form-status import-status" id="import-status" role="status" aria-live="polite" hidden>
+          <span id="import-status-copy"></span>
+        </div>
+        <section class="import-preview" id="import-preview" aria-labelledby="preview-title" hidden>
+          <h3 id="preview-title">Hasil validasi</h3>
+          <dl>
+            <div><dt>Total</dt><dd id="preview-total">0</dd></div>
+            <div><dt>Valid</dt><dd id="preview-valid">0</dd></div>
+            <div><dt>Tidak valid</dt><dd id="preview-invalid">0</dd></div>
+            <div><dt>Duplikat</dt><dd id="preview-duplicate">0</dd></div>
+            <div><dt>Total setelah impor</dt><dd id="preview-final">0</dd></div>
+          </dl>
+          <p id="preview-copy"></p>
+        </section>
+      </div>
+      <footer class="dialog-footer">
+        <button class="button button-secondary" id="cancel-import" type="button">Batal</button>
+        <button class="button button-secondary" id="validate-import" type="submit" disabled>Validasi file</button>
+        <button class="button button-primary" id="commit-import" type="button" disabled>Impor data</button>
       </footer>
     </form>
   </dialog>

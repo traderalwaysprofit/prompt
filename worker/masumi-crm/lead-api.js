@@ -145,7 +145,7 @@ const parseJsonObject = async (request) => {
   return payload;
 };
 
-const validIdentifier = (value, label) => {
+export const validIdentifier = (value, label) => {
   const normalized = typeof value === 'string' ? value.trim() : '';
   if (!IDENTIFIER_PATTERN.test(normalized)) {
     throw new CrmApiError('INVALID_IDENTIFIER', 422, `${label} tidak valid.`);
@@ -153,7 +153,7 @@ const validIdentifier = (value, label) => {
   return normalized;
 };
 
-const requestIdFor = (request) => {
+export const requestIdFor = (request) => {
   const requestId = request.headers.get('x-request-id')?.trim() || '';
   if (!REQUEST_ID_PATTERN.test(requestId)) {
     throw new CrmApiError('REQUEST_ID_REQUIRED', 400, 'X-Request-ID yang valid wajib dikirim.');
@@ -161,14 +161,14 @@ const requestIdFor = (request) => {
   return requestId;
 };
 
-const isoNow = (dependencies) => {
+export const isoNow = (dependencies) => {
   const value = typeof dependencies.now === 'function' ? dependencies.now() : new Date();
   const date = value instanceof Date ? value : new Date(value);
   if (Number.isNaN(date.getTime())) throw new CrmApiError('SERVER_TIME_INVALID', 500, 'Waktu server tidak valid.');
   return date.toISOString();
 };
 
-const newIdentifier = (dependencies) => {
+export const newIdentifier = (dependencies) => {
   const value = typeof dependencies.createId === 'function'
     ? dependencies.createId()
     : crypto.randomUUID();
@@ -222,7 +222,7 @@ const requireActiveOwner = async (database, ownerUserId) => {
   if (!owner) throw new CrmApiError('INVALID_OWNER', 422, 'Owner tidak ditemukan atau tidak aktif.');
 };
 
-const mapLeadRow = (row) => ({
+export const mapLeadRow = (row) => ({
   id: row.id,
   leadDate: row.lead_date,
   source: row.source,
@@ -271,7 +271,7 @@ const LEAD_SELECT = `
   FROM leads
 `;
 
-const insertLeadStatement = (database, lead, ownerUserId, user, now) => database.prepare(`
+export const insertLeadStatement = (database, lead, ownerUserId, user, now) => database.prepare(`
   INSERT INTO leads (
     id, lead_date, source, company, pic_name, pic_role, decision_maker_status,
     contact, city, owner_user_id, brand_status, needs, estimated_quantity,
@@ -304,7 +304,7 @@ const auditStatement = (database, { id, userId, action, entityId, requestId, met
   `).bind(id, userId, action, entityId, requestId, JSON.stringify(metadata), now);
 };
 
-const databaseFailure = (error) => {
+export const databaseFailure = (error) => {
   const diagnostic = [error?.message, error?.cause?.message, error?.cause]
     .filter(Boolean)
     .join(' ');

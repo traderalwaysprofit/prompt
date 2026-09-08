@@ -1,6 +1,11 @@
 import assert from 'node:assert/strict';
 import { webcrypto } from 'node:crypto';
 import { readFile } from 'node:fs/promises';
+import {
+  CRM_SCHEMA,
+  CRM_SCHEMA_VERSION,
+  parseCrmBackup
+} from '../src/tools/masumi-crm-core.js';
 import { handleMasumiCrmRequest } from '../worker/masumi-crm/index.js';
 import { createSqliteD1 } from './helpers/sqlite-d1.mjs';
 
@@ -77,7 +82,7 @@ const env = {
   CRM_ACCESS_AUD: audience
 };
 
-const callApi = async (path, options = {}) => {
+const callRaw = async (path, options = {}) => {
   const headers = new Headers(options.headers);
   if (options.token !== null) headers.set(jwtHeaderName, options.token || adminToken);
   let body = options.body;
@@ -95,6 +100,11 @@ const callApi = async (path, options = {}) => {
     options.env || env,
     options.dependencies || dependencies
   );
+  return response;
+};
+
+const callApi = async (path, options = {}) => {
+  const response = await callRaw(path, options);
   const payload = await response.json();
   return { response, payload };
 };
@@ -389,6 +399,291 @@ try {
   });
   assert.equal(salesWithDeleted.response.status, 403);
 
+  const overdueCreate = await callApi('/api/crm/v1/leads', {
+    method: 'POST',
+    headers: { 'X-Request-ID': 'request-create-overdue-01' },
+    body: {
+      company: '=TEST-COMPANY-FORMULA',
+      picName: 'TEST-PIC-FOLLOW-UP',
+      ownerUserId: 'user-sales-a',
+      pipeline: 'Qualified',
+      potentialValue: 1000000,
+      nextAction: 'TEST-FOLLOW-UP-ACTION',
+      nextActionDate: '2026-09-07',
+      scores: { fit: 5, readiness: 4, urgency: 4, value: 4 }
+    }
+  });
+  assert.equal(overdueCreate.response.status, 201);
+  const overdueLeadId = overdueCreate.payload.data.id;
+
+  const wonCreate = await callApi('/api/crm/v1/leads', {
+    method: 'POST',
+    headers: { 'X-Request-ID': 'request-create-won-0001' },
+    body: {
+      company: 'TEST-COMPANY-WON',
+      picName: 'TEST-PIC-WON',
+      ownerUserId: 'user-sales-a',
+      pipeline: 'Won',
+      potentialValue: 100000000,
+      nextAction: 'TEST-SHOULD-NOT-APPEAR',
+      nextActionDate: '2026-09-01'
+    }
+  });
+  assert.equal(wonCreate.response.status, 201);
+
+  const dashboard = await callApi('/api/crm/v1/dashboard');
+  assert.equal(dashboard.response.status, 200);
+  assert.equal(dashboard.payload.data.kpis.activeLeads, 2);
+  assert.ok(Math.abs(dashboard.payload.data.kpis.qualifiedRate - (2 / 3 * 100)) < 0.001);
+  assert.equal(dashboard.payload.data.kpis.overdueFollowUps, 1);
+  assert.equal(dashboard.payload.data.kpis.weightedForecast, 300000);
+  assert.deepEqual(dashboard.payload.data.followUps.map(({ id }) => id), [overdueLeadId]);
+  assert.equal(dashboard.payload.data.followUps[0].overdue, true);
+
+  const salesDashboard = await callApi('/api/crm/v1/dashboard', { token: salesAToken });
+  assert.equal(salesDashboard.payload.data.kpis.activeLeads, 1);
+  assert.equal(salesDashboard.payload.data.kpis.qualifiedRate, 100);
+  assert.equal(salesDashboard.payload.data.kpis.weightedForecast, 300000);
+  assert.deepEqual(salesDashboard.payload.data.followUps.map(({ id }) => id), [overdueLeadId]);
+
+  const backupResponse = await callRaw('/api/crm/v1/exports/backup.json');
+  assert.equal(backupResponse.status, 200);
+  assert.match(backupResponse.headers.get('content-disposition'), /masumi-crm-backup\.json/);
+  assert.equal(backupResponse.headers.get('cache-control'), 'no-store');
+  const backupText = await backupResponse.text();
+  assert.equal(parseCrmBackup(backupText).length, 3);
+
+  const csvResponse = await callRaw('/api/crm/v1/exports/leads.csv');
+  assert.equal(csvResponse.status, 200);
+  assert.match(csvResponse.headers.get('content-type'), /^text\/csv/);
+  const csvBytes = new Uint8Array(await csvResponse.arrayBuffer());
+  assert.deepEqual([...csvBytes.slice(0, 3)], [0xef, 0xbb, 0xbf]);
+  const csvText = new TextDecoder().decode(csvBytes);
+  assert.match(csvText, /"'=TEST-COMPANY-FORMULA"/);
+  assert.doesNotMatch(csvText, /"=TEST-COMPANY-FORMULA"/);
+
+  const salesExport = await callRaw('/api/crm/v1/exports/backup.json', { token: salesAToken });
+  assert.equal(salesExport.status, 403);
+
+  const ownerMappings = [{ sourceOwner: 'TEST-LEGACY-OWNER', ownerUserId: 'user-sales-b' }];
+  const importBackup = {
+    schema: CRM_SCHEMA,
+    version: CRM_SCHEMA_VERSION,
+    exportedAt: now.toISOString(),
+    leads: [{
+      id: 'import-lead-1',
+      company: '@TEST-IMPORTED-COMPANY',
+      picName: 'TEST-IMPORTED-PIC',
+      owner: 'TEST-LEGACY-OWNER',
+      pipeline: 'Needs Discovery',
+      potentialValue: 2000000,
+      nextAction: 'TEST-IMPORTED-FOLLOW-UP',
+      nextActionDate: '2026-09-09',
+      scores: { fit: 5, readiness: 5, urgency: 5, value: 5 }
+    }]
+  };
+
+  const salesValidate = await callApi('/api/crm/v1/imports/validate', {
+    method: 'POST', token: salesAToken, body: { backup: importBackup, mode: 'append', ownerMappings }
+  });
+  assert.equal(salesValidate.response.status, 403);
+  assert.equal(salesValidate.payload.code, 'ADMIN_REQUIRED');
+
+  const invalidPreview = await callApi('/api/crm/v1/imports/validate', {
+    method: 'POST',
+    body: {
+      backup: {
+        ...importBackup,
+        leads: [{ ...importBackup.leads[0], id: 'invalid-pipeline-1', pipeline: 'Unknown Stage' }]
+      },
+      mode: 'append',
+      ownerMappings
+    }
+  });
+  assert.equal(invalidPreview.response.status, 200);
+  assert.equal(invalidPreview.payload.data.invalid, 1);
+  assert.equal(invalidPreview.payload.data.canCommit, false);
+  assert.equal(invalidPreview.payload.data.checksum, '');
+
+  const duplicateFilePreview = await callApi('/api/crm/v1/imports/validate', {
+    method: 'POST',
+    body: {
+      backup: { ...importBackup, leads: [importBackup.leads[0], importBackup.leads[0]] },
+      mode: 'append',
+      ownerMappings
+    }
+  });
+  assert.equal(duplicateFilePreview.response.status, 200);
+  assert.equal(duplicateFilePreview.payload.data.duplicateFile, 1);
+  assert.equal(duplicateFilePreview.payload.data.canCommit, false);
+
+  const oversizedImport = await callApi('/api/crm/v1/imports/validate', {
+    method: 'POST',
+    body: {
+      backup: {
+        ...importBackup,
+        leads: [{ ...importBackup.leads[0], notes: 'x'.repeat((5 * 1024 * 1024) + 1) }]
+      },
+      mode: 'append',
+      ownerMappings
+    }
+  });
+  assert.equal(oversizedImport.response.status, 413);
+  assert.equal(oversizedImport.payload.code, 'PAYLOAD_TOO_LARGE');
+
+  const appendPreview = await callApi('/api/crm/v1/imports/validate', {
+    method: 'POST', body: { backup: importBackup, mode: 'append', ownerMappings }
+  });
+  assert.equal(appendPreview.response.status, 200);
+  assert.equal(appendPreview.payload.data.valid, 1);
+  assert.equal(appendPreview.payload.data.invalid, 0);
+  assert.equal(appendPreview.payload.data.duplicateTarget, 0);
+  assert.equal(appendPreview.payload.data.canCommit, true);
+  assert.match(appendPreview.payload.data.checksum, /^[0-9a-f]{64}$/);
+
+  const missingConfirmation = await callApi('/api/crm/v1/imports/commit', {
+    method: 'POST',
+    headers: { 'X-Request-ID': 'request-import-confirm-01' },
+    body: {
+      backup: importBackup,
+      mode: 'append',
+      ownerMappings,
+      checksum: appendPreview.payload.data.checksum
+    }
+  });
+  assert.equal(missingConfirmation.response.status, 422);
+  assert.equal(missingConfirmation.payload.code, 'IMPORT_CONFIRMATION_REQUIRED');
+
+  const changedImport = await callApi('/api/crm/v1/imports/commit', {
+    method: 'POST',
+    headers: { 'X-Request-ID': 'request-import-changed-01' },
+    body: {
+      backup: importBackup,
+      mode: 'append',
+      ownerMappings,
+      checksum: '0'.repeat(64),
+      confirm: true
+    }
+  });
+  assert.equal(changedImport.response.status, 409);
+  assert.equal(changedImport.payload.code, 'IMPORT_CHANGED');
+
+  const appendCommitBody = {
+    backup: importBackup,
+    mode: 'append',
+    ownerMappings,
+    checksum: appendPreview.payload.data.checksum,
+    confirm: true
+  };
+  const appendCommit = await callApi('/api/crm/v1/imports/commit', {
+    method: 'POST',
+    headers: { 'X-Request-ID': 'request-import-append-01' },
+    body: appendCommitBody
+  });
+  assert.equal(appendCommit.response.status, 201);
+  assert.equal(appendCommit.payload.data.rowCount, 1);
+  assert.equal(appendCommit.payload.data.idempotent, false);
+
+  const appendRetry = await callApi('/api/crm/v1/imports/commit', {
+    method: 'POST',
+    headers: { 'X-Request-ID': 'request-import-append-02' },
+    body: appendCommitBody
+  });
+  assert.equal(appendRetry.response.status, 200);
+  assert.equal(appendRetry.payload.data.idempotent, true);
+  assert.equal(appendRetry.payload.data.jobId, appendCommit.payload.data.jobId);
+
+  const targetDuplicate = await callApi('/api/crm/v1/imports/validate', {
+    method: 'POST', body: { backup: importBackup, mode: 'append', ownerMappings }
+  });
+  assert.equal(targetDuplicate.payload.data.duplicateTarget, 1);
+  assert.equal(targetDuplicate.payload.data.canCommit, false);
+
+  const replaceMappings = [
+    { sourceOwner: 'TEST-REPLACE-A', ownerUserId: 'user-sales-a' },
+    { sourceOwner: 'TEST-REPLACE-B', ownerUserId: 'user-sales-b' }
+  ];
+  const replaceBackup = {
+    schema: CRM_SCHEMA,
+    version: CRM_SCHEMA_VERSION,
+    exportedAt: now.toISOString(),
+    leads: [
+      {
+        id: adminLeadId,
+        company: 'TEST-REPLACED-EXISTING',
+        picName: 'TEST-REPLACE-PIC-A',
+        owner: 'TEST-REPLACE-A',
+        pipeline: 'Negotiation',
+        potentialValue: 3000000
+      },
+      {
+        id: 'replace-fail',
+        company: 'TEST-REPLACE-NEW',
+        picName: 'TEST-REPLACE-PIC-B',
+        owner: 'TEST-REPLACE-B',
+        pipeline: 'New'
+      }
+    ]
+  };
+  const replacePreview = await callApi('/api/crm/v1/imports/validate', {
+    method: 'POST', body: { backup: replaceBackup, mode: 'replace', ownerMappings: replaceMappings }
+  });
+  assert.equal(replacePreview.payload.data.canCommit, true);
+  assert.equal(replacePreview.payload.data.targetMatches, 1);
+  assert.equal(replacePreview.payload.data.duplicateTarget, 0);
+  assert.equal(replacePreview.payload.data.finalCount, 2);
+
+  const beforeFailedReplace = await database.prepare(
+    'SELECT id FROM leads WHERE deleted_at IS NULL ORDER BY id'
+  ).all();
+  await database.exec(`
+    CREATE TRIGGER test_import_failure
+    BEFORE INSERT ON leads WHEN NEW.id = 'replace-fail'
+    BEGIN SELECT RAISE(ABORT, 'TEST_IMPORT_ABORT'); END;
+  `);
+  const failedReplace = await callApi('/api/crm/v1/imports/commit', {
+    method: 'POST',
+    headers: { 'X-Request-ID': 'request-import-rollback-1' },
+    body: {
+      backup: replaceBackup,
+      mode: 'replace',
+      ownerMappings: replaceMappings,
+      checksum: replacePreview.payload.data.checksum,
+      confirm: true
+    }
+  });
+  assert.equal(failedReplace.response.status, 500);
+  await database.exec('DROP TRIGGER test_import_failure');
+  const afterFailedReplace = await database.prepare(
+    'SELECT id FROM leads WHERE deleted_at IS NULL ORDER BY id'
+  ).all();
+  assert.deepEqual(afterFailedReplace.results, beforeFailedReplace.results);
+  const failedInsertCount = await database.prepare(
+    "SELECT count(*) AS total FROM leads WHERE id = 'replace-fail'"
+  ).first();
+  assert.equal(failedInsertCount.total, 0);
+
+  const replaceCommit = await callApi('/api/crm/v1/imports/commit', {
+    method: 'POST',
+    headers: { 'X-Request-ID': 'request-import-replace-01' },
+    body: {
+      backup: replaceBackup,
+      mode: 'replace',
+      ownerMappings: replaceMappings,
+      checksum: replacePreview.payload.data.checksum,
+      confirm: true
+    }
+  });
+  assert.equal(replaceCommit.response.status, 201);
+  assert.equal(replaceCommit.payload.data.rowCount, 2);
+  const activeAfterReplace = await database.prepare(
+    'SELECT id FROM leads WHERE deleted_at IS NULL ORDER BY id'
+  ).all();
+  assert.deepEqual(activeAfterReplace.results.map(({ id }) => id), [adminLeadId, 'replace-fail'].sort());
+
+  const importJobs = await database.prepare('SELECT count(*) AS total FROM import_jobs').first();
+  assert.equal(importJobs.total, 2);
+
   const unknownEndpoint = await callApi('/api/crm/v1/unknown');
   assert.equal(unknownEndpoint.response.status, 404);
   assert.equal(unknownEndpoint.payload.code, 'API_NOT_FOUND');
@@ -401,13 +696,14 @@ try {
     SELECT action, count(*) AS total FROM audit_logs GROUP BY action ORDER BY action
   `).all();
   assert.deepEqual(auditCounts.results.map(({ action, total }) => ({ action, total })), [
-    { action: 'lead.create', total: 2 },
+    { action: 'import.commit', total: 2 },
+    { action: 'lead.create', total: 4 },
     { action: 'lead.delete', total: 1 },
     { action: 'lead.update', total: 1 }
   ]);
   const auditMetadata = await database.prepare('SELECT metadata_json FROM audit_logs').all();
   for (const { metadata_json: metadataJson } of auditMetadata.results) {
-    assert.deepEqual(Object.keys(JSON.parse(metadataJson)), ['version']);
+    assert.ok(['version', 'mode'].includes(Object.keys(JSON.parse(metadataJson))[0]));
     assert.doesNotMatch(metadataJson, /TEST-COMPANY|TEST-PIC|contact|notes/i);
   }
   assert.equal(certificateFetches, 1);
