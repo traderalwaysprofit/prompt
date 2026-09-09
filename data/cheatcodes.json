@@ -7,80 +7,14 @@
     "estimatedTime": "45–90 min",
     "status": "active",
     "steps": [
-      {
-        "number": 1,
-        "title": "Define the Idea",
-        "description": "Tetapkan masalah, target pengguna, dan nilai utama website.",
-        "output": "Ringkasan ide dan model bisnis",
-        "promptIds": [
-          90
-        ]
-      },
-      {
-        "number": 2,
-        "title": "Research the Audience",
-        "description": "Pahami kebutuhan, hambatan, dan perilaku calon pengguna.",
-        "output": "Temuan riset dan profil pengguna",
-        "promptIds": [
-          135
-        ]
-      },
-      {
-        "number": 3,
-        "title": "Define Requirements",
-        "description": "Ubah ide menjadi kebutuhan, fitur, batasan, dan kriteria keberhasilan.",
-        "output": "PRD ringkas yang siap dikerjakan",
-        "promptIds": [
-          140
-        ]
-      },
-      {
-        "number": 4,
-        "title": "Create the Structure",
-        "description": "Susun arsitektur informasi, halaman, komponen, dan alur pengguna.",
-        "output": "Arsitektur dan wireframe website",
-        "promptIds": [
-          40,
-          41
-        ]
-      },
-      {
-        "number": 5,
-        "title": "Generate the Interface",
-        "description": "Bangun antarmuka dari brief dan struktur yang sudah disepakati.",
-        "output": "Implementasi frontend awal",
-        "promptIds": [
-          194
-        ]
-      },
-      {
-        "number": 6,
-        "title": "Test and Debug",
-        "description": "Temukan error, regresi, dan masalah perilaku pada perangkat berbeda.",
-        "output": "Daftar masalah dan perbaikan terverifikasi",
-        "promptIds": [
-          148
-        ]
-      },
-      {
-        "number": 7,
-        "title": "Security Review",
-        "description": "Periksa dependency, konfigurasi, akses, data, dan jalur deployment.",
-        "output": "Checklist keamanan sebelum rilis",
-        "promptIds": [
-          155
-        ]
-      },
-      {
-        "number": 8,
-        "title": "Deploy and Maintain",
-        "description": "Rilis melalui GitHub dan Cloudflare dengan workflow yang dapat diaudit.",
-        "output": "Website live dan workflow maintenance",
-        "promptIds": [
-          197,
-          198
-        ]
-      }
+      {"number": 1, "title": "Define the Idea", "description": "Tetapkan masalah, target pengguna, dan nilai utama website.", "output": "Ringkasan ide dan model bisnis", "promptIds": [90]},
+      {"number": 2, "title": "Research the Audience", "description": "Pahami kebutuhan, hambatan, dan perilaku calon pengguna.", "output": "Temuan riset dan profil pengguna", "promptIds": [135]},
+      {"number": 3, "title": "Define Requirements", "description": "Ubah ide menjadi kebutuhan, fitur, batasan, dan kriteria keberhasilan.", "output": "PRD ringkas yang siap dikerjakan", "promptIds": [140]},
+      {"number": 4, "title": "Create the Structure", "description": "Susun arsitektur informasi, halaman, komponen, dan alur pengguna.", "output": "Arsitektur dan wireframe website", "promptIds": [40, 41]},
+      {"number": 5, "title": "Generate the Interface", "description": "Bangun antarmuka dari brief dan struktur yang sudah disepakati.", "output": "Implementasi frontend awal", "promptIds": [194]},
+      {"number": 6, "title": "Test and Debug", "description": "Temukan error, regresi, dan masalah perilaku pada perangkat berbeda.", "output": "Daftar masalah dan perbaikan terverifikasi", "promptIds": [148]},
+      {"number": 7, "title": "Security Review", "description": "Periksa dependency, konfigurasi, akses, data, dan jalur deployment.", "output": "Checklist keamanan sebelum rilis", "promptIds": [155]},
+      {"number": 8, "title": "Deploy and Maintain", "description": "Rilis melalui GitHub dan Cloudflare dengan workflow yang dapat diaudit.", "output": "Website live dan workflow maintenance", "promptIds": [197, 198]}
     ],
     "category": "Web Development"
   },
@@ -93,100 +27,15 @@
     "estimatedTime": "90–180 min",
     "status": "active",
     "steps": [
-      {
-        "number": 1,
-        "title": "Validate the Business Model",
-        "description": "Tetapkan masalah, pelanggan, value proposition, dan model bisnis.",
-        "output": "Business model tervalidasi",
-        "promptIds": [
-          90
-        ]
-      },
-      {
-        "number": 2,
-        "title": "Research Users",
-        "description": "Temukan kebutuhan dan perilaku calon pengguna.",
-        "output": "User research dan personas",
-        "promptIds": [
-          135,
-          136
-        ]
-      },
-      {
-        "number": 3,
-        "title": "Analyze the Market",
-        "description": "Petakan kompetitor, diferensiasi, dan peluang pasar.",
-        "output": "Market positioning",
-        "promptIds": [
-          164,
-          44
-        ]
-      },
-      {
-        "number": 4,
-        "title": "Write Product Requirements",
-        "description": "Susun scope MVP, fitur, batasan, dan indikator keberhasilan.",
-        "output": "PRD dan feature specification",
-        "promptIds": [
-          140,
-          139
-        ]
-      },
-      {
-        "number": 5,
-        "title": "Choose the Tech Stack",
-        "description": "Pilih stack berdasarkan performa, keamanan, DX, dan biaya.",
-        "output": "Tech stack decision",
-        "promptIds": [
-          154
-        ]
-      },
-      {
-        "number": 6,
-        "title": "Design the Architecture",
-        "description": "Rancang arsitektur aplikasi, API, dan database.",
-        "output": "Technical blueprint",
-        "promptIds": [
-          40,
-          151,
-          152
-        ]
-      },
-      {
-        "number": 7,
-        "title": "Prototype and Build",
-        "description": "Buat alur, prototype, dan implementasi awal.",
-        "output": "MVP prototype",
-        "promptIds": [
-          41,
-          43,
-          194
-        ]
-      },
-      {
-        "number": 8,
-        "title": "Test and Secure",
-        "description": "Temukan bug, review kode, dan audit keamanan.",
-        "output": "Tested and secured build",
-        "promptIds": [
-          148,
-          149,
-          155
-        ]
-      },
-      {
-        "number": 9,
-        "title": "Release and Maintain",
-        "description": "Siapkan Git workflow, deployment, dokumentasi, dan changelog.",
-        "output": "Release-ready SaaS",
-        "promptIds": [
-          153,
-          150,
-          141,
-          197,
-          198
-        ]
-      }
+      {"number": 1, "title": "Validate the Business Model", "description": "Tetapkan masalah, pelanggan, value proposition, dan model bisnis.", "output": "Business model tervalidasi", "promptIds": [90]},
+      {"number": 2, "title": "Research Users", "description": "Temukan kebutuhan dan perilaku calon pengguna.", "output": "User research dan personas", "promptIds": [135, 136]},
+      {"number": 3, "title": "Analyze the Market", "description": "Petakan kompetitor, diferensiasi, dan peluang pasar.", "output": "Market positioning", "promptIds": [164, 44]},
+      {"number": 4, "title": "Write Product Requirements", "description": "Susun scope MVP, fitur, batasan, dan indikator keberhasilan.", "output": "PRD dan feature specification", "promptIds": [140, 139]},
+      {"number": 5, "title": "Choose the Tech Stack", "description": "Pilih stack berdasarkan performa, keamanan, DX, dan biaya.", "output": "Tech stack decision", "promptIds": [154]},
+      {"number": 6, "title": "Design the Architecture", "description": "Rancang arsitektur aplikasi, API, dan database.", "output": "Technical blueprint", "promptIds": [40, 151, 152]},
+      {"number": 7, "title": "Prototype and Build", "description": "Buat alur, prototype, dan implementasi awal.", "output": "MVP prototype", "promptIds": [41, 43, 194]},
+      {"number": 8, "title": "Test and Secure", "description": "Temukan bug, review kode, dan audit keamanan.", "output": "Tested and secured build", "promptIds": [148, 149, 155]},
+      {"number": 9, "title": "Release and Maintain", "description": "Siapkan Git workflow, deployment, dokumentasi, dan changelog.", "output": "Release-ready SaaS", "promptIds": [153, 150, 141, 197, 198]}
     ]
   },
   {
@@ -198,80 +47,14 @@
     "estimatedTime": "60–120 min",
     "status": "active",
     "steps": [
-      {
-        "number": 1,
-        "title": "Segment the Audience",
-        "description": "Tentukan segmen dan target pelanggan utama.",
-        "output": "Audience segments",
-        "promptIds": [
-          160
-        ]
-      },
-      {
-        "number": 2,
-        "title": "Analyze Competitors",
-        "description": "Pelajari pesan, kanal, dan celah strategi kompetitor.",
-        "output": "Competitive insights",
-        "promptIds": [
-          164
-        ]
-      },
-      {
-        "number": 3,
-        "title": "Define the Brand Message",
-        "description": "Tetapkan positioning, value proposition, dan pesan inti.",
-        "output": "Brand message",
-        "promptIds": [
-          159
-        ]
-      },
-      {
-        "number": 4,
-        "title": "Design the Funnel",
-        "description": "Susun perjalanan audiens dari awareness sampai retention.",
-        "output": "Marketing funnel",
-        "promptIds": [
-          158
-        ]
-      },
-      {
-        "number": 5,
-        "title": "Plan the Content",
-        "description": "Tentukan tema, format, channel, dan kalender konten.",
-        "output": "Content strategy",
-        "promptIds": [
-          156
-        ]
-      },
-      {
-        "number": 6,
-        "title": "Write Campaign Copy",
-        "description": "Buat copy iklan, landing page, email, dan CTA.",
-        "output": "Campaign copy",
-        "promptIds": [
-          157,
-          101
-        ]
-      },
-      {
-        "number": 7,
-        "title": "Launch Across Channels",
-        "description": "Satukan pesan, aset, channel, dan timeline eksekusi.",
-        "output": "Campaign plan",
-        "promptIds": [
-          163
-        ]
-      },
-      {
-        "number": 8,
-        "title": "Measure and Optimize",
-        "description": "Tetapkan KPI dan eksperimen peningkatan hasil.",
-        "output": "Measurement plan",
-        "promptIds": [
-          127,
-          128
-        ]
-      }
+      {"number": 1, "title": "Segment the Audience", "description": "Tentukan segmen dan target pelanggan utama.", "output": "Audience segments", "promptIds": [160]},
+      {"number": 2, "title": "Analyze Competitors", "description": "Pelajari pesan, kanal, dan celah strategi kompetitor.", "output": "Competitive insights", "promptIds": [164]},
+      {"number": 3, "title": "Define the Brand Message", "description": "Tetapkan positioning, value proposition, dan pesan inti.", "output": "Brand message", "promptIds": [159]},
+      {"number": 4, "title": "Design the Funnel", "description": "Susun perjalanan audiens dari awareness sampai retention.", "output": "Marketing funnel", "promptIds": [158]},
+      {"number": 5, "title": "Plan the Content", "description": "Tentukan tema, format, channel, dan kalender konten.", "output": "Content strategy", "promptIds": [156]},
+      {"number": 6, "title": "Write Campaign Copy", "description": "Buat copy iklan, landing page, email, dan CTA.", "output": "Campaign copy", "promptIds": [157, 101]},
+      {"number": 7, "title": "Launch Across Channels", "description": "Satukan pesan, aset, channel, dan timeline eksekusi.", "output": "Campaign plan", "promptIds": [163]},
+      {"number": 8, "title": "Measure and Optimize", "description": "Tetapkan KPI dan eksperimen peningkatan hasil.", "output": "Measurement plan", "promptIds": [127, 128]}
     ]
   },
   {
@@ -283,72 +66,13 @@
     "estimatedTime": "45–90 min",
     "status": "active",
     "steps": [
-      {
-        "number": 1,
-        "title": "Research the Topic",
-        "description": "Petakan kebutuhan audiens dan sudut bahasan.",
-        "output": "Research brief",
-        "promptIds": [
-          93
-        ]
-      },
-      {
-        "number": 2,
-        "title": "Collect Reliable Sources",
-        "description": "Temukan sumber primer untuk mendukung klaim.",
-        "output": "Verified sources",
-        "promptIds": [
-          94
-        ]
-      },
-      {
-        "number": 3,
-        "title": "Define Search Strategy",
-        "description": "Susun target pencarian, cluster, dan tujuan organik.",
-        "output": "SEO strategy",
-        "promptIds": [
-          162
-        ]
-      },
-      {
-        "number": 4,
-        "title": "Build the Structure",
-        "description": "Ubah temuan menjadi outline yang runtut.",
-        "output": "Content outline",
-        "promptIds": [
-          100
-        ]
-      },
-      {
-        "number": 5,
-        "title": "Write the Draft",
-        "description": "Tulis konten yang natural dan sesuai intent.",
-        "output": "Article draft",
-        "promptIds": [
-          105,
-          157
-        ]
-      },
-      {
-        "number": 6,
-        "title": "Fact-check the Content",
-        "description": "Periksa klaim, angka, dan sumber.",
-        "output": "Verified draft",
-        "promptIds": [
-          69
-        ]
-      },
-      {
-        "number": 7,
-        "title": "Extract and Repurpose",
-        "description": "Ubah artikel menjadi ringkasan dan aset lain.",
-        "output": "Repurposing package",
-        "promptIds": [
-          95,
-          96,
-          97
-        ]
-      }
+      {"number": 1, "title": "Research the Topic", "description": "Petakan kebutuhan audiens dan sudut bahasan.", "output": "Research brief", "promptIds": [93]},
+      {"number": 2, "title": "Collect Reliable Sources", "description": "Temukan sumber primer untuk mendukung klaim.", "output": "Verified sources", "promptIds": [94]},
+      {"number": 3, "title": "Define Search Strategy", "description": "Susun target pencarian, cluster, dan tujuan organik.", "output": "SEO strategy", "promptIds": [162]},
+      {"number": 4, "title": "Build the Structure", "description": "Ubah temuan menjadi outline yang runtut.", "output": "Content outline", "promptIds": [100]},
+      {"number": 5, "title": "Write the Draft", "description": "Tulis konten yang natural dan sesuai intent.", "output": "Article draft", "promptIds": [105, 157]},
+      {"number": 6, "title": "Fact-check the Content", "description": "Periksa klaim, angka, dan sumber.", "output": "Verified draft", "promptIds": [69]},
+      {"number": 7, "title": "Extract and Repurpose", "description": "Ubah artikel menjadi ringkasan dan aset lain.", "output": "Repurposing package", "promptIds": [95, 96, 97]}
     ]
   },
   {
@@ -360,74 +84,13 @@
     "estimatedTime": "60–120 min",
     "status": "active",
     "steps": [
-      {
-        "number": 1,
-        "title": "Frame the Research Question",
-        "description": "Perjelas masalah, scope, dan hasil yang dibutuhkan.",
-        "output": "Research scope",
-        "promptIds": [
-          57,
-          93
-        ]
-      },
-      {
-        "number": 2,
-        "title": "Gather Credible Sources",
-        "description": "Cari sumber primer dan bukti relevan.",
-        "output": "Source library",
-        "promptIds": [
-          94,
-          201
-        ]
-      },
-      {
-        "number": 3,
-        "title": "Extract Key Evidence",
-        "description": "Ambil fakta dan temuan secara terstruktur.",
-        "output": "Evidence table",
-        "promptIds": [
-          96,
-          97
-        ]
-      },
-      {
-        "number": 4,
-        "title": "Compare the Findings",
-        "description": "Bandingkan hasil, kelebihan, dan keterbatasan.",
-        "output": "Comparison",
-        "promptIds": [
-          20,
-          30
-        ]
-      },
-      {
-        "number": 5,
-        "title": "Verify Claims",
-        "description": "Uji konsistensi sumber dan klaim utama.",
-        "output": "Fact-check report",
-        "promptIds": [
-          69
-        ]
-      },
-      {
-        "number": 6,
-        "title": "Synthesize Insights",
-        "description": "Gabungkan bukti menjadi pola dan insight.",
-        "output": "Research insights",
-        "promptIds": [
-          86
-        ]
-      },
-      {
-        "number": 7,
-        "title": "Make a Decision",
-        "description": "Susun rekomendasi dan keputusan berbobot.",
-        "output": "Decision matrix",
-        "promptIds": [
-          87,
-          77
-        ]
-      }
+      {"number": 1, "title": "Frame the Research Question", "description": "Perjelas masalah, scope, dan hasil yang dibutuhkan.", "output": "Research scope", "promptIds": [57, 93]},
+      {"number": 2, "title": "Gather Credible Sources", "description": "Cari sumber primer dan bukti relevan.", "output": "Source library", "promptIds": [94, 201]},
+      {"number": 3, "title": "Extract Key Evidence", "description": "Ambil fakta dan temuan secara terstruktur.", "output": "Evidence table", "promptIds": [96, 97]},
+      {"number": 4, "title": "Compare the Findings", "description": "Bandingkan hasil, kelebihan, dan keterbatasan.", "output": "Comparison", "promptIds": [20, 30]},
+      {"number": 5, "title": "Verify Claims", "description": "Uji konsistensi sumber dan klaim utama.", "output": "Fact-check report", "promptIds": [69]},
+      {"number": 6, "title": "Synthesize Insights", "description": "Gabungkan bukti menjadi pola dan insight.", "output": "Research insights", "promptIds": [86]},
+      {"number": 7, "title": "Make a Decision", "description": "Susun rekomendasi dan keputusan berbobot.", "output": "Decision matrix", "promptIds": [87, 77]}
     ]
   },
   {
@@ -439,80 +102,35 @@
     "estimatedTime": "60–120 min",
     "status": "active",
     "steps": [
-      {
-        "number": 1,
-        "title": "Map the Current Process",
-        "description": "Dokumentasikan input, langkah, aktor, dan output.",
-        "output": "Current process map",
-        "promptIds": [
-          33,
-          32
-        ]
-      },
-      {
-        "number": 2,
-        "title": "Find the Bottleneck",
-        "description": "Temukan aktivitas berulang dan akar masalah.",
-        "output": "Automation opportunities",
-        "promptIds": [
-          75,
-          76
-        ]
-      },
-      {
-        "number": 3,
-        "title": "Design the Future Workflow",
-        "description": "Susun alur baru dan prioritas implementasi.",
-        "output": "Future workflow",
-        "promptIds": [
-          6,
-          100
-        ]
-      },
-      {
-        "number": 4,
-        "title": "Create AI Instructions",
-        "description": "Bangun system prompt, persona, batasan, dan contoh.",
-        "output": "Prompt system",
-        "promptIds": [
-          117,
-          120,
-          119,
-          118
-        ]
-      },
-      {
-        "number": 5,
-        "title": "Connect the Steps",
-        "description": "Rantai prompt menjadi alur multi-step.",
-        "output": "Prompt chain",
-        "promptIds": [
-          116,
-          121
-        ]
-      },
-      {
-        "number": 6,
-        "title": "Stress-test the Automation",
-        "description": "Uji failure mode, keamanan, dan fallback manusia.",
-        "output": "Risk report",
-        "promptIds": [
-          78,
-          79,
-          155
-        ]
-      },
-      {
-        "number": 7,
-        "title": "Measure and Improve",
-        "description": "Tetapkan KPI, dashboard, dan evaluasi.",
-        "output": "KPI dashboard",
-        "promptIds": [
-          127,
-          36,
-          34
-        ]
-      }
+      {"number": 1, "title": "Map the Current Process", "description": "Dokumentasikan input, langkah, aktor, dan output.", "output": "Current process map", "promptIds": [33, 32]},
+      {"number": 2, "title": "Find the Bottleneck", "description": "Temukan aktivitas berulang dan akar masalah.", "output": "Automation opportunities", "promptIds": [75, 76]},
+      {"number": 3, "title": "Design the Future Workflow", "description": "Susun alur baru dan prioritas implementasi.", "output": "Future workflow", "promptIds": [6, 100]},
+      {"number": 4, "title": "Create AI Instructions", "description": "Bangun system prompt, persona, batasan, dan contoh.", "output": "Prompt system", "promptIds": [117, 120, 119, 118]},
+      {"number": 5, "title": "Connect the Steps", "description": "Rantai prompt menjadi alur multi-step.", "output": "Prompt chain", "promptIds": [116, 121]},
+      {"number": 6, "title": "Stress-test the Automation", "description": "Uji failure mode, keamanan, dan fallback manusia.", "output": "Risk report", "promptIds": [78, 79, 155]},
+      {"number": 7, "title": "Measure and Improve", "description": "Tetapkan KPI, dashboard, dan evaluasi.", "output": "KPI dashboard", "promptIds": [127, 36, 34]}
+    ]
+  },
+  {
+    "id": "supervised-vibecoding",
+    "title": "Ship Software with Supervised Vibecoding",
+    "category": "Development",
+    "description": "Workflow end-to-end AI-heavy dengan human gates untuk requirements, architecture, implementation, QA, security, release, operations, dan task-to-skill.",
+    "difficulty": "Advanced",
+    "estimatedTime": "90–240 min",
+    "status": "active",
+    "steps": [
+      {"number": 1, "title": "DEV-01 Requirements / xRD", "description": "90% vibecoding, 10% semi-manual. AI menyusun requirements/xRD minimum yang implementation-ready; manusia meng-approve scope dan ambiguity material.", "output": "Approved implementation-ready scope", "promptIds": [206, 140, 139]},
+      {"number": 2, "title": "DEV-02 Architecture", "description": "80% vibecoding, 20% semi-manual. AI merancang boundaries, stack, API, data, auth, failure handling, dan deployment; keputusan arsitektur material menunggu approval.", "output": "Approved technical architecture / ADR pack", "promptIds": [40, 154, 151, 152]},
+      {"number": 3, "title": "UI/UX Design Gate", "description": "90% vibecoding, 10% semi-manual. Route kebutuhan interface ke Universal Design Production dan specialist anti-slop; hasilnya menjadi UI specification untuk implementasi.", "output": "Approved UI/UX specification", "promptIds": [41, 43, 202]},
+      {"number": 4, "title": "DEV-03 Implementation", "description": "90–95% vibecoding, 5–10% semi-manual. Coding agent menginspeksi repo dan mengimplementasikan scope terkecil yang disetujui tanpa unrelated refactor atau speculative feature.", "output": "Working implementation with scoped changes", "promptIds": [194]},
+      {"number": 5, "title": "DEV-04 Diagnostic Debug", "description": "90% vibecoding, 10% semi-manual. Bila ada error, diagnosis evidence-first dilakukan sebelum minimal fix; manusia membantu hanya saat evidence/akses diperlukan.", "output": "Confirmed root cause, minimal fix, verification evidence", "promptIds": [207, 148]},
+      {"number": 6, "title": "DEV-05 Verification & QA", "description": "90% vibecoding, 10% semi-manual. AI memetakan acceptance criteria ke lint/typecheck/unit/integration/E2E/accessibility/regression sesuai risiko dan melaporkan hasil aktual.", "output": "QA coverage matrix and test evidence", "promptIds": [208]},
+      {"number": 7, "title": "DEV-06 Refactor Gate", "description": "80% vibecoding, 20% semi-manual. Audit dead code/duplication/quality lebih dulu; destructive atau broad refactor menunggu approval dan confidence di bawah 90% tetap HOLD.", "output": "Approved refactor/cleanup with regression evidence", "promptIds": [209, 149]},
+      {"number": 8, "title": "EXT-SEC01 Security Gate", "description": "70% vibecoding, 30% semi-manual. AI melakukan application-security review P0–P3; P0/P1 memblokir release dan perubahan security-critical yang material membutuhkan approval.", "output": "Security findings and release decision", "promptIds": [210, 155]},
+      {"number": 9, "title": "DEV-07 Git / Release", "description": "80% vibecoding, 20% semi-manual. AI menyiapkan atomic commits, PR, CI evidence, preview/staging, changelog, dan release candidate. Merge/main dan production deploy tetap human gate.", "output": "Review-ready PR / release candidate", "promptIds": [153, 198, 141, 197]},
+      {"number": 10, "title": "DEV-08 Operations", "description": "60–75% vibecoding, 25–40% semi-manual. AI menyiapkan health checks, observability, backup/restore, rollback, incident triage, dan post-release verification; risky production remediation tetap supervised.", "output": "Operations handoff and runbook", "promptIds": [211, 150]},
+      {"number": 11, "title": "META-SKILL01 Task → Skill", "description": "90% vibecoding, 10% semi-manual. Hanya task reusable, repeatable, domain-independent, clear, testable, dan terbukti yang diekstrak menjadi DRAFT Skill; activation membutuhkan regression PASS dan human approval.", "output": "Draft reusable skill or explicit no-graduate decision", "promptIds": [212]}
     ]
   }
 ]
