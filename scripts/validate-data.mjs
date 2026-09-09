@@ -26,10 +26,10 @@ if (extraCommands.length < 10) errors.push(`Expected at least 10 extra commands,
 if (commands.length < 200) errors.push(`Expected at least 200 runtime commands, got ${commands.length}`);
 if (categories.length < 19) errors.push(`Expected at least 19 categories, got ${categories.length}`);
 if (examples.length !== commands.length) errors.push(`Expected one example per command (${commands.length}), got ${examples.length}`);
-if (!Array.isArray(cheatcodes) || cheatcodes.length !== 6) errors.push(`Expected 6 core workflows, got ${cheatcodes?.length}`);
+if (!Array.isArray(cheatcodes) || cheatcodes.length !== 7) errors.push(`Expected 7 core workflows, got ${cheatcodes?.length}`);
 if (!Array.isArray(tradingWorkflows) || tradingWorkflows.length !== 3) errors.push(`Expected 3 trading workflows, got ${tradingWorkflows?.length}`);
 if (!Array.isArray(wordpressWorkflows) || wordpressWorkflows.length !== 3) errors.push(`Expected 3 WordPress workflows, got ${wordpressWorkflows?.length}`);
-if (workflows.length !== 12) errors.push(`Expected 12 total workflows, got ${workflows.length}`);
+if (workflows.length !== 13) errors.push(`Expected 13 total workflows, got ${workflows.length}`);
 
 for (const command of commands) {
   if (!Number.isInteger(command.id) || command.id < 1) errors.push(`Invalid command id: ${command.id}`);
