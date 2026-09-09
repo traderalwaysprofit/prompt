@@ -35,12 +35,13 @@ test.describe('samson.web.id current frontend', () => {
     const examples = [...await responses[3].json(), ...await responses[4].json()];
     const cheatcodes = await responses[5].json();
 
-    expect(commands.length).toBeGreaterThanOrEqual(197);
+    expect(commands.length).toBeGreaterThanOrEqual(204);
     expect(categories.length).toBeGreaterThanOrEqual(19);
     expect(examples).toHaveLength(commands.length);
-    expect(cheatcodes).toHaveLength(6);
+    expect(cheatcodes).toHaveLength(7);
     expect(cheatcodes[0].id).toBe('build-website');
     expect(cheatcodes[0].steps).toHaveLength(8);
+    expect(cheatcodes.find((workflow) => workflow.id === 'supervised-vibecoding')?.steps).toHaveLength(11);
     expect(new Set(commands.map((command) => command.id)).size).toBe(commands.length);
     expect(new Set(examples.map((example) => example.id))).toEqual(new Set(commands.map((command) => command.id)));
     await expect(page.locator('.results-count')).toContainText(`OF ${commands.length} COMMANDS`);
@@ -165,7 +166,7 @@ test.describe('samson.web.id current frontend', () => {
     await expect(page.getByRole('heading', { name: 'Pilih pekerjaan yang ingin diselesaikan' })).toBeVisible();
     await expect(page.getByRole('heading', { name: 'Temukan satu prompt spesifik' })).toBeVisible();
     await expect(workflowChoiceButton(page)).toBeVisible();
-    await expect(workflowChoiceButton(page)).toContainText('Lihat 12 Workflow');
+    await expect(workflowChoiceButton(page)).toContainText('Lihat 13 Workflow');
     await expect(page.getByRole('button', { name: /Buka Prompt Library/ })).toBeVisible();
     await expect(page.locator('#featured')).toBeHidden();
     await expect(page.locator('#workflow-catalog')).toBeHidden();
@@ -178,7 +179,7 @@ test.describe('samson.web.id current frontend', () => {
   test('Build Website runs as an eight-step workflow with local progress', async ({ page }) => {
     await page.goto(BASE_URL, { waitUntil: 'networkidle' });
     await workflowChoiceButton(page).click();
-    await expect(page.locator('.workflow-catalog-card')).toHaveCount(6);
+    await expect(page.locator('.workflow-catalog-card')).toHaveCount(7);
     const websiteCard = page.locator('.workflow-catalog-card').filter({ hasText: 'Build a Website' });
     await websiteCard.getByRole('button', { name: 'Mulai Build a Website' }).click();
 
@@ -199,13 +200,13 @@ test.describe('samson.web.id current frontend', () => {
     await expect(page.locator('#cheatcode-detail .workflow-progress-label')).toContainText('1/8');
   });
 
-  test('users can choose from six core outcome-based workflows', async ({ page }) => {
+  test('users can choose from seven core outcome-based workflows', async ({ page }) => {
     await page.goto(BASE_URL, { waitUntil: 'networkidle' });
     await workflowChoiceButton(page).click();
     const catalog = page.locator('#workflow-catalog');
     await expect(catalog).toBeVisible();
-    await expect(catalog.locator('.workflow-catalog-card')).toHaveCount(6);
-    for (const title of ['Build a SaaS', 'Launch a Marketing Campaign', 'Create SEO Content', 'Run a Research Project', 'Automate a Task']) {
+    await expect(catalog.locator('.workflow-catalog-card')).toHaveCount(7);
+    for (const title of ['Build a SaaS', 'Launch a Marketing Campaign', 'Create SEO Content', 'Run a Research Project', 'Automate a Task', 'Ship Software with Supervised Vibecoding']) {
       await expect(catalog).toContainText(title);
     }
     const marketingCard = catalog.locator('.workflow-catalog-card').filter({ hasText: 'Launch a Marketing Campaign' });
@@ -214,6 +215,32 @@ test.describe('samson.web.id current frontend', () => {
     await expect(page.locator('#cheatcode-detail .workflow-step-tab')).toHaveCount(8);
     await expect(page.locator('#cheatcode-detail')).toContainText('Segment the Audience');
     await expect(page.getByRole('button', { name: 'Copy prompt /segmentation' })).toBeVisible();
+  });
+
+  test('Supervised Vibecoding exposes the eleven-stage development lifecycle', async ({ page }) => {
+    await page.goto(BASE_URL, { waitUntil: 'networkidle' });
+    await workflowChoiceButton(page).click();
+    await page.locator('[data-workflow-filter="development"]').click();
+
+    const catalog = page.locator('#workflow-catalog');
+    const card = catalog.locator('.workflow-catalog-card').filter({ hasText: 'Ship Software with Supervised Vibecoding' });
+    await expect(card).toBeVisible();
+    await card.getByRole('button', { name: 'Mulai Ship Software with Supervised Vibecoding' }).click();
+
+    const detail = page.locator('#cheatcode-detail');
+    await expect(detail).toBeVisible();
+    await expect(detail.getByRole('heading', { name: 'Ship Software with Supervised Vibecoding' })).toBeVisible();
+    await expect(detail.locator('.workflow-step-tab')).toHaveCount(11);
+    await expect(detail.locator('.workflow-content')).toContainText('DEV-01 Requirements / xRD');
+    await expect(detail.getByRole('button', { name: 'Copy prompt /devrequirements' })).toBeVisible();
+
+    await detail.locator('.workflow-step-tab').nth(7).click();
+    await expect(detail.locator('.workflow-content')).toContainText('EXT-SEC01 Security Gate');
+    await expect(detail.getByRole('button', { name: 'Copy prompt /securitygate' })).toBeVisible();
+
+    await detail.locator('.workflow-step-tab').nth(10).click();
+    await expect(detail.locator('.workflow-content')).toContainText('META-SKILL01 Task → Skill');
+    await expect(detail.getByRole('button', { name: 'Copy prompt /skillfoundry' })).toBeVisible();
   });
 
   test('Prompt Library choice routes users to the searchable library', async ({ page }) => {
