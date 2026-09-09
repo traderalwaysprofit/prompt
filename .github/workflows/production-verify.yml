@@ -220,8 +220,8 @@ jobs:
                   if set(example_ids) != set(command_ids):
                       failures.append(f"{name} example IDs do not match command IDs")
                   workflow_ids = {item.get("id") for item in cheatcodes}
-                  required_workflows = {"build-website", "build-saas", "marketing-campaign", "seo-content", "research-project", "automate-task"}
-                  if len(cheatcodes) != 6 or workflow_ids != required_workflows:
+                  required_workflows = {"build-website", "build-saas", "marketing-campaign", "seo-content", "research-project", "automate-task", "supervised-vibecoding"}
+                  if len(cheatcodes) != 7 or workflow_ids != required_workflows:
                       failures.append(f"{name} workflow catalog contract invalid: {sorted(workflow_ids)}")
                   if cheatcodes[0].get("id") != "build-website" or len(cheatcodes[0].get("steps", [])) != 8:
                       failures.append(f"{name} Build Website workflow contract invalid")
