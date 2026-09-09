@@ -3,14 +3,15 @@
 
   const DATA_URLS = ['/data/workflows-trading.json', '/data/workflows-wordpress.json'];
   const STORAGE_KEY = 'samsonCheatcodeProgress';
-  const GROUPS = ['all', 'build', 'marketing', 'content', 'research', 'automation', 'wordpress', 'trading'];
+  const GROUPS = ['all', 'build', 'marketing', 'content', 'research', 'automation', 'development', 'wordpress', 'trading'];
   const coreGroups = new Map([
     ['Build a Website', 'build'],
     ['Build a SaaS', 'build'],
     ['Launch a Marketing Campaign', 'marketing'],
     ['Create SEO Content', 'content'],
     ['Run a Research Project', 'research'],
-    ['Automate a Task', 'automation']
+    ['Automate a Task', 'automation'],
+    ['Ship Software with Supervised Vibecoding', 'development']
   ]);
   const domainMeta = {
     trading: {
@@ -49,13 +50,13 @@
   const groupOf = (workflow) => String(workflow?.group || '').toLowerCase();
 
   const updateRuntimeCount = () => {
-    const total = 6 + workflows.filter((item) => item.status === 'active').length;
+    const total = 7 + workflows.filter((item) => item.status === 'active').length;
     document.querySelectorAll('[data-catalog-stat="workflows"]').forEach((node) => { node.textContent = String(total); });
     const feature = document.querySelector('#workflow-choice .choice-feature strong');
     if (feature) feature.textContent = `${total} Ready-to-run Workflows`;
     const detail = document.querySelector('#workflow-choice .choice-feature span');
     if (detail && !/sudah dimulai/i.test(detail.textContent || '')) {
-      detail.textContent = 'Web · SaaS · Marketing · Content · Research · Automation · Trading · WordPress';
+      detail.textContent = 'Web · SaaS · Marketing · Content · Research · Automation · Development · Trading · WordPress';
     }
     const button = document.querySelector('#workflow-choice [data-show-workflows]');
     if (button) button.innerHTML = `Lihat ${total} Workflow <span aria-hidden="true">→</span>`;
