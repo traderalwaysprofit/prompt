@@ -24,18 +24,18 @@ test.describe('SAMSON trading workflows', () => {
     }
   });
 
-  test('catalog reports twelve workflows and exposes domain filters', async ({ page }) => {
+  test('catalog reports thirteen workflows and exposes domain filters', async ({ page }) => {
     await page.goto(BASE_URL, { waitUntil: 'networkidle' });
 
-    await expect(page.locator('[data-catalog-stat="workflows"]')).toHaveText('12');
-    await expect(page.locator('#workflow-choice .choice-feature strong')).toHaveText('12 Ready-to-run Workflows');
+    await expect(page.locator('[data-catalog-stat="workflows"]')).toHaveText('13');
+    await expect(page.locator('#workflow-choice .choice-feature strong')).toHaveText('13 Ready-to-run Workflows');
     await expect(workflowChoiceButton(page)).toBeVisible();
-    await expect(workflowChoiceButton(page)).toContainText('Lihat 12 Workflow');
+    await expect(workflowChoiceButton(page)).toContainText('Lihat 13 Workflow');
 
     await workflowChoiceButton(page).click();
     await expect(page.locator('.workflow-filters')).toBeVisible();
-    await expect(page.locator('[data-workflow-filter]')).toHaveCount(8);
-    await expect(page.locator('.workflow-catalog-card')).toHaveCount(6);
+    await expect(page.locator('[data-workflow-filter]')).toHaveCount(9);
+    await expect(page.locator('.workflow-catalog-card')).toHaveCount(7);
     await expect(page.locator('.trading-workflow-card')).toHaveCount(3);
     await expect(page.locator('.wordpress-workflow-card')).toHaveCount(3);
 
