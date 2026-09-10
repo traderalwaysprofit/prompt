@@ -1,5 +1,6 @@
 import { cp, mkdir, rm, writeFile } from 'node:fs/promises';
 import path from 'node:path';
+import { sanitizeMejaIt } from './sanitize-meja-it.mjs';
 
 const root = process.cwd();
 const dist = path.join(root, 'dist');
@@ -16,6 +17,8 @@ await cp(path.join(root, 'assets'), path.join(dist, 'assets'), { recursive: true
 await cp(path.join(root, 'vendor'), path.join(dist, 'vendor'), { recursive: true });
 await cp(path.join(root, 'node_modules', 'xlsx', 'dist', 'xlsx.full.min.js'), path.join(dist, 'vendor', 'xlsx.full.min.js'));
 await cp(path.join(root, 'node_modules', 'xlsx', 'LICENSE'), path.join(dist, 'vendor', 'LICENSE.sheetjs.txt'));
+
+await sanitizeMejaIt(dist);
 
 const commit = process.env.WORKERS_CI_COMMIT_SHA || process.env.GITHUB_SHA || 'local';
 await writeFile(path.join(dist, 'version.json'), `${JSON.stringify({ commit }, null, 2)}\n`);
