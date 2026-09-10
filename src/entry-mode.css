@@ -14,9 +14,19 @@ html:not([data-entry-mode="tools"]) #tools{
   display:none!important;
 }
 
+html:not([data-entry-mode="games"]) #games{
+  display:none!important;
+}
+
 html[data-entry-mode="tools"] .hero,
 html[data-entry-mode="tools"] #cheatcodes,
 html[data-entry-mode="tools"] #featured,
-html[data-entry-mode="tools"] .creator-spot{
+html[data-entry-mode="tools"] #games,
+html[data-entry-mode="tools"] .creator-spot,
+html[data-entry-mode="games"] .hero,
+html[data-entry-mode="games"] #cheatcodes,
+html[data-entry-mode="games"] #featured,
+html[data-entry-mode="games"] #tools,
+html[data-entry-mode="games"] .creator-spot{
   display:none!important;
 }
