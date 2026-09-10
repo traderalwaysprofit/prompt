@@ -6,10 +6,12 @@
 <meta name="description" content="MEJA-IT — simulasi IT Support interaktif di SAMSON Games Hub.">
 <title>MEJA-IT — Simulasi IT Support</title>
 <link rel="stylesheet" href="./meja-it.css">
+
 </head>
 <body>
-<a class="game-back" href="/#games" aria-label="Kembali ke SAMSON Games Hub">← GAMES HUB</a>
+<div class="game-nav"><a class="game-back" href="/#games" aria-label="Kembali ke SAMSON Games Hub">← GAMES HUB</a></div>
 
+<!-- ============ LAYAR AWAL ============ -->
 <div id="scrStart">
   <div class="start-wrap">
     <div class="start-left">
@@ -25,7 +27,7 @@
         <div><b>4.</b> <span>Baca memo klien dengan teliti. Detailnya penting.</span></div>
       </div>
       <div class="skills" id="skillList"></div>
-      <button class="btn primary" id="btnStart" style="font-size:15px;padding:13px 34px">MULAI SHIFT</button>
+      <button class="btn primary btn-start-shift" id="btnStart">MULAI SHIFT</button>
       <div class="best" id="bestLine"></div>
     </div>
     <div class="prop-ticket">
@@ -38,6 +40,7 @@
   </div>
 </div>
 
+<!-- ============ LAYAR GAME ============ -->
 <div id="scrGame" class="hidden">
   <header id="hud">
     <div class="brand">
@@ -63,7 +66,7 @@
     </section>
 
     <section class="panel" id="centerPanel">
-      <div class="p-title"><span>MONITOR OPERASIONAL</span><span style="font-size:10px;color:var(--dim)">JARINGAN LOKAL — JANGAN DISEBAR</span></div>
+      <div class="p-title"><span>MONITOR OPERASIONAL</span><span class="monitor-note">JARINGAN LOKAL — JANGAN DISEBAR</span></div>
       <div class="term-body">
         <div class="term-top">
           <div>
@@ -71,7 +74,7 @@
             <div class="dayline" id="dayLine">HARI 01 — JAM KERJA 09:00–17:30</div>
           </div>
           <div class="rack">
-            <svg width="120" height="86" viewBox="0 0 120 86" aria-hidden="true">
+            <svg width="120" height="86" viewBox="0 0 120 86">
               <rect x="4" y="4" width="112" height="78" fill="#0b0e07" stroke="#2e3524" stroke-width="2"/>
               <g fill="none" stroke="#2e3524" stroke-width="1.5">
                 <line x1="4" y1="20" x2="116" y2="20"/><line x1="4" y1="36" x2="116" y2="36"/>
@@ -102,18 +105,18 @@
         <div class="money-big"><label>SALDO GAJI + BONUS</label><div class="val" id="sideMoney">Rp 0</div></div>
         <div class="meter rep" id="repMeter">
           <label><span>REPUTASI</span><span id="repTxt">50/100</span></label>
-          <div class="tr"><i style="width:50%"></i></div>
+          <div class="tr"><i class="meter-fill meter-fill-50"></i></div>
         </div>
         <div class="meter xp">
           <label><span>XP KE LEVEL BERIKUT</span><span id="xpTxt">0/100</span></label>
-          <div class="tr"><i id="xpBar" style="width:0%"></i></div>
+          <div class="tr"><i id="xpBar" class="meter-fill meter-fill-0"></i></div>
         </div>
-        <div class="statline"><span>Hari ini:</span><span><b id="stDone">0</b> selesai / <b id="stLate" style="color:var(--red)">0</b> telat</span></div>
+        <div class="statline"><span>Hari ini:</span><span><b id="stDone">0</b> selesai / <b id="stLate" class="u-red">0</b> telat</span></div>
         <div class="statline"><span>Karier:</span><span><b id="stCareer">0</b> tiket total</span></div>
         <button class="btn danger wide" id="btnEndDay">AKHIRI HARI</button>
-        <div class="hidden" id="endConfirm" style="border:1.5px solid var(--red);padding:12px;font-size:12px;line-height:1.7">
+        <div class="hidden end-confirm-box" id="endConfirm">
           <span id="endWarn"></span>
-          <div style="display:flex;gap:8px;margin-top:10px">
+          <div class="end-confirm-actions">
             <button class="btn danger sm" id="btnEndYes">YA, TUTUP KAS</button>
             <button class="btn sm" id="btnEndNo">BATAL</button>
           </div>
@@ -123,6 +126,7 @@
   </main>
 </div>
 
+<!-- ============ OVERLAY PENGERJAAN ============ -->
 <div id="workOverlay" class="overlay hidden">
   <div class="work-frame">
     <div class="wf-head">
@@ -138,8 +142,11 @@
   </div>
 </div>
 
+<!-- ============ OVERLAY RINGKASAN ============ -->
 <div id="sumOverlay" class="overlay hidden"><div class="sum-frame" id="sumFrame"></div></div>
 <div id="toasts" aria-live="polite"></div>
+
+
 <script src="./meja-it.js" defer></script>
 </body>
 </html>
