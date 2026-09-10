@@ -18,11 +18,12 @@
 .u-inst-file{margin-top:8px;font-size:11px;color:#77704f}.u-bundle-bad{color:#8a2f22}.u-bundle-good{color:#2c4a1a}
 .u-retry{margin-top:8px;border:1.5px solid #555;background:#efeada;padding:4px 16px;font-size:12px;cursor:pointer}
 .u-over-copy{margin-bottom:18px;color:var(--dim);line-height:1.8}.paper-target{position:absolute;top:-3px;width:12%;height:14px;background:rgba(168,224,74,.3);border:1.5px dashed var(--green)}
+.plug-power{background:#222}.plug-hdmi{background:#333}.plug-lan{background:#c9a13b}.plug-usb{background:#444}.plug-audio{background:#4a7c3f}
 .sum-stamp.is-red{color:var(--red);border-color:var(--red)}
 .end-confirm-box{border:1.5px solid var(--red);padding:12px;font-size:12px;line-height:1.7}.end-confirm-actions{display:flex;gap:8px;margin-top:10px}
 @media(max-width:700px){
-  .game-nav{position:sticky;top:0;right:auto;display:flex;align-items:center;min-height:52px;padding:8px 12px;border-bottom:1.5px solid var(--line);background:rgba(14,17,11,.98);backdrop-filter:blur(8px)}
-  .game-back{min-height:36px;padding:5px 10px;box-shadow:none}
+  .game-nav{position:sticky;top:0;right:auto;display:flex;align-items:center;min-height:52px;padding:4px 12px;border-bottom:1.5px solid var(--line);background:rgba(14,17,11,.98);backdrop-filter:blur(8px)}
+  .game-back{min-height:44px;padding:6px 10px;box-shadow:none}
   #scrStart{padding-top:28px}
   #hud{top:52px}
   .u-router-grid,.u-grid-2{grid-template-columns:1fr}
