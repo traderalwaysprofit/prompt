@@ -50,13 +50,29 @@ jobs:
       - name: Generate isolated preview config
         shell: bash
         run: |
+          cat > preview-worker.generated.js <<'EOF'
+          export default {
+            async fetch(request, env) {
+              const url = new URL(request.url);
+              if (url.pathname === "/src/games/meja-it/") {
+                url.pathname = "/src/games/meja-it/index.html";
+                return env.ASSETS.fetch(new Request(url, request));
+              }
+              return env.ASSETS.fetch(request);
+            }
+          };
+          EOF
+
           cat > wrangler.pr-preview.generated.jsonc <<'EOF'
           {
             "$schema": "node_modules/wrangler/config-schema.json",
             "name": "samson-pr-65-preview",
+            "main": "./preview-worker.generated.js",
             "compatibility_date": "2026-09-02",
             "assets": {
-              "directory": "./dist"
+              "directory": "./dist",
+              "binding": "ASSETS",
+              "run_worker_first": true
             }
           }
           EOF
@@ -81,7 +97,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          curl --fail --silent --show-error --retry 4 "$PREVIEW_URL/src/games/meja-it/index.html" | grep -q 'PIXEL OFFICE'
+          curl --fail --silent --show-error --retry 4 "$PREVIEW_URL/src/games/meja-it/" | grep -q 'PIXEL OFFICE'
           echo "MEJA-IT preview verified."
 
       - name: Publish preview link
@@ -91,7 +107,7 @@ jobs:
           {
             echo "## SAMSON PR #65 Preview"
             echo ""
-            echo "- MEJA-IT Pixel Office: $PREVIEW_URL/src/games/meja-it/index.html"
+            echo "- MEJA-IT Pixel Office: $PREVIEW_URL/src/games/meja-it/"
             echo "- Root preview: $PREVIEW_URL/"
             echo "- Isolated Worker: `samson-pr-65-preview`"
             echo "- Production domain unchanged"
