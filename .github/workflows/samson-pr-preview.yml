@@ -109,6 +109,6 @@ jobs:
             echo ""
             echo "- MEJA-IT Pixel Office: $PREVIEW_URL/src/games/meja-it/"
             echo "- Root preview: $PREVIEW_URL/"
-            echo "- Isolated Worker: `samson-pr-65-preview`"
+            echo "- Isolated Worker: samson-pr-65-preview"
             echo "- Production domain unchanged"
           } >> "$GITHUB_STEP_SUMMARY"
