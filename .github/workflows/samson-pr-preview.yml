@@ -1,0 +1,96 @@
+name: Deploy SAMSON PR Preview
+
+on:
+  pull_request:
+    types: [synchronize, opened, reopened]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: samson-pr-preview-${{ github.event.pull_request.number || github.ref_name }}
+  cancel-in-progress: true
+
+jobs:
+  deploy-preview:
+    if: github.event_name == 'workflow_dispatch' || github.event.pull_request.number == 65
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+      NO_COLOR: 1
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Setup Node.js
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: 24
+          cache: npm
+
+      - name: Install locked dependencies
+        run: npm ci --no-audit --no-fund
+
+      - name: Build static preview
+        run: npm run build
+
+      - name: Validate deployment credentials
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -n "${CLOUDFLARE_API_TOKEN:-}"
+          test -n "${CLOUDFLARE_ACCOUNT_ID:-}"
+          npx wrangler whoami
+
+      - name: Generate isolated preview config
+        shell: bash
+        run: |
+          cat > wrangler.pr-preview.generated.jsonc <<'EOF'
+          {
+            "$schema": "node_modules/wrangler/config-schema.json",
+            "name": "samson-pr-65-preview",
+            "compatibility_date": "2026-09-02",
+            "assets": {
+              "directory": "./dist"
+            }
+          }
+          EOF
+
+      - name: Deploy isolated preview
+        id: deploy
+        shell: bash
+        run: |
+          set -euo pipefail
+          deploy_log="$RUNNER_TEMP/samson-preview-deploy.log"
+          npx wrangler deploy --config wrangler.pr-preview.generated.jsonc 2>&1 | tee "$deploy_log"
+          preview_url="$(grep -Eo 'https://[A-Za-z0-9.-]+\.workers\.dev' "$deploy_log" | tail -n 1 || true)"
+          if [[ -z "$preview_url" ]]; then
+            echo "Preview URL not found in Wrangler output." >&2
+            exit 1
+          fi
+          echo "preview_url=$preview_url" >> "$GITHUB_OUTPUT"
+
+      - name: Verify MEJA-IT preview
+        env:
+          PREVIEW_URL: ${{ steps.deploy.outputs.preview_url }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          curl --fail --silent --show-error --retry 4 "$PREVIEW_URL/src/games/meja-it/" | grep -q 'PIXEL OFFICE'
+          echo "MEJA-IT preview verified."
+
+      - name: Publish preview link
+        env:
+          PREVIEW_URL: ${{ steps.deploy.outputs.preview_url }}
+        run: |
+          {
+            echo "## SAMSON PR #65 Preview"
+            echo ""
+            echo "- MEJA-IT Pixel Office: $PREVIEW_URL/src/games/meja-it/"
+            echo "- Root preview: $PREVIEW_URL/"
+            echo "- Isolated Worker: `samson-pr-65-preview`"
+            echo "- Production domain unchanged"
+          } >> "$GITHUB_STEP_SUMMARY"
