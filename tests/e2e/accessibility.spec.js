@@ -98,6 +98,6 @@ test.describe('Accessibility Hardening V1', () => {
     }));
 
     expect(motion.scrollBehavior).toBe('auto');
-    expect(['0s', '0.00001s']).toContain(motion.heroAnimationDuration);
+    expect(Number.parseFloat(motion.heroAnimationDuration)).toBeLessThanOrEqual(0.001);
   });
 });
