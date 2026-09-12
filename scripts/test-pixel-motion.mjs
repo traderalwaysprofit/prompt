@@ -1,0 +1,33 @@
+import assert from 'node:assert/strict';
+import { readFileSync } from 'node:fs';
+
+const read = (path) => readFileSync(new URL(`../${path}`, import.meta.url), 'utf8');
+const index = read('index.html');
+const theme = read('src/pixel-theme.css');
+const motion = read('src/pixel-motion.css');
+const engine = read('src/theme-engine.js');
+
+assert.match(index, /pixel-motion\.css\?v=1/, 'Pixel motion stylesheet must be loaded');
+assert.ok(
+  index.indexOf('pixel-motion.css') > index.indexOf('pixel-desktop.css'),
+  'Pixel motion overrides must load after responsive and desktop theme rules'
+);
+
+for (const [token, value] of [
+  ['--pixel-motion-instant', '80ms'],
+  ['--pixel-motion-fast', '120ms'],
+  ['--pixel-motion-base', '180ms'],
+  ['--pixel-motion-slow', '240ms']
+]) {
+  assert.match(motion, new RegExp(`${token}:${value}`), `${token} must stay within the approved contract`);
+}
+
+assert.match(motion, /steps\(2,end\)/, 'Pixel interactions must retain stepped timing');
+assert.match(motion, /@media\(prefers-reduced-motion:reduce\)/, 'Reduced motion override is required');
+assert.match(motion, /animation:none!important/, 'Reduced motion must disable non-essential animation');
+assert.match(motion, /transition:none!important/, 'Reduced motion must disable transitions');
+assert.doesNotMatch(theme, /pixel-wire-slide/, 'The newswire ticker must not loop continuously');
+assert.doesNotMatch(motion, /infinite/, 'Pixel Motion V1 must not add decorative infinite loops');
+assert.match(engine, /Retro wire, editorial, high-contrast/, 'Pixel theme description must match its visual direction');
+
+console.log('PIXEL MOTION CONTRACT: PASS');
