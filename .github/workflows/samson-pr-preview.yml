@@ -81,7 +81,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          curl --fail --silent --show-error --retry 4 "$PREVIEW_URL/src/games/meja-it/" | grep -q 'PIXEL OFFICE'
+          curl --fail --silent --show-error --retry 4 "$PREVIEW_URL/src/games/meja-it/index.html" | grep -q 'PIXEL OFFICE'
           echo "MEJA-IT preview verified."
 
       - name: Publish preview link
@@ -91,7 +91,7 @@ jobs:
           {
             echo "## SAMSON PR #65 Preview"
             echo ""
-            echo "- MEJA-IT Pixel Office: $PREVIEW_URL/src/games/meja-it/"
+            echo "- MEJA-IT Pixel Office: $PREVIEW_URL/src/games/meja-it/index.html"
             echo "- Root preview: $PREVIEW_URL/"
             echo "- Isolated Worker: `samson-pr-65-preview`"
             echo "- Production domain unchanged"
