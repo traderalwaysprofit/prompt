@@ -28,6 +28,11 @@ if (canvas && shell && monitor && status && interactButton && btnWorld && btnMon
   let activeTicket = null;
   let activeTarget = null;
   let walkFrame = 0;
+  let character = "male";
+  try{
+    const storedCharacter=localStorage.getItem("mejait_character");
+    if(storedCharacter==="female"||storedCharacter==="male") character=storedCharacter;
+  }catch(e){}
 
   const COLORS = {
     floor:'#171d18', wall:'#2c3329', line:'#4b5744', desk:'#755b3d',
@@ -149,6 +154,14 @@ if (canvas && shell && monitor && status && interactButton && btnWorld && btnMon
 
     ctx.fillStyle = '#f0c7a0';
     ctx.fillRect(px-6,py-14+bob,12,9);
+    ctx.fillStyle = character==="female" ? '#4a2f2a' : '#2c211d';
+    if(character==="female"){
+      ctx.fillRect(px-8,py-16+bob,16,5);
+      ctx.fillRect(px-8,py-11+bob,4,10);
+      ctx.fillRect(px+4,py-11+bob,4,10);
+    }else{
+      ctx.fillRect(px-7,py-16+bob,14,5);
+    }
     ctx.fillStyle = COLORS.player2;
     ctx.fillRect(px-7,py-5+bob,14,12);
     ctx.fillStyle = COLORS.player;
@@ -264,7 +277,13 @@ if (canvas && shell && monitor && status && interactButton && btnWorld && btnMon
     }
   });
 
-  document.addEventListener('mejait:day-started',() => {
+  document.addEventListener('mejait:character-changed',(event) => {
+    character = event.detail?.character === 'female' ? 'female' : 'male';
+    if (!shell.hidden) render(false);
+  });
+
+  document.addEventListener('mejait:day-started',(event) => {
+    character = event.detail?.character === 'female' ? 'female' : character;
     player = { ...DEFAULT_PLAYER };
     activeTicket = null;
     activeTarget = null;
