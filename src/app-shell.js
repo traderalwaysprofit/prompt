@@ -6,6 +6,7 @@
   const closeMobileMenu = (toggle, panel) => {
     panel.classList.remove('is-open');
     panel.setAttribute('aria-hidden', 'true');
+    panel.setAttribute('inert', '');
     toggle.setAttribute('aria-expanded', 'false');
     toggle.setAttribute('aria-label', 'Buka menu');
   };
@@ -47,6 +48,7 @@
   const setUtilityMenu = (trigger, panel, open) => {
     trigger.setAttribute('aria-expanded', String(open));
     panel.setAttribute('aria-hidden', String(!open));
+    panel.toggleAttribute('inert', !open);
     panel.classList.toggle('is-open', open);
   };
 
@@ -58,7 +60,6 @@
     trigger.id = 'nav-more';
     trigger.className = 'nav-link nav-more-trigger';
     trigger.type = 'button';
-    trigger.setAttribute('aria-haspopup', 'true');
     trigger.setAttribute('aria-expanded', 'false');
     trigger.setAttribute('aria-controls', 'nav-more-menu');
     trigger.innerHTML = '<span>More</span><svg class="svg-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>';
@@ -67,6 +68,7 @@
     panel.id = 'nav-more-menu';
     panel.className = 'nav-more-menu';
     panel.setAttribute('aria-hidden', 'true');
+    panel.setAttribute('inert', '');
     panel.setAttribute('aria-label', 'SAMSON utilities');
     panel.innerHTML = '<div class="nav-more-label">UTILITY</div><div class="nav-more-actions"><button id="nav-tools" class="nav-utility-action" type="button"><svg class="svg-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h16M7 4v6M4 17h16M17 14v6"></path></svg><span>Tools</span></button><button id="nav-games" class="nav-utility-action" type="button"><svg class="svg-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9h12l2 8-3 2-2-3H9l-2 3-3-2 2-8zM9 12v4M7 14h4M15 13h.01M17 15h.01"></path></svg><span>Games</span></button></div><div class="nav-more-divider"></div><label class="theme-picker-wrap utility-theme-picker"><span>APPEARANCE</span><select id="theme-select" class="theme-picker" data-theme-select aria-label="UI Personality"></select></label>';
     panel.querySelector('#theme-select').innerHTML = themeOptionsMarkup();
@@ -173,6 +175,7 @@
     panel.id = 'mobile-menu-panel';
     panel.className = 'mobile-menu-panel';
     panel.setAttribute('aria-hidden', 'true');
+    panel.setAttribute('inert', '');
     panel.innerHTML = `<div class="mobile-menu-title">SAMSON</div><div class="mobile-menu-group-label">WORK</div><button type="button" data-mobile-nav="workflows">Workflows</button><button type="button" data-mobile-nav="prompts">Prompts</button><button type="button" data-mobile-nav="tools">Tools</button><button type="button" data-mobile-nav="games">Games</button><button type="button" data-mobile-nav="favorites">Saved</button><div class="mobile-menu-divider"></div><div class="mobile-menu-group-label">HELP</div><button type="button" data-mobile-nav="onboarding">Onboarding AI</button><label class="mobile-theme-picker"><span>APPEARANCE</span><select id="mobile-theme-select" class="theme-picker" data-theme-select aria-label="UI Personality mobile">${themeOptionsMarkup()}</select></label>`;
 
     header.appendChild(toggle);
@@ -184,6 +187,7 @@
       const open = !panel.classList.contains('is-open');
       panel.classList.toggle('is-open', open);
       panel.setAttribute('aria-hidden', String(!open));
+      panel.toggleAttribute('inert', !open);
       toggle.setAttribute('aria-expanded', String(open));
       toggle.setAttribute('aria-label', open ? 'Tutup menu' : 'Buka menu');
     });
