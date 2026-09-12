@@ -216,6 +216,22 @@
   const bindEvents = () => {
     if (state.bound) return;
     state.bound = true;
+    document.addEventListener('keydown', (event) => {
+      const tab = event.target instanceof Element ? event.target.closest('[data-workflow-mode][role="tab"]') : null;
+      if (!tab) return;
+      const tabs = [...document.querySelectorAll('[data-workflow-mode][role="tab"]')];
+      if (!tabs.length) return;
+      const current = Math.max(0, tabs.indexOf(tab));
+      let next = current;
+      if (event.key === 'ArrowRight') next = (current + 1) % tabs.length;
+      else if (event.key === 'ArrowLeft') next = (current - 1 + tabs.length) % tabs.length;
+      else if (event.key === 'Home') next = 0;
+      else if (event.key === 'End') next = tabs.length - 1;
+      else return;
+      event.preventDefault();
+      tabs[next].focus();
+      tabs[next].click();
+    });
     document.addEventListener('click', (event) => {
       const mode = event.target.closest('[data-workflow-mode]');
       if (mode) {
