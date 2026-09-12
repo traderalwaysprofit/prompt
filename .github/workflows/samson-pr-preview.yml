@@ -94,11 +94,48 @@ jobs:
       - name: Verify MEJA-IT preview
         env:
           PREVIEW_URL: ${{ steps.deploy.outputs.preview_url }}
+          EXPECTED_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
         shell: bash
         run: |
           set -euo pipefail
-          curl --fail --silent --show-error --retry 4 "$PREVIEW_URL/src/games/meja-it/" | grep -q 'PIXEL OFFICE'
-          echo "MEJA-IT preview verified."
+          body_file="$RUNNER_TEMP/meja-it-preview.html"
+          version_file="$RUNNER_TEMP/version.json"
+
+          for attempt in {1..20}; do
+            version_status="$(curl --silent --show-error --max-time 20 \
+              --output "$version_file" --write-out '%{http_code}' \
+              "$PREVIEW_URL/version.json" || true)"
+            page_status="$(curl --silent --show-error --max-time 20 \
+              --output "$body_file" --write-out '%{http_code}' \
+              "$PREVIEW_URL/src/games/meja-it/" || true)"
+
+            deployed_sha="$(node --input-type=module -e '
+              import { readFileSync } from "node:fs";
+              try {
+                const payload = JSON.parse(readFileSync(process.argv[1], "utf8"));
+                process.stdout.write(payload.commit || payload.sha || payload.gitSha || "");
+              } catch {}
+            ' "$version_file")"
+
+            if [[ "$version_status" == "200" &&
+                  "$page_status" == "200" &&
+                  "$deployed_sha" == "$EXPECTED_SHA" ]] &&
+               grep -q 'PIXEL OFFICE' "$body_file"; then
+              echo "MEJA-IT preview verified at $EXPECTED_SHA."
+              exit 0
+            fi
+
+            echo "Preview propagation pending (attempt $attempt/20): version=$version_status page=$page_status sha=${deployed_sha:-missing}" >&2
+            sleep 3
+          done
+
+          echo "Preview verification failed after propagation window." >&2
+          echo "Expected SHA: $EXPECTED_SHA" >&2
+          echo "Last version response:" >&2
+          sed -n '1,20p' "$version_file" >&2 || true
+          echo "Last page response:" >&2
+          sed -n '1,20p' "$body_file" >&2 || true
+          exit 1
 
       - name: Publish preview link
         env:
