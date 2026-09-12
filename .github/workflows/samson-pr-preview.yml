@@ -17,6 +17,8 @@ jobs:
     if: github.event_name == 'workflow_dispatch' || github.event.pull_request.number == 65
     runs-on: ubuntu-latest
     timeout-minutes: 15
+    environment:
+      name: masumi-crm-preview
     env:
       CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
       CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
