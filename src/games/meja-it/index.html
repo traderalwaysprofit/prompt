@@ -26,6 +26,19 @@
         <div><b>4.</b> <span>Baca memo klien dengan teliti. Detailnya penting.</span></div>
       </div>
       <div class="skills" id="skillList"></div>
+      <fieldset class="character-select" aria-labelledby="characterSelectTitle">
+        <legend id="characterSelectTitle">PILIH KARAKTER TEKNISI</legend>
+        <div class="character-options" role="radiogroup" aria-label="Karakter teknisi">
+          <button type="button" class="character-option is-selected" data-character="male" role="radio" aria-checked="true">
+            <span class="character-preview character-preview-male" aria-hidden="true"></span>
+            <span><b>PRIA</b><small>Teknisi IT</small></span>
+          </button>
+          <button type="button" class="character-option" data-character="female" role="radio" aria-checked="false">
+            <span class="character-preview character-preview-female" aria-hidden="true"></span>
+            <span><b>WANITA</b><small>Teknisi IT</small></span>
+          </button>
+        </div>
+      </fieldset>
       <button class="btn primary btn-start-shift" id="btnStart">MULAI SHIFT</button>
       <div class="best" id="bestLine"></div>
     </div>
