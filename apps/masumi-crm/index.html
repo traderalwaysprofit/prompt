@@ -56,12 +56,12 @@
       <article><span>Weighted Forecast</span><strong id="kpi-forecast">—</strong><small>Open lead × bobot tahap</small></article>
     </section>
 
-    <nav class="workspace-tabs" aria-label="Area kerja CRM">
-      <button type="button" class="is-active" data-panel-target="register" aria-selected="true">Lead Register</button>
-      <button type="button" data-panel-target="follow-up" aria-selected="false">Follow-up <span id="follow-up-count">0</span></button>
+    <nav class="workspace-tabs" role="tablist" aria-label="Area kerja CRM">
+      <button id="workspace-tab-register" type="button" class="is-active" data-panel-target="register" role="tab" aria-selected="true" aria-controls="register" tabindex="0">Lead Register</button>
+      <button id="workspace-tab-follow-up" type="button" data-panel-target="follow-up" role="tab" aria-selected="false" aria-controls="follow-up" tabindex="-1">Follow-up <span id="follow-up-count">0</span></button>
     </nav>
 
-    <section class="register workspace-panel" id="register" aria-labelledby="register-title" aria-busy="true">
+    <section class="register workspace-panel" id="register" role="tabpanel" aria-labelledby="workspace-tab-register" aria-busy="true">
       <header class="register-header">
         <div>
           <p class="eyebrow">SHARED DATABASE</p>
@@ -117,7 +117,7 @@
       </footer>
     </section>
 
-    <section class="register workspace-panel follow-up-panel" id="follow-up" aria-labelledby="follow-up-title" hidden>
+    <section class="register workspace-panel follow-up-panel" id="follow-up" role="tabpanel" aria-labelledby="workspace-tab-follow-up" hidden>
       <header class="register-header">
         <div>
           <p class="eyebrow">NEXT ACTION</p>

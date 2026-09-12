@@ -634,13 +634,17 @@ const downloadFile = async (loader, progressCopy, successCopy) => {
   }
 };
 
-const switchPanel = (targetId) => {
+const switchPanel = (targetId, { focus = false } = {}) => {
+  let activeTab = null;
   for (const button of document.querySelectorAll('[data-panel-target]')) {
     const active = button.dataset.panelTarget === targetId;
     button.classList.toggle('is-active', active);
     button.setAttribute('aria-selected', String(active));
+    button.tabIndex = active ? 0 : -1;
+    if (active) activeTab = button;
   }
   for (const panel of document.querySelectorAll('.workspace-panel')) panel.hidden = panel.id !== targetId;
+  if (focus) activeTab?.focus();
 };
 
 const bootstrap = async () => {
@@ -700,6 +704,18 @@ element('#commit-import').addEventListener('click', commitImport);
 
 for (const button of document.querySelectorAll('[data-panel-target]')) {
   button.addEventListener('click', () => switchPanel(button.dataset.panelTarget));
+  button.addEventListener('keydown', (event) => {
+    const tabs = [...document.querySelectorAll('[data-panel-target][role="tab"]')];
+    const current = tabs.indexOf(button);
+    let next = current;
+    if (event.key === 'ArrowRight') next = (current + 1) % tabs.length;
+    else if (event.key === 'ArrowLeft') next = (current - 1 + tabs.length) % tabs.length;
+    else if (event.key === 'Home') next = 0;
+    else if (event.key === 'End') next = tabs.length - 1;
+    else return;
+    event.preventDefault();
+    switchPanel(tabs[next].dataset.panelTarget, { focus: true });
+  });
 }
 
 for (const name of ['fit', 'readiness', 'urgency', 'valueScore']) {

@@ -25,6 +25,7 @@
 footer,
 .modal header small,
 .modal-body label,
+.modal-section-label,
 .modal-body p,
 .close,
 .copy-section,
@@ -60,6 +61,7 @@ footer,
 .modal header small,
 .modal-art,
 .modal-body label,
+.modal-section-label,
 .copy-section,
 .modal-fav,
 .smart-badge,
@@ -140,5 +142,42 @@ footer,
   .pagination span{
     min-height:44px;
     font-size:12px!important;
+  }
+}
+
+/* Accessibility Hardening V1 */
+.skip-link{
+  position:fixed;
+  left:16px;
+  top:12px;
+  z-index:1000;
+  transform:translateY(-160%);
+  padding:10px 14px;
+  border-radius:8px;
+  background:#18202b;
+  color:#fff;
+  font-weight:800;
+  text-decoration:none;
+  box-shadow:0 8px 24px rgba(0,0,0,.18);
+}
+.skip-link:focus{
+  transform:translateY(0);
+}
+
+:where(a,button,input,select,textarea,[tabindex]):focus-visible{
+  outline:3px solid currentColor;
+  outline-offset:3px;
+}
+
+@media (prefers-reduced-motion: reduce){
+  html{scroll-behavior:auto!important}
+  *,
+  *::before,
+  *::after{
+    scroll-behavior:auto!important;
+    animation-duration:.01ms!important;
+    animation-iteration-count:1!important;
+    transition-duration:.01ms!important;
+    transition-delay:0ms!important;
   }
 }
