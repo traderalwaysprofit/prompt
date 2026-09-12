@@ -181,6 +181,13 @@ html[data-theme="pixel"] .empty{
 }
 
 @media(prefers-reduced-motion:reduce){
+  html[data-theme="pixel"]{
+    --pixel-motion-instant:.001ms;
+    --pixel-motion-fast:.001ms;
+    --pixel-motion-base:.001ms;
+    --pixel-motion-slow:.001ms;
+  }
+
   html[data-theme="pixel"] *,
   html[data-theme="pixel"] *::before,
   html[data-theme="pixel"] *::after{

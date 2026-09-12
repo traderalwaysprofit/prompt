@@ -24,6 +24,7 @@ for (const [token, value] of [
 
 assert.match(motion, /steps\(2,end\)/, 'Pixel interactions must retain stepped timing');
 assert.match(motion, /@media\(prefers-reduced-motion:reduce\)/, 'Reduced motion override is required');
+assert.match(motion, /--pixel-motion-fast:\.001ms/, 'Reduced motion must collapse token duration');
 assert.match(motion, /animation:none!important/, 'Reduced motion must disable non-essential animation');
 assert.match(motion, /transition:none!important/, 'Reduced motion must disable transitions');
 assert.doesNotMatch(theme, /pixel-wire-slide/, 'The newswire ticker must not loop continuously');

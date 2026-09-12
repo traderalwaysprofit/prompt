@@ -361,7 +361,8 @@ html[data-theme="pixel"] .workflow-copy{
   text-transform:uppercase;
   padding:7px 10px!important;
   transform:none!important;
-  transition:background-color .1s linear,color .1s linear!important;
+  transition:background-color var(--pixel-motion-fast,120ms) var(--pixel-step-fast,steps(2,end)),
+             color var(--pixel-motion-fast,120ms) var(--pixel-step-fast,steps(2,end))!important;
 }
 html[data-theme="pixel"] .choice-action:hover,
 html[data-theme="pixel"] .hero-actions button:hover,
