@@ -85,16 +85,31 @@ html[data-theme="pixel"] .pixel-wire-title{
 }
 html[data-theme="pixel"] .pixel-wire-status{color:var(--pixel-success)}
 html[data-theme="pixel"] .pixel-wire-ticker{
+  display:flex;
+  min-width:0;
+  align-items:center;
   border-width:0 3px 3px;
   background:var(--pixel-void);
   color:var(--pixel-gold);
 }
 html[data-theme="pixel"] .pixel-wire-ticker span{
+  flex:0 0 auto;
   display:inline-block;
-  max-width:100%;
-  overflow:hidden;
-  text-overflow:ellipsis;
+  min-width:max-content;
+  max-width:none;
+  padding-left:100%;
+  overflow:visible;
+  text-overflow:clip;
   vertical-align:bottom;
+}
+html[data-theme="pixel"] .pixel-wire-ticker span::after{
+  content:"";
+  display:inline-block;
+  width:7px;
+  height:10px;
+  margin-left:8px;
+  background:var(--pixel-success);
+  vertical-align:-1px;
 }
 
 html[data-theme="pixel"] .app,

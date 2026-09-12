@@ -8,14 +8,16 @@ const activatePixel = async (page) => {
   await expect(page.locator('html')).toHaveAttribute('data-theme', 'pixel');
 };
 
-test.describe('Pixel Motion System V2', () => {
-  test('uses short stepped motion and keeps the ticker static', async ({ page }) => {
+test.describe('Pixel Motion System V3', () => {
+  test('uses short stepped feedback with a scrolling ticker and blinking cursor', async ({ page }) => {
     await activatePixel(page);
 
     const contract = await page.evaluate(() => {
       const root = getComputedStyle(document.documentElement);
       const button = getComputedStyle(document.querySelector('[data-show-workflows]'));
-      const ticker = getComputedStyle(document.querySelector('.pixel-wire-ticker span'));
+      const tickerNode = document.querySelector('.pixel-wire-ticker span');
+      const ticker = getComputedStyle(tickerNode);
+      const cursor = getComputedStyle(tickerNode, '::after');
       return {
         instant: root.getPropertyValue('--pixel-motion-instant').trim(),
         fast: root.getPropertyValue('--pixel-motion-fast').trim(),
@@ -23,7 +25,11 @@ test.describe('Pixel Motion System V2', () => {
         slow: root.getPropertyValue('--pixel-motion-slow').trim(),
         buttonDuration: button.transitionDuration,
         buttonTiming: button.transitionTimingFunction,
-        tickerAnimation: ticker.animationName
+        tickerAnimation: ticker.animationName,
+        tickerDuration: ticker.animationDuration,
+        tickerIterations: ticker.animationIterationCount,
+        cursorAnimation: cursor.animationName,
+        cursorTiming: cursor.animationTimingFunction
       };
     });
 
@@ -32,10 +38,14 @@ test.describe('Pixel Motion System V2', () => {
       fast: '120ms',
       base: '180ms',
       slow: '240ms',
-      tickerAnimation: 'none'
+      tickerAnimation: 'pixel-header-scroll',
+      tickerDuration: '24s',
+      tickerIterations: 'infinite',
+      cursorAnimation: 'pixel-cursor-blink'
     });
     expect(contract.buttonDuration.split(',')).toContain('0.12s');
     expect(contract.buttonTiming).toContain('steps(2');
+    expect(contract.cursorTiming).toContain('steps(1');
   });
 
   test('disables non-essential Pixel motion when reduced motion is requested', async ({ page }) => {
@@ -45,14 +55,21 @@ test.describe('Pixel Motion System V2', () => {
     const motion = await page.evaluate(() => {
       const chrome = getComputedStyle(document.querySelector('.pixel-wire-chrome'));
       const button = getComputedStyle(document.querySelector('[data-show-workflows]'));
+      const tickerNode = document.querySelector('.pixel-wire-ticker span');
+      const ticker = getComputedStyle(tickerNode);
+      const cursor = getComputedStyle(tickerNode, '::after');
       return {
         chromeAnimation: chrome.animationName,
-        buttonDuration: button.transitionDuration
+        buttonDuration: button.transitionDuration,
+        tickerAnimation: ticker.animationName,
+        cursorAnimation: cursor.animationName
       };
     });
 
     expect(motion.chromeAnimation).toBe('none');
     expect(Number.parseFloat(motion.buttonDuration)).toBeLessThanOrEqual(0.001);
+    expect(motion.tickerAnimation).toBe('none');
+    expect(motion.cursorAnimation).toBe('none');
   });
 
   test('preserves mobile layout while applying smaller displacement', async ({ page }) => {

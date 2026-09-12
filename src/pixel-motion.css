@@ -1,4 +1,4 @@
-/* Pixel Motion System V2 — short, stepped feedback for Pixel Adventure.
+/* Pixel Motion System V3 — short feedback plus a readable adventure HUD ticker.
    Motion communicates state changes; it never replaces labels, focus, or status. */
 
 html[data-theme="pixel"]{
@@ -6,6 +6,7 @@ html[data-theme="pixel"]{
   --pixel-motion-fast:120ms;
   --pixel-motion-base:180ms;
   --pixel-motion-slow:240ms;
+  --pixel-motion-marquee:24s;
   --pixel-step-instant:steps(1,end);
   --pixel-step-fast:steps(2,end);
   --pixel-step-base:steps(3,end);
@@ -19,6 +20,16 @@ html[data-theme="pixel"] .pixel-wire-chrome{
 
 html[data-theme="pixel"] .pixel-wire-strip.lead{
   animation:pixel-border-signal var(--pixel-motion-fast) var(--pixel-step-fast) 1;
+}
+
+/* The requested HUD marquee carries real navigation/status labels. */
+html[data-theme="pixel"] .pixel-wire-ticker span{
+  animation:pixel-header-scroll var(--pixel-motion-marquee) linear infinite;
+  will-change:transform;
+}
+
+html[data-theme="pixel"] .pixel-wire-ticker span::after{
+  animation:pixel-cursor-blink 720ms steps(1,end) infinite;
 }
 
 /* Controls provide tactile, integer-pixel feedback without bounce. */
@@ -129,6 +140,16 @@ html[data-theme="pixel"] .empty{
   to{opacity:1;transform:translateY(0)}
 }
 
+@keyframes pixel-header-scroll{
+  from{transform:translateX(0)}
+  to{transform:translateX(-100%)}
+}
+
+@keyframes pixel-cursor-blink{
+  0%,49%{opacity:1}
+  50%,100%{opacity:0}
+}
+
 @keyframes pixel-border-signal{
   0%,100%{border-color:var(--pixel-line)}
   50%{border-color:var(--pixel-primary)}
@@ -198,6 +219,16 @@ html[data-theme="pixel"] .empty{
     scroll-behavior:auto!important;
     animation:none!important;
     transition:none!important;
+  }
+
+  html[data-theme="pixel"] .pixel-wire-ticker span{
+    min-width:0;
+    max-width:100%;
+    padding-left:0;
+    overflow:hidden;
+    text-overflow:ellipsis;
+    transform:none!important;
+    will-change:auto;
   }
 
   html[data-theme="pixel"] button:active:not(:disabled),
