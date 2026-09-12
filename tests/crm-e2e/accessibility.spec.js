@@ -31,7 +31,7 @@ test.describe('MASUMI CRM accessibility gate', () => {
     await page.goto('/', { waitUntil: 'domcontentloaded' });
     await expect(page.locator('#lead-dialog')).toHaveAttribute('aria-labelledby', 'form-title');
     await expect(page.locator('#import-dialog')).toHaveAttribute('aria-labelledby', 'import-title');
-    await expect(page.getByRole('button', { name: 'Tutup form' })).toHaveCount(1);
-    await expect(page.getByRole('button', { name: 'Tutup impor' })).toHaveCount(1);
+    await expect(page.locator('#close-form')).toHaveAttribute('aria-label', 'Tutup form');
+    await expect(page.locator('#close-import')).toHaveAttribute('aria-label', 'Tutup impor');
   });
 });
