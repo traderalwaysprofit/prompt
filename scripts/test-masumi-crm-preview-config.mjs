@@ -17,9 +17,41 @@ assert.deepEqual(generated.env.preview.d1_databases, [{
 assert.equal(Object.hasOwn(source.env.preview, 'd1_databases'), false);
 assert.equal(Object.hasOwn(generated.env.production, 'd1_databases'), false);
 assert.equal(generated.env.production.routes[0].pattern, 'crm.samson.web.id');
+
+const staging = buildPreviewConfig(source, databaseId, {
+  hostname: 'crm-preview.samson.web.id',
+  accessAud: 'preview-aud',
+  accessIssuer: 'https://samson-preview.cloudflareaccess.com'
+});
+assert.deepEqual(staging.env.preview.routes, [{
+  pattern: 'crm-preview.samson.web.id',
+  custom_domain: true
+}]);
+assert.equal(staging.env.preview.workers_dev, false);
+assert.equal(staging.env.preview.vars.CRM_ENVIRONMENT, 'preview');
+assert.equal(staging.env.preview.vars.CRM_ACCESS_AUD, 'preview-aud');
+assert.equal(staging.env.preview.vars.CRM_ACCESS_ISSUER, 'https://samson-preview.cloudflareaccess.com');
+assert.equal(staging.env.production.routes[0].pattern, 'crm.samson.web.id');
+
 assert.throws(
   () => buildPreviewConfig(source, 'not-a-database-id'),
   /valid UUID/
+);
+assert.throws(
+  () => buildPreviewConfig(source, databaseId, {
+    hostname: 'crm.samson.web.id',
+    accessAud: 'preview-aud',
+    accessIssuer: 'https://samson-preview.cloudflareaccess.com'
+  }),
+  /preview hostname/
+);
+assert.throws(
+  () => buildPreviewConfig(source, databaseId, {
+    hostname: 'crm-preview.samson.web.id',
+    accessAud: 'preview-aud',
+    accessIssuer: 'https://example.com'
+  }),
+  /Cloudflare Access HTTPS origin/
 );
 
 console.log('MASUMI CRM preview config tests passed.');
