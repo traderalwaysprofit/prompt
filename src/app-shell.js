@@ -68,7 +68,7 @@
     panel.className = 'nav-more-menu';
     panel.setAttribute('aria-hidden', 'true');
     panel.setAttribute('aria-label', 'SAMSON utilities');
-    panel.innerHTML = '<div class="nav-more-label">UTILITY</div><div class="nav-more-actions"><button id="nav-tools" class="nav-utility-action" type="button"><svg class="svg-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h16M7 4v6M4 17h16M17 14v6"></path></svg><span>Tools</span></button></div><div class="nav-more-divider"></div><label class="theme-picker-wrap utility-theme-picker"><span>APPEARANCE</span><select id="theme-select" class="theme-picker" data-theme-select aria-label="UI Personality"></select></label>';
+    panel.innerHTML = '<div class="nav-more-label">UTILITY</div><div class="nav-more-actions"><button id="nav-tools" class="nav-utility-action" type="button"><svg class="svg-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h16M7 4v6M4 17h16M17 14v6"></path></svg><span>Tools</span></button><button id="nav-games" class="nav-utility-action" type="button"><svg class="svg-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9h12l2 8-3 2-2-3H9l-2 3-3-2 2-8zM9 12v4M7 14h4M15 13h.01M17 15h.01"></path></svg><span>Games</span></button></div><div class="nav-more-divider"></div><label class="theme-picker-wrap utility-theme-picker"><span>APPEARANCE</span><select id="theme-select" class="theme-picker" data-theme-select aria-label="UI Personality"></select></label>';
     panel.querySelector('#theme-select').innerHTML = themeOptionsMarkup();
 
     onboarding.className = 'nav-utility-action';
@@ -173,7 +173,7 @@
     panel.id = 'mobile-menu-panel';
     panel.className = 'mobile-menu-panel';
     panel.setAttribute('aria-hidden', 'true');
-    panel.innerHTML = `<div class="mobile-menu-title">SAMSON</div><div class="mobile-menu-group-label">WORK</div><button type="button" data-mobile-nav="workflows">Workflows</button><button type="button" data-mobile-nav="prompts">Prompts</button><button type="button" data-mobile-nav="tools">Tools</button><button type="button" data-mobile-nav="favorites">Saved</button><div class="mobile-menu-divider"></div><div class="mobile-menu-group-label">HELP</div><button type="button" data-mobile-nav="onboarding">Onboarding AI</button><label class="mobile-theme-picker"><span>APPEARANCE</span><select id="mobile-theme-select" class="theme-picker" data-theme-select aria-label="UI Personality mobile">${themeOptionsMarkup()}</select></label>`;
+    panel.innerHTML = `<div class="mobile-menu-title">SAMSON</div><div class="mobile-menu-group-label">WORK</div><button type="button" data-mobile-nav="workflows">Workflows</button><button type="button" data-mobile-nav="prompts">Prompts</button><button type="button" data-mobile-nav="tools">Tools</button><button type="button" data-mobile-nav="games">Games</button><button type="button" data-mobile-nav="favorites">Saved</button><div class="mobile-menu-divider"></div><div class="mobile-menu-group-label">HELP</div><button type="button" data-mobile-nav="onboarding">Onboarding AI</button><label class="mobile-theme-picker"><span>APPEARANCE</span><select id="mobile-theme-select" class="theme-picker" data-theme-select aria-label="UI Personality mobile">${themeOptionsMarkup()}</select></label>`;
 
     header.appendChild(toggle);
     header.insertAdjacentElement('afterend', panel);
@@ -196,6 +196,7 @@
         workflows: nav.querySelector('#nav-cheatcodes') || nav.querySelector('.nav-link.active'),
         prompts: nav.querySelector('#nav-recent'),
         tools: nav.querySelector('#nav-tools'),
+        games: nav.querySelector('#nav-games'),
         favorites: nav.querySelector('#nav-favorites'),
         onboarding
       };

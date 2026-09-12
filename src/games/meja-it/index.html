@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="MEJA-IT — simulasi IT Support interaktif di SAMSON Games Hub.">
+<title>MEJA-IT — Simulasi IT Support</title>
+<link rel="stylesheet" href="./meja-it.css">
+<link rel="stylesheet" href="./meja-it-csp.css">
+</head>
+<body>
+<div class="game-nav"><a class="game-back" href="/#games" aria-label="Kembali ke SAMSON Games Hub">← GAMES HUB</a></div>
+
+<div id="scrStart">
+  <div class="start-wrap">
+    <div class="start-left">
+      <span class="start-badge">SHIFT DIMULAI 09:00 — JANGAN TELAT</span>
+      <h1 class="start-title">MEJA<em>-IT</em></h1>
+      <p class="start-sub">Kamu adalah <b>satu-satunya teknisi IT</b> di kantor ini. Tiket mengalir, telepon berdering,
+        dan Bos tidak percaya pada kalimat "sudah dicoba matikan-nyalakan". Selesaikan tiket sebelum SLA-nya habis,
+        atau reputasimu anjlok.</p>
+      <div class="start-rules">
+        <div><b>1.</b> <span>Klik tiket di antrian lalu kerjakan sesuai instruksinya.</span></div>
+        <div><b>2.</b> <span>Setiap tiket punya batas waktu (SLA). Telat = reputasi −5.</span></div>
+        <div><b>3.</b> <span>Uang &amp; level naik seiring pengalaman. Reputasi habis = pindah ke bagian gudang.</span></div>
+        <div><b>4.</b> <span>Baca memo klien dengan teliti. Detailnya penting.</span></div>
+      </div>
+      <div class="skills" id="skillList"></div>
+      <button class="btn primary btn-start-shift" id="btnStart">MULAI SHIFT</button>
+      <div class="best" id="bestLine"></div>
+    </div>
+    <div class="prop-ticket">
+      <div class="pt-head"><span>#TKT-0041</span><span>SLA 04:12</span></div>
+      <h3>Printer Faktur Ngadat</h3>
+      <p>"Pak, printernya bunyi 'krek krek' terus, kertasnya keluar setengah. Faktur customer nunggu, mohon darrrr."</p>
+      <div class="pt-sla"><i></i></div>
+      <div class="stamp">Prioritas Tinggi</div>
+    </div>
+  </div>
+</div>
+
+<div id="scrGame" class="hidden">
+  <header id="hud">
+    <div class="brand">
+      <div class="brand-mark" id="brandIco"></div>
+      <div><h1>MEJA-IT</h1><small>HELPDESK SIMULATOR v2.4</small></div>
+    </div>
+    <div class="hud-mid">
+      <span class="hud-clock" id="hudClock">09:00</span>
+      <span class="hud-day" id="hudDay">HARI 01</span>
+      <span class="badge-ot hidden" id="otBadge">MODE LEMBUR</span>
+    </div>
+    <div class="hud-chips">
+      <div class="chip money" id="hudMoney"></div>
+      <div class="chip rep" id="hudRep"></div>
+      <button class="btn sm" id="btnMute">SUARA: ON</button>
+    </div>
+  </header>
+
+  <main id="layout">
+    <section class="panel" id="queuePanel">
+      <div class="p-title"><span>ANTRIAN TIKET</span><span class="cnt" id="qCount">0</span></div>
+      <div id="queueList"></div>
+    </section>
+
+    <section class="panel" id="centerPanel">
+      <div class="p-title"><span>MONITOR OPERASIONAL</span><span class="monitor-note">JARINGAN LOKAL — JANGAN DISEBAR</span></div>
+      <div class="term-body">
+        <div class="term-top">
+          <div>
+            <div class="bigclock" id="bigClock">09<small>:00</small></div>
+            <div class="dayline" id="dayLine">HARI 01 — JAM KERJA 09:00–17:30</div>
+          </div>
+          <div class="rack">
+            <svg width="120" height="86" viewBox="0 0 120 86" aria-hidden="true">
+              <rect x="4" y="4" width="112" height="78" fill="#0b0e07" stroke="#2e3524" stroke-width="2"/>
+              <g fill="none" stroke="#2e3524" stroke-width="1.5">
+                <line x1="4" y1="20" x2="116" y2="20"/><line x1="4" y1="36" x2="116" y2="36"/>
+                <line x1="4" y1="52" x2="116" y2="52"/><line x1="4" y1="68" x2="116" y2="68"/>
+              </g>
+              <circle class="led" cx="14" cy="12" r="3"/><circle class="led d2" cx="26" cy="12" r="3"/>
+              <circle class="led d3" cx="14" cy="28" r="3"/><circle class="led" cx="26" cy="44" r="3"/>
+              <circle class="led d2" cx="14" cy="60" r="3"/><circle class="led d3" cx="26" cy="76" r="3"/>
+              <g fill="#39421f"><rect x="44" y="9" width="60" height="6"/><rect x="44" y="25" width="60" height="6"/>
+              <rect x="44" y="41" width="60" height="6"/><rect x="44" y="57" width="60" height="6"/><rect x="44" y="73" width="60" height="6"/></g>
+            </svg>
+          </div>
+        </div>
+        <div class="term-ledger" id="ledger"></div>
+        <div class="term-log" id="logFeed" aria-live="polite"></div>
+        <div class="term-cats" id="catBars"></div>
+      </div>
+    </section>
+
+    <aside class="panel" id="sidePanel">
+      <div class="p-title"><span>KARTU TEKNISI</span></div>
+      <div class="p-body">
+        <div class="me">
+          <div class="me-avatar" id="meIco"></div>
+          <div><b>KAMU</b><span>SATU-SATUNYA TEKNISI</span></div>
+          <span class="lv-chip" id="lvChip">LV 1</span>
+        </div>
+        <div class="money-big"><label>SALDO GAJI + BONUS</label><div class="val" id="sideMoney">Rp 0</div></div>
+        <div class="meter rep" id="repMeter">
+          <label><span>REPUTASI</span><span id="repTxt">50/100</span></label>
+          <div class="tr"><i class="meter-fill meter-fill-50"></i></div>
+        </div>
+        <div class="meter xp">
+          <label><span>XP KE LEVEL BERIKUT</span><span id="xpTxt">0/100</span></label>
+          <div class="tr"><i id="xpBar" class="meter-fill meter-fill-0"></i></div>
+        </div>
+        <div class="statline"><span>Hari ini:</span><span><b id="stDone">0</b> selesai / <b id="stLate" class="u-red">0</b> telat</span></div>
+        <div class="statline"><span>Karier:</span><span><b id="stCareer">0</b> tiket total</span></div>
+        <button class="btn danger wide" id="btnEndDay">AKHIRI HARI</button>
+        <div class="hidden end-confirm-box" id="endConfirm">
+          <span id="endWarn"></span>
+          <div class="end-confirm-actions">
+            <button class="btn danger sm" id="btnEndYes">YA, TUTUP KAS</button>
+            <button class="btn sm" id="btnEndNo">BATAL</button>
+          </div>
+        </div>
+      </div>
+    </aside>
+  </main>
+</div>
+
+<div id="workOverlay" class="overlay hidden">
+  <div class="work-frame">
+    <div class="wf-head">
+      <span class="code" id="wfCode">#TKT-0000</span>
+      <h2 id="wfTitle">—</h2>
+      <span class="wf-sla">SLA DIBEKUKAN</span>
+      <button class="wf-close" id="wfClose" title="Tutup (tiket kembali ke antrian)" aria-label="Tutup tiket">✕</button>
+    </div>
+    <div class="wf-body">
+      <div class="wf-memo" id="wfMemo"></div>
+      <div class="wf-stage" id="wfStage"></div>
+    </div>
+  </div>
+</div>
+
+<div id="sumOverlay" class="overlay hidden"><div class="sum-frame" id="sumFrame"></div></div>
+<div id="toasts" aria-live="polite"></div>
+<script src="./meja-it.js" defer></script>
+</body>
+</html>

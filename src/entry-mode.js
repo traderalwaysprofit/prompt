@@ -5,6 +5,7 @@
 
   const modeFromHash = () => {
     if (/^#tools(?:\/|$)/.test(location.hash)) return 'tools';
+    if (/^#games(?:\/|$)/.test(location.hash)) return 'games';
     if (location.hash === '#prompts') return 'prompts';
     if (location.hash === '#workflows' || /^#cheatcodes\//.test(location.hash) || /^#work-assistant(?:\/|$)/.test(location.hash)) return 'workflows';
     return 'chooser';
@@ -27,6 +28,11 @@
 
     if (target.closest('#nav-tools, [data-open-tools], [data-mobile-nav="tools"]')) {
       setMode('tools');
+      return;
+    }
+
+    if (target.closest('#nav-games, [data-open-games], [data-mobile-nav="games"]')) {
+      setMode('games');
       return;
     }
 

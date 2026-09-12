@@ -10,5 +10,12 @@
   {"id":202,"example":"/antislopui audit frontend samson.web.id, lock search/workflow/accessibility, gunakan mutation L2, lalu redesign dengan karakter Swiss editorial tanpa gradient dekoratif, pill berlebihan, card spam, atau fake statistics. Target Anti-Slop Score minimal 90."},
   {"id":203,"example":"/wordpress bangun website company profile WordPress dengan Gutenberg atau Elementor yang dipilih berdasarkan kebutuhan, SEO-ready, cepat, aman, responsive, dan mudah dipelihara."},
   {"id":204,"example":"/woocommerce rancang toko WooCommerce untuk 50 produk dengan category, variation, checkout mobile, payment dan shipping terstruktur, SEO, performance, security, serta order testing sebelum launch."},
-  {"id":205,"example":"/wpaudit audit website WordPress existing dari sisi plugin/theme, performance, Core Web Vitals, SEO/schema, security, accessibility, UX, backup, dan maintenance lalu buat prioritas 30/60/90 hari."}
+  {"id":205,"example":"/wpaudit audit website WordPress existing dari sisi plugin/theme, performance, Core Web Vitals, SEO/schema, security, accessibility, UX, backup, dan maintenance lalu buat prioritas 30/60/90 hari."},
+  {"id":206,"example":"/devrequirements ubah kebutuhan Visit Plan MASUMI CRM menjadi requirements package implementation-ready lengkap dengan scope, non-goals, acceptance criteria, failure states, data/security implications, dan approval gate."},
+  {"id":207,"example":"/debugloop CRM login loop setelah preview deploy. Jangan fix dulu; rank hypotheses, kumpulkan evidence, konfirmasi root cause, lalu usulkan minimal fix dan regression verification."},
+  {"id":208,"example":"/verificationqa untuk fitur create lead CRM, buat coverage unit + API integration + Playwright critical journey login → create lead → verify pipeline, sertakan failure state dan hasil test aktual."},
+  {"id":209,"example":"/refactorgate audit modul CRM untuk dead code, duplicate utilities, dan unused dependency. Tampilkan confidence; jangan hapus kandidat di bawah 90% dan tunggu approval sebelum eksekusi refactor."},
+  {"id":210,"example":"/securitygate audit perubahan API leads dan authorization CRM. Beri P0–P3, evidence dan exploitability; jangan patch security architecture sebelum approval."},
+  {"id":211,"example":"/opsrunbook siapkan handoff setelah release CRM Cloudflare Worker + D1: health check, observability, migration verification, rollback, incident triage, dan batas tindakan yang memerlukan approval."},
+  {"id":212,"example":"/skillfoundry evaluasi workflow Cloudflare preview deployment yang sudah berhasil berulang. Jika reusable dan testable, ekstrak menjadi DRAFT Skill lengkap dengan trigger, procedure, gates, example, failure modes, dan regression cases."}
 ]
