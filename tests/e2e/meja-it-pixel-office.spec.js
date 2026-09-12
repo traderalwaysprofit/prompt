@@ -6,6 +6,10 @@ test.describe('MEJA-IT Pixel Office', () => {
     page.on('pageerror', (error) => errors.push(error.message));
 
     await page.goto('/src/games/meja-it/', { waitUntil:'networkidle' });
+    const female = page.getByRole('radio', { name:/WANITA/ });
+    await female.click();
+    await expect(female).toHaveAttribute('aria-checked','true');
+    await expect(page.getByRole('radio', { name:/PRIA/ })).toHaveAttribute('aria-checked','false');
     await page.getByRole('button', { name:'MULAI SHIFT' }).click();
 
     await expect(page.locator('#scrGame')).toBeVisible();
@@ -13,6 +17,8 @@ test.describe('MEJA-IT Pixel Office', () => {
     await expect(page.locator('#pixelOffice')).toBeVisible();
     await expect(page.locator('#opsMonitor')).toBeHidden();
     await expect(page.locator('#pixelOfficeCanvas')).toBeVisible();
+    await expect(page.locator('#pixelOfficeCanvas')).toHaveAttribute('data-character','female');
+    expect(await page.evaluate(() => localStorage.getItem('mejait_character'))).toBe('female');
 
     const before = Number(await page.locator('#pixelOfficeCanvas').getAttribute('data-player-x'));
     await page.keyboard.down('ArrowRight');
