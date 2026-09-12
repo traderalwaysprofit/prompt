@@ -184,7 +184,7 @@ test.describe('SAMSON pagination layout', () => {
     expect(layout.fontSize).toBeGreaterThanOrEqual(14);
   });
 
-  test('Pixel selected page keeps a readable numeric glyph and the yellow theme state', async ({ page }) => {
+  test('Pixel selected page keeps a readable numeric glyph and the gold current state', async ({ page }) => {
     await page.setViewportSize({ width: 1280, height: 900 });
     await page.goto(BASE_URL, { waitUntil: 'networkidle' });
     await page.evaluate(() => window.SamsonTheme.set('pixel'));
@@ -202,9 +202,9 @@ test.describe('SAMSON pagination layout', () => {
     expect(state.fontSize).toBeGreaterThanOrEqual(11);
     expect(state.glyphWidth).toBeGreaterThanOrEqual(6);
     expect(state.glyphHeight).toBeGreaterThanOrEqual(11);
-    expect(state.fontFamily.toLowerCase()).not.toContain('silkscreen');
-    expect(state.color).toBe('rgb(0, 0, 0)');
-    expect(state.backgroundColor).toBe('rgb(255, 204, 0)');
+    expect(state.fontFamily.toLowerCase()).toContain('space mono');
+    expect(state.color).toBe('rgb(5, 7, 19)');
+    expect(state.backgroundColor).toBe('rgb(255, 209, 102)');
     expect(['none', 'normal', '"none"']).toContain(state.beforeContent);
   });
 });

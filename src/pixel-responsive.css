@@ -1,5 +1,5 @@
-/* Pixel Retro Wire — responsive hardening.
-   Keeps the dense early-web editorial character while preventing overflow,
+/* Pixel Adventure — responsive hardening.
+   Keeps the compact quest-console character while preventing overflow,
    cramped controls, and unreadable layouts across phones, tablets, foldables,
    and short landscape screens. Loaded after pixel-theme.css. */
 
@@ -48,7 +48,7 @@ html[data-theme="pixel"] .creator-card{
   overflow-wrap:anywhere;
 }
 
-/* Tablet / small laptop: preserve the wire density without crowding columns. */
+/* Tablet / small laptop: preserve the HUD density without crowding columns. */
 @media(max-width:1024px){
   html[data-theme="pixel"] .pixel-wire-chrome,
   html[data-theme="pixel"] main,

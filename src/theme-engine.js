@@ -6,7 +6,7 @@
     { id: 'default', label: 'Samson Default', description: 'Clean, professional, neutral' },
     { id: 'developer', label: 'Developer', description: 'Dark, technical, compact' },
     { id: 'swiss', label: 'Swiss', description: 'Editorial, typographic, high-contrast' },
-    { id: 'pixel', label: 'Pixel', description: 'Retro arcade, blocky, high-contrast' }
+    { id: 'pixel', label: 'Pixel', description: 'Pixel adventure, playful, high-contrast' }
   ]);
 
   const ids = new Set(THEMES.map((theme) => theme.id));

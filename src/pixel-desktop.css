@@ -1,8 +1,8 @@
-/* Pixel Retro Wire — desktop proportion pass.
+/* Pixel Adventure — desktop proportion pass.
    Keeps the prompt library dense but prevents narrow four-column cards,
    clipped metadata, oversized empty art regions, and CTA collisions. */
 
-/* Pagination numbers need a denser readable face than the 8px Silkscreen
+/* Pagination numbers need a denser readable face than the display font
    used for chrome labels. In the selected yellow state, the small pixel glyph
    could collapse visually into a black square. Keep words retro, but render
    numeric page controls as clear UI data. */
@@ -26,13 +26,13 @@ html[data-theme="pixel"] .pagination .pagination-page>span{
 }
 
 html[data-theme="pixel"] .pagination .pagination-page[aria-current="page"]{
-  color:var(--pixel-void)!important;
+  color:var(--pixel-line)!important;
   font-size:12px!important;
   font-weight:800!important;
 }
 
 html[data-theme="pixel"] .pagination .pagination-page[aria-current="page"]>span{
-  color:var(--pixel-void)!important;
+  color:var(--pixel-line)!important;
 }
 
 @media (min-width:761px){
