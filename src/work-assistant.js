@@ -229,8 +229,13 @@
       else if (event.key === 'End') next = tabs.length - 1;
       else return;
       event.preventDefault();
+      const nextMode = tabs[next].dataset.workflowMode;
+      if (nextMode === 'assistant') {
+        state.selectedMenu = null;
+        state.selectedProblem = null;
+      }
+      setMode(nextMode, { focus: false });
       tabs[next].focus();
-      tabs[next].click();
     });
     document.addEventListener('click', (event) => {
       const mode = event.target.closest('[data-workflow-mode]');
