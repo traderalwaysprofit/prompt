@@ -1,0 +1,35 @@
+.monitor-switch{display:inline-flex;gap:6px;margin-left:auto}
+.monitor-switch button{min-height:32px;padding:5px 9px;border:1px solid var(--line);background:#151a14;color:var(--dim);font:700 9px monospace;letter-spacing:.08em;cursor:pointer}
+.monitor-switch button[aria-pressed="true"]{border-color:var(--green);color:var(--green);background:#1b2419}
+.pixel-office{padding:12px;background:#111611}
+.pixel-office-stage{position:relative;border:1px solid var(--line);background:#171d18;overflow:hidden}
+#pixelOfficeCanvas{display:block;width:100%;height:auto;image-rendering:pixelated;touch-action:none}
+.pixel-office-hud{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:10px}
+.pixel-office-status{min-height:32px;display:flex;align-items:center;flex:1;color:var(--ink);font-size:11px;line-height:1.4}
+.pixel-office-hint{color:var(--dim);font:700 9px monospace;white-space:nowrap}
+.pixel-office-controls{display:none;margin-top:12px;align-items:end;justify-content:space-between;gap:14px}
+.pixel-dpad{display:grid;grid-template-columns:52px 52px 52px;grid-template-rows:52px 52px 52px;gap:4px}
+.pixel-dpad button,.pixel-interact{border:1px solid var(--line);background:#1c241b;color:var(--ink);font:800 11px monospace;touch-action:none;user-select:none;-webkit-user-select:none}
+.pixel-dpad button:active,.pixel-interact:active{background:#293725;border-color:var(--green);color:var(--green)}
+.pixel-dpad .up{grid-column:2;grid-row:1}
+.pixel-dpad .left{grid-column:1;grid-row:2}
+.pixel-dpad .right{grid-column:3;grid-row:2}
+.pixel-dpad .down{grid-column:2;grid-row:3}
+.pixel-interact{min-width:150px;min-height:56px;padding:10px 14px}
+.pixel-interact:disabled{opacity:.45}
+@media(max-width:700px){
+  #layout{max-width:none}
+  #centerPanel{order:-1}
+  .monitor-switch{width:100%;margin-top:7px}
+  .monitor-switch button{flex:1;min-height:40px}
+  .pixel-office{padding:8px}
+  .pixel-office-controls{display:flex}
+  .pixel-office-hud{align-items:flex-start;flex-direction:column}
+  .pixel-office-hint{display:none}
+  .pixel-office-status{font-size:12px}
+  .pixel-dpad{grid-template-columns:48px 48px 48px;grid-template-rows:48px 48px 48px}
+  .pixel-interact{min-width:132px;min-height:52px}
+}
+@media(prefers-reduced-motion:reduce){
+  #pixelOfficeCanvas{scroll-behavior:auto}
+}
