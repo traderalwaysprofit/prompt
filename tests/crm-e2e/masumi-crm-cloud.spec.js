@@ -139,7 +139,7 @@ test('dashboard, follow-up, themes, safe rendering, import, and export work', as
   await expect(page.locator('#lead-rows').getByText('<img src=x onerror=alert(1)> E2E Brand')).toBeVisible();
   await expect(page.locator('img[src="x"]')).toHaveCount(0);
 
-  await page.getByRole('button', { name: /Follow-up/ }).click();
+  await page.getByRole('tab', { name: /Follow-up/ }).click();
   await expect(page.locator('#follow-up-list').getByText('E2E follow-up aman')).toBeVisible();
   await expect(page.locator('.follow-up-card')).toHaveClass(/is-overdue/);
 
@@ -148,7 +148,7 @@ test('dashboard, follow-up, themes, safe rendering, import, and export work', as
     await expect(page.locator('html')).toHaveAttribute('data-theme', theme);
   }
 
-  await page.getByRole('button', { name: 'Lead Register' }).click();
+  await page.getByRole('tab', { name: 'Lead Register' }).click();
   await page.getByRole('button', { name: 'Impor JSON' }).click();
   await page.locator('#import-file').setInputFiles({
     name: 'e2e-backup.json',
