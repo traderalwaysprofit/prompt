@@ -164,6 +164,11 @@ const state={
 };
 let tickTimer=null;
 let best={money:0,day:0};
+let selectedCharacter="male";
+try{
+  const storedCharacter=localStorage.getItem("mejait_character");
+  if(storedCharacter==="male"||storedCharacter==="female") selectedCharacter=storedCharacter;
+}catch(e){}
 
 function ticketEventPayload(t){
   return t ? { id:t.id, type:t.type, dept:t.dept, prio:t.prio, status:t.status } : null;
@@ -1195,7 +1200,7 @@ function startDay(){
   state.spawnPlan.sort((a,b)=>a-b);
   $("#logFeed").innerHTML="";
   logLine(`Hari ${state.day} dimulai. Kopi diseduh. Server menyala.`,"info");
-  emitMejaEvent("day-started",{day:state.day});
+  emitMejaEvent("day-started",{day:state.day,character:selectedCharacter});
   renderHUD(); renderTickets(); renderCounters();
 }
 function endDay(){
@@ -1301,6 +1306,22 @@ $("#skillList").innerHTML=Object.keys(TYPES).map(k=>
   `<span class="skill">${ic(TYPES[k].icon,13)}${TYPES[k].label}</span>`).join("");
 $("#brandIco").innerHTML=ic("wrench",20);
 $("#meIco").innerHTML=ic("user",26);
+const characterButtons=[...document.querySelectorAll("[data-character]")];
+function applyCharacterSelection(value,{announce=false}={}){
+  selectedCharacter=value==="female"?"female":"male";
+  characterButtons.forEach((button)=>{
+    const selected=button.dataset.character===selectedCharacter;
+    button.classList.toggle("is-selected",selected);
+    button.setAttribute("aria-checked",String(selected));
+  });
+  try{localStorage.setItem("mejait_character",selectedCharacter);}catch(e){}
+  emitMejaEvent("character-changed",{character:selectedCharacter});
+  if(announce) toast(`Karakter teknisi: <b>${selectedCharacter==="female"?"WANITA":"PRIA"}</b>`);
+}
+characterButtons.forEach((button)=>{
+  button.onclick=()=>{ sfx.click(); applyCharacterSelection(button.dataset.character,{announce:true}); };
+});
+applyCharacterSelection(selectedCharacter);
 $("#hudMoney").innerHTML=ic("coins",15)+" <b>Rp 0</b>";
 $("#hudRep").innerHTML=ic("star",15)+" <b>50</b>/100";
 renderBest();
