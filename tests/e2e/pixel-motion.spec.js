@@ -8,7 +8,7 @@ const activatePixel = async (page) => {
   await expect(page.locator('html')).toHaveAttribute('data-theme', 'pixel');
 };
 
-test.describe('Pixel Motion System V1', () => {
+test.describe('Pixel Motion System V2', () => {
   test('uses short stepped motion and keeps the ticker static', async ({ page }) => {
     await activatePixel(page);
 
@@ -70,5 +70,27 @@ test.describe('Pixel Motion System V1', () => {
     const action = page.locator('[data-show-workflows]');
     await expect(action).toBeVisible();
     expect(await action.evaluate((element) => element.getBoundingClientRect().height)).toBeGreaterThanOrEqual(44);
+  });
+
+  test('uses functional color roles and tactile hard-shadow feedback', async ({ page }) => {
+    await activatePixel(page);
+
+    const contract = await page.evaluate(() => {
+      const root = getComputedStyle(document.documentElement);
+      const action = getComputedStyle(document.querySelector('[data-show-workflows]'));
+      return {
+        primary: root.getPropertyValue('--pixel-primary').trim(),
+        secondary: root.getPropertyValue('--pixel-secondary').trim(),
+        success: root.getPropertyValue('--pixel-success').trim(),
+        actionShadow: action.boxShadow
+      };
+    });
+
+    expect(contract).toEqual({
+      primary: '#68c5ff',
+      secondary: '#ff82ac',
+      success: '#75e6a0',
+      actionShadow: 'rgb(5, 7, 19) 4px 4px 0px 0px'
+    });
   });
 });

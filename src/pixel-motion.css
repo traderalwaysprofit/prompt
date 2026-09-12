@@ -1,4 +1,4 @@
-/* Pixel Motion System V1 — short, stepped feedback for the Retro Wire theme.
+/* Pixel Motion System V2 — short, stepped feedback for Pixel Adventure.
    Motion communicates state changes; it never replaces labels, focus, or status. */
 
 html[data-theme="pixel"]{
@@ -21,21 +21,22 @@ html[data-theme="pixel"] .pixel-wire-strip.lead{
   animation:pixel-border-signal var(--pixel-motion-fast) var(--pixel-step-fast) 1;
 }
 
-/* Controls provide tactile, integer-pixel feedback without depth or bounce. */
+/* Controls provide tactile, integer-pixel feedback without bounce. */
 html[data-theme="pixel"] button,
 html[data-theme="pixel"] a,
 html[data-theme="pixel"] input,
 html[data-theme="pixel"] select,
 html[data-theme="pixel"] textarea,
 html[data-theme="pixel"] [role="button"]{
-  transition-property:background-color,border-color,color,transform,opacity!important;
+  transition-property:background-color,border-color,color,box-shadow,transform,opacity!important;
   transition-duration:var(--pixel-motion-fast)!important;
   transition-timing-function:var(--pixel-step-fast)!important;
 }
 
 html[data-theme="pixel"] button:active:not(:disabled),
 html[data-theme="pixel"] [role="button"]:active{
-  transform:translate(2px,2px)!important;
+  box-shadow:1px 1px 0 var(--pixel-line)!important;
+  transform:translate(3px,3px)!important;
 }
 
 html[data-theme="pixel"] .nav-link,
@@ -58,6 +59,7 @@ html[data-theme="pixel"] .choice-card,
 html[data-theme="pixel"] .workflow-catalog-card,
 html[data-theme="pixel"] .domain-workflow-card{
   transition:border-color var(--pixel-motion-fast) var(--pixel-step-fast),
+             box-shadow var(--pixel-motion-fast) var(--pixel-step-fast),
              transform var(--pixel-motion-fast) var(--pixel-step-fast)!important;
 }
 
@@ -65,7 +67,8 @@ html[data-theme="pixel"] .nft-card:focus-within,
 html[data-theme="pixel"] .choice-card:focus-within,
 html[data-theme="pixel"] .workflow-catalog-card:focus-within,
 html[data-theme="pixel"] .domain-workflow-card:focus-within{
-  border-color:var(--pixel-line-hi)!important;
+  border-color:var(--pixel-primary)!important;
+  box-shadow:8px 8px 0 var(--pixel-line)!important;
   transform:translate(-2px,-2px)!important;
 }
 
@@ -74,7 +77,8 @@ html[data-theme="pixel"] .domain-workflow-card:focus-within{
   html[data-theme="pixel"] .choice-card:hover,
   html[data-theme="pixel"] .workflow-catalog-card:hover,
   html[data-theme="pixel"] .domain-workflow-card:hover{
-    border-color:var(--pixel-line-hi)!important;
+    border-color:var(--pixel-primary)!important;
+    box-shadow:8px 8px 0 var(--pixel-line)!important;
     transform:translate(-2px,-2px)!important;
   }
 }
@@ -127,12 +131,12 @@ html[data-theme="pixel"] .empty{
 
 @keyframes pixel-border-signal{
   0%,100%{border-color:var(--pixel-line)}
-  50%{border-color:var(--pixel-yellow)}
+  50%{border-color:var(--pixel-primary)}
 }
 
 @keyframes pixel-state-confirm{
   0%,100%{outline-color:transparent}
-  50%{outline:1px solid var(--pixel-yellow);outline-offset:2px}
+  50%{outline:3px solid var(--pixel-gold);outline-offset:3px}
 }
 
 @keyframes pixel-overlay-enter{
