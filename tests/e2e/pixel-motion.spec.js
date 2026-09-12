@@ -74,23 +74,22 @@ test.describe('Pixel Motion System V2', () => {
 
   test('uses functional color roles and tactile hard-shadow feedback', async ({ page }) => {
     await activatePixel(page);
+    const action = page.locator('[data-show-workflows]').first();
+    await expect(action).toHaveCSS('box-shadow', 'rgb(5, 7, 19) 4px 4px 0px 0px');
 
     const contract = await page.evaluate(() => {
       const root = getComputedStyle(document.documentElement);
-      const action = getComputedStyle(document.querySelector('[data-show-workflows]'));
       return {
         primary: root.getPropertyValue('--pixel-primary').trim(),
         secondary: root.getPropertyValue('--pixel-secondary').trim(),
-        success: root.getPropertyValue('--pixel-success').trim(),
-        actionShadow: action.boxShadow
+        success: root.getPropertyValue('--pixel-success').trim()
       };
     });
 
     expect(contract).toEqual({
       primary: '#68c5ff',
       secondary: '#ff82ac',
-      success: '#75e6a0',
-      actionShadow: 'rgb(5, 7, 19) 4px 4px 0px 0px'
+      success: '#75e6a0'
     });
   });
 });

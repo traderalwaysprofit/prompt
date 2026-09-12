@@ -26,13 +26,13 @@ html[data-theme="pixel"] .pagination .pagination-page>span{
 }
 
 html[data-theme="pixel"] .pagination .pagination-page[aria-current="page"]{
-  color:var(--pixel-void)!important;
+  color:var(--pixel-line)!important;
   font-size:12px!important;
   font-weight:800!important;
 }
 
 html[data-theme="pixel"] .pagination .pagination-page[aria-current="page"]>span{
-  color:var(--pixel-void)!important;
+  color:var(--pixel-line)!important;
 }
 
 @media (min-width:761px){
