@@ -177,6 +177,7 @@ if (canvas && shell && monitor && status && interactButton && btnWorld && btnMon
     canvas.dataset.playerX = player.x.toFixed(3);
     canvas.dataset.playerY = player.y.toFixed(3);
     canvas.dataset.playerDir = player.dir;
+    canvas.dataset.character = character;
     ctx.fillStyle = COLORS.floor;
     ctx.fillRect(0,0,OFFICE_MAP[0].length*TILE_SIZE,OFFICE_MAP.length*TILE_SIZE);
     OFFICE_MAP.forEach((row,y) => [...row].forEach((tile,x) => drawTile(tile,x,y)));
