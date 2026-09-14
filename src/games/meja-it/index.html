@@ -7,6 +7,7 @@
 <title>MEJA-IT — Simulasi IT Support</title>
 <link rel="stylesheet" href="./meja-it.css">
 <link rel="stylesheet" href="./meja-it-csp.css">
+<link rel="stylesheet" href="./pixel-office.css">
 </head>
 <body>
 <div class="game-nav"><a class="game-back" href="/#games" aria-label="Kembali ke SAMSON Games Hub">← GAMES HUB</a></div>
@@ -26,6 +27,19 @@
         <div><b>4.</b> <span>Baca memo klien dengan teliti. Detailnya penting.</span></div>
       </div>
       <div class="skills" id="skillList"></div>
+      <fieldset class="character-select" aria-labelledby="characterSelectTitle">
+        <legend id="characterSelectTitle">PILIH KARAKTER TEKNISI</legend>
+        <div class="character-options" role="radiogroup" aria-label="Karakter teknisi">
+          <button type="button" class="character-option is-selected" data-character="male" role="radio" aria-checked="true">
+            <span class="character-preview character-preview-male" aria-hidden="true"></span>
+            <span><b>PRIA</b><small>Teknisi IT</small></span>
+          </button>
+          <button type="button" class="character-option" data-character="female" role="radio" aria-checked="false">
+            <span class="character-preview character-preview-female" aria-hidden="true"></span>
+            <span><b>WANITA</b><small>Teknisi IT</small></span>
+          </button>
+        </div>
+      </fieldset>
       <button class="btn primary btn-start-shift" id="btnStart">MULAI SHIFT</button>
       <div class="best" id="bestLine"></div>
     </div>
@@ -64,8 +78,32 @@
     </section>
 
     <section class="panel" id="centerPanel">
-      <div class="p-title"><span>MONITOR OPERASIONAL</span><span class="monitor-note">JARINGAN LOKAL — JANGAN DISEBAR</span></div>
-      <div class="term-body">
+      <div class="p-title">
+        <span>MONITOR OPERASIONAL</span>
+        <div class="monitor-switch" role="group" aria-label="Pilih tampilan operasional">
+          <button type="button" id="btnOpsMonitor" aria-pressed="true">MONITOR</button>
+          <button type="button" id="btnPixelOffice" aria-pressed="false">PIXEL OFFICE</button>
+        </div>
+      </div>
+      <section class="pixel-office" id="pixelOffice" hidden aria-label="Pixel Office">
+        <div class="pixel-office-stage">
+          <canvas id="pixelOfficeCanvas" width="640" height="384" role="img" aria-label="Peta kantor pixel 8-bit dengan karakter teknisi IT yang dapat digerakkan"></canvas>
+        </div>
+        <div class="pixel-office-hud">
+          <div class="pixel-office-status" id="pixelOfficeStatus" role="status" aria-live="polite">Jelajahi kantor. Tiket aktif akan diberi marker.</div>
+          <div class="pixel-office-hint">WASD / ARROW · ENTER INTERACT</div>
+        </div>
+        <div class="pixel-office-controls" aria-label="Kontrol karakter mobile">
+          <div class="pixel-dpad" role="group" aria-label="Arah gerak">
+            <button class="up" type="button" data-pixel-dir="up" aria-label="Berjalan ke atas">▲</button>
+            <button class="left" type="button" data-pixel-dir="left" aria-label="Berjalan ke kiri">◀</button>
+            <button class="right" type="button" data-pixel-dir="right" aria-label="Berjalan ke kanan">▶</button>
+            <button class="down" type="button" data-pixel-dir="down" aria-label="Berjalan ke bawah">▼</button>
+          </div>
+          <button class="pixel-interact" id="pixelInteract" type="button" disabled>INTERACT</button>
+        </div>
+      </section>
+      <div class="term-body" id="opsMonitor">
         <div class="term-top">
           <div>
             <div class="bigclock" id="bigClock">09<small>:00</small></div>
@@ -142,5 +180,6 @@
 <div id="sumOverlay" class="overlay hidden"><div class="sum-frame" id="sumFrame"></div></div>
 <div id="toasts" aria-live="polite"></div>
 <script src="./meja-it.js" defer></script>
+<script type="module" src="./pixel-office.js"></script>
 </body>
 </html>
