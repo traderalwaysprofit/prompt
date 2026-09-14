@@ -15,11 +15,11 @@
     chrome.innerHTML = `
       <div class="pixel-wire-strip lead">
         <span class="pixel-wire-brand">SAMSON</span>
-        <span class="pixel-wire-title">AI WORKFLOW + PROMPT SYSTEM</span>
-        <span class="pixel-wire-status">PIXEL MODE</span>
+        <span class="pixel-wire-title">PROMPT QUEST SYSTEM</span>
+        <span class="pixel-wire-status">ADVENTURE UI</span>
       </div>
       <div class="pixel-wire-strip pixel-wire-ticker">
-        <span>WORKFLOWS &nbsp;&gt;&gt;&gt;&nbsp; PROMPT LIBRARY &nbsp;&gt;&gt;&gt;&nbsp; BUILD &nbsp;&gt;&gt;&gt;&nbsp; RESEARCH &nbsp;&gt;&gt;&gt;&nbsp; AUTOMATION &nbsp;&gt;&gt;&gt;&nbsp; WORDPRESS &nbsp;&gt;&gt;&gt;&nbsp; TRADING &nbsp;&gt;&gt;&gt;&nbsp; NO RANKING, JUST TOOLS</span>
+        <span>WORKFLOWS &nbsp;◆&nbsp; PROMPT LIBRARY &nbsp;◆&nbsp; BUILD &nbsp;◆&nbsp; RESEARCH &nbsp;◆&nbsp; AUTOMATION &nbsp;◆&nbsp; WORDPRESS &nbsp;◆&nbsp; TRADING &nbsp;◆&nbsp; SYSTEM READY</span>
       </div>`;
 
     document.body.insertBefore(chrome, document.body.firstChild);
@@ -35,7 +35,7 @@
     const meta = document.querySelector('meta[name="theme-color"]');
     if (!meta) return;
     if (!meta.dataset.defaultThemeColor) meta.dataset.defaultThemeColor = meta.content || META_DEFAULT;
-    meta.content = active ? '#0c0c0c' : meta.dataset.defaultThemeColor;
+    meta.content = active ? '#151b30' : meta.dataset.defaultThemeColor;
   };
 
   const syncPixelMode = (theme) => {

@@ -1,0 +1,252 @@
+/* Pixel Motion System V3 — short feedback plus a readable adventure HUD ticker.
+   Motion communicates state changes; it never replaces labels, focus, or status. */
+
+html[data-theme="pixel"]{
+  --pixel-motion-instant:80ms;
+  --pixel-motion-fast:120ms;
+  --pixel-motion-base:180ms;
+  --pixel-motion-slow:240ms;
+  --pixel-motion-marquee:24s;
+  --pixel-step-instant:steps(1,end);
+  --pixel-step-fast:steps(2,end);
+  --pixel-step-base:steps(3,end);
+  --pixel-step-slow:steps(4,end);
+}
+
+/* Theme activation: a single frame sequence, never a persistent screen effect. */
+html[data-theme="pixel"] .pixel-wire-chrome{
+  animation:pixel-wire-enter var(--pixel-motion-base) var(--pixel-step-base) both;
+}
+
+html[data-theme="pixel"] .pixel-wire-strip.lead{
+  animation:pixel-border-signal var(--pixel-motion-fast) var(--pixel-step-fast) 1;
+}
+
+/* The requested HUD marquee carries real navigation/status labels. */
+html[data-theme="pixel"] .pixel-wire-ticker span{
+  animation:pixel-header-scroll var(--pixel-motion-marquee) linear infinite;
+  will-change:transform;
+}
+
+html[data-theme="pixel"] .pixel-wire-ticker span::after{
+  animation:pixel-cursor-blink 720ms steps(1,end) infinite;
+}
+
+/* Controls provide tactile, integer-pixel feedback without bounce. */
+html[data-theme="pixel"] button,
+html[data-theme="pixel"] a,
+html[data-theme="pixel"] input,
+html[data-theme="pixel"] select,
+html[data-theme="pixel"] textarea,
+html[data-theme="pixel"] [role="button"]{
+  transition-property:background-color,border-color,color,box-shadow,transform,opacity!important;
+  transition-duration:var(--pixel-motion-fast)!important;
+  transition-timing-function:var(--pixel-step-fast)!important;
+}
+
+html[data-theme="pixel"] button:active:not(:disabled),
+html[data-theme="pixel"] [role="button"]:active{
+  box-shadow:1px 1px 0 var(--pixel-line)!important;
+  transform:translate(3px,3px)!important;
+}
+
+html[data-theme="pixel"] .nav-link,
+html[data-theme="pixel"] [data-workflow-filter],
+html[data-theme="pixel"] .workflow-step-tab,
+html[data-theme="pixel"] .pagination-control,
+html[data-theme="pixel"] .pagination-page{
+  transition-duration:var(--pixel-motion-fast)!important;
+}
+
+html[data-theme="pixel"] input:focus-visible,
+html[data-theme="pixel"] select:focus-visible,
+html[data-theme="pixel"] textarea:focus-visible{
+  animation:pixel-border-signal var(--pixel-motion-fast) var(--pixel-step-fast) 1;
+}
+
+/* Cards move only when they are actionable; keyboard focus receives the same cue. */
+html[data-theme="pixel"] .nft-card,
+html[data-theme="pixel"] .choice-card,
+html[data-theme="pixel"] .workflow-catalog-card,
+html[data-theme="pixel"] .domain-workflow-card{
+  transition:border-color var(--pixel-motion-fast) var(--pixel-step-fast),
+             box-shadow var(--pixel-motion-fast) var(--pixel-step-fast),
+             transform var(--pixel-motion-fast) var(--pixel-step-fast)!important;
+}
+
+html[data-theme="pixel"] .nft-card:focus-within,
+html[data-theme="pixel"] .choice-card:focus-within,
+html[data-theme="pixel"] .workflow-catalog-card:focus-within,
+html[data-theme="pixel"] .domain-workflow-card:focus-within{
+  border-color:var(--pixel-primary)!important;
+  box-shadow:8px 8px 0 var(--pixel-line)!important;
+  transform:translate(-2px,-2px)!important;
+}
+
+@media(hover:hover) and (pointer:fine){
+  html[data-theme="pixel"] .nft-card:hover,
+  html[data-theme="pixel"] .choice-card:hover,
+  html[data-theme="pixel"] .workflow-catalog-card:hover,
+  html[data-theme="pixel"] .domain-workflow-card:hover{
+    border-color:var(--pixel-primary)!important;
+    box-shadow:8px 8px 0 var(--pixel-line)!important;
+    transform:translate(-2px,-2px)!important;
+  }
+}
+
+/* State confirmation is brief and always paired with an existing visual label/state. */
+html[data-theme="pixel"] .copy-section.copied,
+html[data-theme="pixel"] .favorite-btn.is-favorite,
+html[data-theme="pixel"] .modal-fav.is-favorite,
+html[data-theme="pixel"] [data-workflow-filter][aria-pressed="true"],
+html[data-theme="pixel"] .workflow-step-tab[aria-current="step"],
+html[data-theme="pixel"] .pagination-page[aria-current="page"]{
+  animation:pixel-state-confirm var(--pixel-motion-base) var(--pixel-step-base) 1;
+}
+
+html[data-theme="pixel"] .catalog-progress>span,
+html[data-theme="pixel"] .workflow-progress-bar{
+  transition:width var(--pixel-motion-slow) var(--pixel-step-slow)!important;
+}
+
+/* Layered dialog entrance preserves the existing focus-management semantics. */
+html[data-theme="pixel"] .overlay{
+  animation:pixel-overlay-enter var(--pixel-motion-instant) var(--pixel-step-instant) both;
+}
+
+html[data-theme="pixel"] .modal{
+  animation:pixel-frame-enter var(--pixel-motion-slow) var(--pixel-step-slow) both;
+}
+
+html[data-theme="pixel"] .modal>header,
+html[data-theme="pixel"] .modal>.modal-art,
+html[data-theme="pixel"] .modal>.modal-body{
+  animation:pixel-content-enter var(--pixel-motion-base) var(--pixel-step-base) both;
+  animation-delay:var(--pixel-motion-instant);
+}
+
+html[data-theme="pixel"] .toast{
+  animation:pixel-toast-enter var(--pixel-motion-base) var(--pixel-step-base) both;
+  transition:opacity var(--pixel-motion-base) var(--pixel-step-base),
+             transform var(--pixel-motion-base) var(--pixel-step-base)!important;
+}
+
+html[data-theme="pixel"] .empty{
+  animation:pixel-content-enter var(--pixel-motion-base) var(--pixel-step-base) both;
+}
+
+@keyframes pixel-wire-enter{
+  from{opacity:0;transform:translateY(-4px)}
+  to{opacity:1;transform:translateY(0)}
+}
+
+@keyframes pixel-header-scroll{
+  from{transform:translateX(0)}
+  to{transform:translateX(-100%)}
+}
+
+@keyframes pixel-cursor-blink{
+  0%,49%{opacity:1}
+  50%,100%{opacity:0}
+}
+
+@keyframes pixel-border-signal{
+  0%,100%{border-color:var(--pixel-line)}
+  50%{border-color:var(--pixel-primary)}
+}
+
+@keyframes pixel-state-confirm{
+  0%,100%{outline-color:transparent}
+  50%{outline:3px solid var(--pixel-gold);outline-offset:3px}
+}
+
+@keyframes pixel-overlay-enter{
+  from{opacity:0}
+  to{opacity:1}
+}
+
+@keyframes pixel-frame-enter{
+  from{opacity:0;transform:translateY(-4px)}
+  to{opacity:1;transform:translateY(0)}
+}
+
+@keyframes pixel-content-enter{
+  from{opacity:0;transform:translateY(-2px)}
+  to{opacity:1;transform:translateY(0)}
+}
+
+@keyframes pixel-toast-enter{
+  from{opacity:0;transform:translate(-50%,4px)}
+  to{opacity:1;transform:translate(-50%,0)}
+}
+
+/* Mobile keeps the same feedback but reduces displacement around tight edges. */
+@media(max-width:760px){
+  html[data-theme="pixel"] button:active:not(:disabled),
+  html[data-theme="pixel"] [role="button"]:active{
+    transform:translate(1px,1px)!important;
+  }
+
+  html[data-theme="pixel"] .nft-card:focus-within,
+  html[data-theme="pixel"] .choice-card:focus-within,
+  html[data-theme="pixel"] .workflow-catalog-card:focus-within,
+  html[data-theme="pixel"] .domain-workflow-card:focus-within{
+    transform:translate(-1px,-1px)!important;
+  }
+
+}
+
+@media(max-width:760px) and (hover:hover) and (pointer:fine){
+  html[data-theme="pixel"] .nft-card:hover,
+  html[data-theme="pixel"] .choice-card:hover,
+  html[data-theme="pixel"] .workflow-catalog-card:hover,
+  html[data-theme="pixel"] .domain-workflow-card:hover{
+    transform:translate(-1px,-1px)!important;
+  }
+}
+
+@media(prefers-reduced-motion:reduce){
+  html[data-theme="pixel"]{
+    --pixel-motion-instant:.001ms;
+    --pixel-motion-fast:.001ms;
+    --pixel-motion-base:.001ms;
+    --pixel-motion-slow:.001ms;
+  }
+
+  html[data-theme="pixel"] *,
+  html[data-theme="pixel"] *::before,
+  html[data-theme="pixel"] *::after{
+    scroll-behavior:auto!important;
+    animation:none!important;
+    transition:none!important;
+  }
+
+  html[data-theme="pixel"] .pixel-wire-ticker span{
+    min-width:0;
+    max-width:100%;
+    padding-left:0;
+    overflow:hidden;
+    text-overflow:ellipsis;
+    transform:none!important;
+    will-change:auto;
+  }
+
+  html[data-theme="pixel"] button:active:not(:disabled),
+  html[data-theme="pixel"] [role="button"]:active,
+  html[data-theme="pixel"] .nft-card:focus-within,
+  html[data-theme="pixel"] .choice-card:focus-within,
+  html[data-theme="pixel"] .workflow-catalog-card:focus-within,
+  html[data-theme="pixel"] .domain-workflow-card:focus-within{
+    transform:none!important;
+  }
+
+}
+
+@media(prefers-reduced-motion:reduce) and (hover:hover) and (pointer:fine){
+  html[data-theme="pixel"] .nft-card:hover,
+  html[data-theme="pixel"] .choice-card:hover,
+  html[data-theme="pixel"] .workflow-catalog-card:hover,
+  html[data-theme="pixel"] .domain-workflow-card:hover{
+    transform:none!important;
+  }
+}
