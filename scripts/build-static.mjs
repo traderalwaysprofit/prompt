@@ -1,5 +1,6 @@
 import { cp, mkdir, rm, writeFile } from 'node:fs/promises';
 import path from 'node:path';
+import { assertNoClientSecrets } from './client-secret-scan.mjs';
 import { sanitizeMejaIt } from './sanitize-meja-it.mjs';
 
 const root = process.cwd();
@@ -23,5 +24,8 @@ await sanitizeMejaIt(dist);
 const commit = process.env.WORKERS_CI_COMMIT_SHA || process.env.GITHUB_SHA || 'local';
 await writeFile(path.join(dist, 'version.json'), `${JSON.stringify({ commit }, null, 2)}\n`);
 
+await assertNoClientSecrets(dist);
+
 console.log('Static production output created in dist/');
+console.log('Secret gate: no provider credentials detected in client bundle.');
 console.log('Included: index.html, favicon.svg, _headers, version.json, src/, data/, assets/, vendor/');
