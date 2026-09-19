@@ -35,6 +35,18 @@ The measured scope is explicitly listed in `vitest.config.ts`. Browser-oriented 
 
 Do not lower a threshold or remove a file from coverage merely to make CI pass. Any scope or threshold change must explain the tradeoff and receive owner review.
 
+## CI ownership
+
+Keep one owner for each verification concern:
+
+- `Validate` owns static checks, unit coverage, deterministic regressions, build contracts, security headers, and Worker dry-runs.
+- `Browser E2E` owns browser behavior and validates the already-built header artifact without repeating Worker dry-runs.
+- `SAMSON Preview Verification` owns isolated preview deployment and preview contracts.
+- `Production Verify` owns post-merge production verification.
+- `Reliability Metrics` reads workflow history and publishes evidence; it never deploys or repairs production.
+
+Do not introduce a second general-purpose CI workflow. Add a check to the existing owner or document why the new workflow requires an independent lifecycle, permission boundary, or runtime environment. Metric definitions and limitations are documented in `RELIABILITY.md`.
+
 ## Branches and commits
 
 Use focused branch names such as:

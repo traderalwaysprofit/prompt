@@ -87,8 +87,17 @@ jobs:
       - name: Report prompt workflow coverage
         run: npm run report:prompt-coverage -- "${{ github.event_name == 'pull_request' && format('origin/{0}', github.base_ref) || 'HEAD^' }}"
 
-      - name: Test practical tools core
-        run: npm run test:tools
+      - name: Lint runtime JavaScript
+        run: npm run lint
+
+      - name: TypeScript strict check
+        run: npm run typecheck
+
+      - name: Enforce unit coverage threshold
+        run: npm run test:coverage
+
+      - name: Run deterministic regression suites
+        run: npm run test:tools:core
 
       - name: Build production output
         run: npm run build
@@ -133,8 +142,10 @@ jobs:
             echo "- Runtime contract: minimum 197 prompts, examples 1:1, active cheatcodes"
             echo "- Dynamic catalog counts: prompts, categories, and workflows"
             echo "- Regression protection: unapproved deletion blocked; retired IDs remain reserved"
+            echo "- Unit coverage floor: statements/lines/functions 75%, branches 60%"
+            echo "- Practical tool regression suites: deterministic core checks"
             echo "- Build contract: static assets + version metadata"
-            echo "- Security policy: strict CSP and required response headers"
+            echo "- Security policy: strict CSP, required response headers, and Worker dry-runs"
           } >> "$GITHUB_STEP_SUMMARY"
 
   extract-via-pr:

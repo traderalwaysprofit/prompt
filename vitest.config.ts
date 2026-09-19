@@ -11,6 +11,7 @@ export default defineConfig({
       reportsDirectory: 'coverage',
       include: [
         'scripts/lib/observability-config.mjs',
+        'scripts/lib/reliability-metrics.mjs',
         'scripts/renderVisual.ts',
         'src/core/**/*.ts',
         'src/games-registry.js',

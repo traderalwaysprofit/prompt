@@ -47,6 +47,10 @@ Secrets, OTPs, API keys, Access assertions, real lead data, and other personal d
 
 Every runtime pull request must identify the verification signal and rollback method. Prefer reversible changes, backward-compatible migrations, and isolated preview resources. Do not delete the last known-good branch, artifact, backup, or migration evidence until production verification succeeds.
 
+## Reliability evidence
+
+The `Reliability Metrics` workflow measures a rolling 30-day CI reliability rate, deployment success rate, and recovery time from repository workflow history. It runs every Sunday at 19:00 WIB and can be dispatched manually. Reports are informational until the owner approves explicit service objectives; a metric workflow must not deploy, roll back, mutate data, or conceal an unrecovered incident. Definitions and known limitations are maintained in `RELIABILITY.md`.
+
 ## Emergency changes
 
 For an active incident, prefer reverting the offending change or using a focused hotfix pull request. Record the incident, impact, mitigation, verification, and follow-up controls after service is stable. Emergency pressure does not authorize disclosing secrets or production data.

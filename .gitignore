@@ -7,3 +7,4 @@ wrangler.crm.preview.generated.jsonc
 test-results/
 playwright-report/
 coverage/
+reliability-metrics/
