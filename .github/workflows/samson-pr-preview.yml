@@ -9,8 +9,10 @@ permissions:
   contents: read
 
 concurrency:
-  group: samson-preview-${{ github.event.pull_request.number || github.ref_name }}
-  cancel-in-progress: true
+  # A stable Worker hostname avoids per-PR DNS propagation. Serialize deployments
+  # so two pull requests can never verify different revisions at the same URL.
+  group: samson-pr-preview-deployment
+  cancel-in-progress: false
 
 jobs:
   preview-verification:
@@ -22,8 +24,8 @@ jobs:
     env:
       NO_COLOR: 1
       PREVIEW_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
-      PREVIEW_PR_NUMBER: ${{ github.event.pull_request.number || '' }}
       PREVIEW_HEAD_REPOSITORY: ${{ github.event.pull_request.head.repo.full_name || github.repository }}
+      PREVIEW_WORKER_NAME: samson-pr-preview
     steps:
       - name: Checkout exact preview revision
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -66,19 +68,8 @@ jobs:
             echo "Cloudflare credentials are unavailable for this PR; using the isolated local preview contract." >&2
           fi
 
-      - name: Set isolated preview identity
-        id: identity
-        shell: bash
-        run: |
-          set -euo pipefail
-          suffix="${PREVIEW_PR_NUMBER:-manual}"
-          worker_name="samson-pr-${suffix}-preview"
-          echo "worker_name=$worker_name" >> "$GITHUB_OUTPUT"
-
       - name: Generate isolated Cloudflare preview config
         if: steps.cloudflare.outputs.available == 'true'
-        env:
-          PREVIEW_WORKER_NAME: ${{ steps.identity.outputs.worker_name }}
         run: |
           node --input-type=module <<'NODE'
           import { writeFileSync } from 'node:fs';
@@ -168,7 +159,6 @@ jobs:
         env:
           PREVIEW_MODE: ${{ steps.cloudflare.outputs.mode }}
           PREVIEW_URL: ${{ steps.deploy.outputs.preview_url || steps.local.outputs.preview_url }}
-          PREVIEW_WORKER_NAME: ${{ steps.identity.outputs.worker_name }}
         shell: bash
         run: |
           {
