@@ -43,13 +43,12 @@ assert.deepEqual(PIPELINE_PROBABILITIES, {
 assert.equal(TOOLS.length, 3);
 assert.equal(TOOLS[2].id, 'masumi-sales-crm');
 assert.equal(getToolByRoute('#tools/masumi-sales-crm'), TOOLS[2]);
-assert.equal(TOOLS[2].cloudUrl, 'https://crm.samson.web.id/');
 assert.equal(TOOLS[2].externalUrl, 'https://crm.samson.web.id/');
 assert.equal(TOOLS[2].externalTarget, '_blank');
 assert.deepEqual(TOOLS[2].badges, ['CLOUD', 'CRM']);
 assert.equal(TOOLS[2].statusLabel, 'Aplikasi aktif');
-const crmModule = await TOOLS[2].load();
-assert.equal(typeof crmModule.mountTool, 'function');
+assert.equal('load' in TOOLS[2], false);
+assert.equal('cloudUrl' in TOOLS[2], false);
 
 assert.deepEqual(getPriority({ fit: 0, readiness: 0, urgency: 0, value: 0 }), { total: 0, label: 'Low' });
 assert.deepEqual(getPriority({ fit: 2, readiness: 2, urgency: 1, value: 1 }), { total: 6, label: 'Develop' });

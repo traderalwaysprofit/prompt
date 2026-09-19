@@ -24,12 +24,12 @@ assert.equal(getToolByRoute('#tools/not-found'), null);
 assert.equal(TOOLS[2].externalUrl, 'https://crm.samson.web.id/');
 assert.equal(TOOLS[2].externalTarget, '_blank');
 assert.deepEqual(TOOLS[2].badges, ['CLOUD', 'CRM']);
+assert.equal('load' in TOOLS[2], false);
+assert.equal('cloudUrl' in TOOLS[2], false);
 const googleContactsModule = await TOOLS[0].load();
 assert.equal(typeof googleContactsModule.mountGoogleContactsTool, 'function');
 const b2bModule = await TOOLS[1].load();
 assert.equal(typeof b2bModule.mountTool, 'function');
-const crmModule = await TOOLS[2].load();
-assert.equal(typeof crmModule.mountTool, 'function');
 
 assert.deepEqual(formatIndonesianPhone('0812-3456-7890'), { valid: true, value: '+6281234567890', reason: '' });
 assert.deepEqual(formatIndonesianPhone('+62 812 3456 7891'), { valid: true, value: '+6281234567891', reason: '' });
