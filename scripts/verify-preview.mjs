@@ -17,6 +17,13 @@ const cacheBust = encodeURIComponent(`${expectedSha}-${process.env.GITHUB_RUN_AT
 
 const sleep = (milliseconds) => new Promise((resolve) => setTimeout(resolve, milliseconds));
 
+function describeError(error) {
+  const cause = error?.cause;
+  if (!cause) return error?.message || String(error);
+  const causeDetails = [cause.code, cause.message].filter(Boolean).join(': ');
+  return `${error?.message || String(error)}${causeDetails ? ` (${causeDetails})` : ''}`;
+}
+
 async function fetchText(pathname) {
   const url = new URL(pathname, baseUrl);
   url.searchParams.set('verify', cacheBust);
@@ -78,9 +85,9 @@ for (let attempt = 1; attempt <= attempts; attempt += 1) {
     process.exit(0);
   } catch (error) {
     lastError = error;
-    console.error(`Preview pending (${attempt}/${attempts}): ${error.message}`);
+    console.error(`Preview pending (${attempt}/${attempts}): ${describeError(error)}`);
     if (attempt < attempts && delayMs > 0) await sleep(delayMs);
   }
 }
 
-throw new Error(`PREVIEW VERIFICATION: FAIL — ${lastError?.message || 'unknown error'}`);
+throw new Error(`PREVIEW VERIFICATION: FAIL — ${describeError(lastError || new Error('unknown error'))}`);
