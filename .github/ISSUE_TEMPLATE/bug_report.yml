@@ -1,0 +1,70 @@
+name: Bug report
+description: Report a reproducible defect without secrets or production data
+title: "bug: "
+labels: []
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Do not report security vulnerabilities here. Follow SECURITY.md and remove all secrets, tokens, and real CRM/customer data.
+  - type: textarea
+    id: outcome
+    attributes:
+      label: Impact
+      description: What user or operational outcome is blocked?
+    validations:
+      required: true
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Reproduction steps
+      description: Provide the smallest reproducible sequence using synthetic data.
+      placeholder: |
+        1. Open ...
+        2. Select ...
+        3. Observe ...
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual behavior
+    validations:
+      required: true
+  - type: dropdown
+    id: environment
+    attributes:
+      label: Environment
+      options:
+        - Local
+        - Pull-request preview
+        - Production — samson.web.id
+        - Production — crm.samson.web.id
+        - GitHub Actions
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: Commit, PR, or deployment version
+      placeholder: Commit SHA, PR number, or dist/version.json value
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Sanitized evidence
+      description: Logs or screenshots with secrets and personal data removed.
+  - type: checkboxes
+    id: safety
+    attributes:
+      label: Safety confirmation
+      options:
+        - label: I removed credentials, tokens, OTPs, and real CRM/customer data.
+          required: true
+        - label: This is not a security vulnerability requiring private disclosure.
+          required: true

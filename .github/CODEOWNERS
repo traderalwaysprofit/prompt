@@ -1,0 +1,19 @@
+# Default ownership
+* @traderalwaysprofit
+
+# Governance and delivery controls
+/.github/ @traderalwaysprofit
+/GOVERNANCE.md @traderalwaysprofit
+/SECURITY.md @traderalwaysprofit
+/CONTRIBUTING.md @traderalwaysprofit
+/package.json @traderalwaysprofit
+/package-lock.json @traderalwaysprofit
+/vitest.config.ts @traderalwaysprofit
+
+# Production, security, and data boundaries
+/worker/ @traderalwaysprofit
+/apps/masumi-crm/ @traderalwaysprofit
+/migrations/ @traderalwaysprofit
+/wrangler.jsonc @traderalwaysprofit
+/wrangler.crm.jsonc @traderalwaysprofit
+/config/ @traderalwaysprofit

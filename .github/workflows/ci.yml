@@ -40,6 +40,9 @@ jobs:
       - name: Run Security & Schema Tests
         run: npm run test:run
 
+      - name: Enforce Unit Coverage Threshold
+        run: npm run test:coverage
+
       - name: Run Existing Tool Regression Tests
         run: npm run test:tools
 
@@ -63,6 +66,7 @@ jobs:
             echo "- Type contract: TypeScript strict noEmit"
             echo "- Runtime schema: Zod"
             echo "- Unit/security tests: Vitest + existing B2B regression suite"
+            echo "- Coverage floor: statements/lines/functions 75%, branches 60%"
             echo "- Cloudflare bundle: Wrangler deploy --dry-run"
             echo "- Production build + security-header validation"
             echo "- Production deployment remains native Cloudflare Workers Builds after protected merge to main"

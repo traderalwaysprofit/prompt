@@ -1,0 +1,56 @@
+name: Feature request
+description: Propose a bounded outcome with acceptance criteria and risk context
+title: "feat: "
+labels: []
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem or opportunity
+      description: Describe the current limitation and who is affected.
+    validations:
+      required: true
+  - type: textarea
+    id: outcome
+    attributes:
+      label: Desired outcome
+      description: Describe the result without prescribing unnecessary implementation details.
+    validations:
+      required: true
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: Acceptance criteria
+      placeholder: |
+        - Given ... when ... then ...
+        - No regression in ...
+    validations:
+      required: true
+  - type: dropdown
+    id: boundary
+    attributes:
+      label: Primary boundary
+      options:
+        - SAMSON frontend / Tools Hub
+        - B2B Worker / provider integration
+        - MASUMI CRM
+        - Data / prompt / workflow content
+        - CI/CD / Cloudflare / infrastructure
+        - Documentation / governance
+    validations:
+      required: true
+  - type: checkboxes
+    id: risk
+    attributes:
+      label: Risk indicators
+      options:
+        - label: Authentication or authorization
+        - label: Production data or migration
+        - label: DNS, Cloudflare, deployment, or secrets
+        - label: External publish/message/action
+        - label: Dependency or licensing change
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives and rollback
+      description: Note simpler options, rejected approaches, and a safe rollback if applicable.
