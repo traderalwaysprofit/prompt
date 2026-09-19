@@ -78,30 +78,13 @@ jobs:
           if (!workerName) throw new Error('PREVIEW_WORKER_NAME is required');
 
           writeFileSync(
-            'preview-worker.generated.js',
-            `export default {
-              async fetch(request, env) {
-                const url = new URL(request.url);
-                if (url.pathname === "/src/games/meja-it/") {
-                  url.pathname = "/src/games/meja-it/index.html";
-                  return env.ASSETS.fetch(new Request(url, request));
-                }
-                return env.ASSETS.fetch(request);
-              }
-            };\n`
-          );
-
-          writeFileSync(
             'wrangler.pr-preview.generated.jsonc',
             `${JSON.stringify({
               $schema: 'node_modules/wrangler/config-schema.json',
               name: workerName,
-              main: './preview-worker.generated.js',
               compatibility_date: '2026-09-02',
               assets: {
-                directory: './dist',
-                binding: 'ASSETS',
-                run_worker_first: true
+                directory: './dist'
               }
             }, null, 2)}\n`
           );
