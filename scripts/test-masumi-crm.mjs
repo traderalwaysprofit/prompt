@@ -44,6 +44,10 @@ assert.equal(TOOLS.length, 3);
 assert.equal(TOOLS[2].id, 'masumi-sales-crm');
 assert.equal(getToolByRoute('#tools/masumi-sales-crm'), TOOLS[2]);
 assert.equal(TOOLS[2].cloudUrl, 'https://crm.samson.web.id/');
+assert.equal(TOOLS[2].externalUrl, 'https://crm.samson.web.id/');
+assert.equal(TOOLS[2].externalTarget, '_blank');
+assert.deepEqual(TOOLS[2].badges, ['CLOUD', 'CRM']);
+assert.equal(TOOLS[2].statusLabel, 'Aplikasi aktif');
 const crmModule = await TOOLS[2].load();
 assert.equal(typeof crmModule.mountTool, 'function');
 

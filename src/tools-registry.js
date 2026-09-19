@@ -2,7 +2,8 @@ export const TOOLS_HOME_ROUTE = '#tools';
 
 const googleContactFormats = Object.freeze(['XLSX', 'XLS', 'CSV']);
 const b2bBadges = Object.freeze(['AI', 'LEADS', 'CSV', 'XLSX']);
-const masumiCrmFormats = Object.freeze(['LOCAL', 'JSON', 'CSV']);
+const masumiCrmBadges = Object.freeze(['CLOUD', 'CRM']);
+export const MASUMI_CRM_URL = 'https://crm.samson.web.id/';
 
 export const TOOLS = Object.freeze([
   Object.freeze({
@@ -35,12 +36,13 @@ export const TOOLS = Object.freeze([
     route: '#tools/masumi-sales-crm',
     category: 'Sales & CRM',
     title: 'MASUMI Sales CRM',
-    description: 'Kelola lead, pipeline, prioritas, dan follow-up Masumi Beauty Indonesia.',
-    cloudUrl: 'https://crm.samson.web.id/',
-    formats: masumiCrmFormats,
-    badges: masumiCrmFormats,
+    description: 'Kelola lead, pipeline, follow-up, dan aktivitas sales Masumi Beauty Indonesia.',
+    cloudUrl: MASUMI_CRM_URL,
+    externalUrl: MASUMI_CRM_URL,
+    externalTarget: '_blank',
+    badges: masumiCrmBadges,
     status: 'ready',
-    statusLabel: 'Siap digunakan',
+    statusLabel: 'Aplikasi aktif',
     iconPath: 'M3 21h18M5 21V7l7-4 7 4v14M8 11h8M8 15h8',
     load: () => import('./tools/masumi-crm.js')
   })

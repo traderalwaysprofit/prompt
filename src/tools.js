@@ -8,6 +8,7 @@ import { getToolByRoute, isToolsRoute, TOOLS, TOOLS_HOME_ROUTE } from './tools-r
   let routeRequest = 0;
 
   const icon = (path) => `<svg class="tool-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="${path}"></path></svg>`;
+  const isExternalTool = (tool) => Boolean(tool.externalUrl);
 
   const shellMarkup = () => `
     <section class="tools-section" id="tools" aria-label="SAMSON Practical Tools">
@@ -16,8 +17,17 @@ import { getToolByRoute, isToolsRoute, TOOLS, TOOLS_HOME_ROUTE } from './tools-r
 
   const toolCardMarkup = (tool) => {
     const badges = tool.badges || tool.formats || [];
+    const external = isExternalTool(tool);
+    const href = external ? tool.externalUrl : tool.route;
+    const externalAttributes = external
+      ? ` target="${tool.externalTarget || '_blank'}" rel="noopener noreferrer" data-tool-destination="external" aria-label="${tool.title} — buka aplikasi di tab baru"`
+      : '';
+    const actionLabel = external ? 'Buka Aplikasi' : 'Buka Tool';
+    const actionIcon = external
+      ? 'M14 3h7v7M10 14L21 3M21 14v5a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h5'
+      : 'M5 12h14M13 6l6 6-6 6';
     return `
-    <a class="tools-catalog-card" href="${tool.route}" data-tool-id="${tool.id}">
+    <a class="tools-catalog-card" href="${href}" data-tool-id="${tool.id}"${externalAttributes}>
       <span class="tools-card-topline">
         <span class="tools-card-icon">${icon(tool.iconPath)}</span>
         <span class="tools-card-status is-${tool.status}"><span aria-hidden="true"></span>${tool.statusLabel}</span>
@@ -28,7 +38,7 @@ import { getToolByRoute, isToolsRoute, TOOLS, TOOLS_HOME_ROUTE } from './tools-r
       <span class="tools-card-formats" aria-label="Fitur dan format yang didukung">
         ${badges.map((badge) => `<span>${badge}</span>`).join('')}
       </span>
-      <span class="tools-card-action">Buka Tool ${icon('M5 12h14M13 6l6 6-6 6')}</span>
+      <span class="tools-card-action">${actionLabel} ${icon(actionIcon)}${external ? '<span class="sr-only"> di tab baru</span>' : ''}</span>
     </a>`;
   };
 
@@ -144,6 +154,10 @@ import { getToolByRoute, isToolsRoute, TOOLS, TOOLS_HOME_ROUTE } from './tools-r
 
     const tool = getToolByRoute(location.hash);
     if (tool) {
+      if (isExternalTool(tool)) {
+        window.location.replace(tool.externalUrl);
+        return;
+      }
       renderTool(tool, { focus, scroll });
       return;
     }
