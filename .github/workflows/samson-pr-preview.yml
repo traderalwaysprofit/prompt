@@ -1,31 +1,38 @@
-name: Deploy SAMSON PR Preview
+name: SAMSON Preview Verification
 
 on:
   pull_request:
-    types: [synchronize, opened, reopened]
+    types: [opened, synchronize, reopened, ready_for_review]
   workflow_dispatch:
 
 permissions:
   contents: read
 
 concurrency:
-  group: samson-pr-preview-${{ github.event.pull_request.number || github.ref_name }}
-  cancel-in-progress: true
+  # A stable Worker hostname avoids per-PR DNS propagation. Serialize deployments
+  # so two pull requests can never verify different revisions at the same URL.
+  group: samson-pr-preview-deployment
+  cancel-in-progress: false
 
 jobs:
-  deploy-preview:
-    if: github.event_name == 'workflow_dispatch' || github.event.pull_request.number == 65
+  preview-verification:
+    name: preview-verification
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 20
     environment:
       name: masumi-crm-preview
     env:
-      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-      CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
       NO_COLOR: 1
+      PREVIEW_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+      PREVIEW_HEAD_REPOSITORY: ${{ github.event.pull_request.head.repo.full_name || github.repository }}
+      PREVIEW_WORKER_NAME: samson-pr-preview
     steps:
-      - name: Checkout repository
+      - name: Checkout exact preview revision
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ env.PREVIEW_SHA }}
+          fetch-depth: 1
+          persist-credentials: false
 
       - name: Setup Node.js
         uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
@@ -36,49 +43,59 @@ jobs:
       - name: Install locked dependencies
         run: npm ci --no-audit --no-fund
 
-      - name: Build static preview
+      - name: Build exact preview revision
+        env:
+          WORKERS_CI_COMMIT_SHA: ${{ env.PREVIEW_SHA }}
         run: npm run build
 
-      - name: Validate deployment credentials
+      - name: Detect trusted Cloudflare preview capability
+        id: cloudflare
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
         shell: bash
         run: |
           set -euo pipefail
-          test -n "${CLOUDFLARE_API_TOKEN:-}"
-          test -n "${CLOUDFLARE_ACCOUNT_ID:-}"
-          npx wrangler whoami
+          if [[ "$PREVIEW_HEAD_REPOSITORY" == "$GITHUB_REPOSITORY" &&
+                -n "${CLOUDFLARE_API_TOKEN:-}" &&
+                -n "${CLOUDFLARE_ACCOUNT_ID:-}" ]]; then
+            npx wrangler whoami
+            echo "available=true" >> "$GITHUB_OUTPUT"
+            echo "mode=cloudflare" >> "$GITHUB_OUTPUT"
+          else
+            echo "available=false" >> "$GITHUB_OUTPUT"
+            echo "mode=local-safe-fallback" >> "$GITHUB_OUTPUT"
+            echo "Cloudflare credentials are unavailable for this PR; using the isolated local preview contract." >&2
+          fi
 
-      - name: Generate isolated preview config
-        shell: bash
+      - name: Generate isolated Cloudflare preview config
+        if: steps.cloudflare.outputs.available == 'true'
         run: |
-          cat > preview-worker.generated.js <<'EOF'
-          export default {
-            async fetch(request, env) {
-              const url = new URL(request.url);
-              if (url.pathname === "/src/games/meja-it/") {
-                url.pathname = "/src/games/meja-it/index.html";
-                return env.ASSETS.fetch(new Request(url, request));
+          node --input-type=module <<'NODE'
+          import { writeFileSync } from 'node:fs';
+
+          const workerName = process.env.PREVIEW_WORKER_NAME;
+          if (!workerName) throw new Error('PREVIEW_WORKER_NAME is required');
+
+          writeFileSync(
+            'wrangler.pr-preview.generated.jsonc',
+            `${JSON.stringify({
+              $schema: 'node_modules/wrangler/config-schema.json',
+              name: workerName,
+              compatibility_date: '2026-09-02',
+              assets: {
+                directory: './dist'
               }
-              return env.ASSETS.fetch(request);
-            }
-          };
-          EOF
+            }, null, 2)}\n`
+          );
+          NODE
 
-          cat > wrangler.pr-preview.generated.jsonc <<'EOF'
-          {
-            "$schema": "node_modules/wrangler/config-schema.json",
-            "name": "samson-pr-65-preview",
-            "main": "./preview-worker.generated.js",
-            "compatibility_date": "2026-09-02",
-            "assets": {
-              "directory": "./dist",
-              "binding": "ASSETS",
-              "run_worker_first": true
-            }
-          }
-          EOF
-
-      - name: Deploy isolated preview
+      - name: Deploy isolated Cloudflare preview
         id: deploy
+        if: steps.cloudflare.outputs.available == 'true'
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
         shell: bash
         run: |
           set -euo pipefail
@@ -91,61 +108,52 @@ jobs:
           fi
           echo "preview_url=$preview_url" >> "$GITHUB_OUTPUT"
 
-      - name: Verify MEJA-IT preview
-        env:
-          PREVIEW_URL: ${{ steps.deploy.outputs.preview_url }}
-          EXPECTED_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+      - name: Start isolated local preview fallback
+        id: local
+        if: steps.cloudflare.outputs.available != 'true'
         shell: bash
         run: |
           set -euo pipefail
-          body_file="$RUNNER_TEMP/meja-it-preview.html"
-          version_file="$RUNNER_TEMP/version.json"
-
+          python3 -m http.server 4175 --bind 127.0.0.1 --directory dist \
+            > "$RUNNER_TEMP/samson-local-preview.log" 2>&1 &
+          echo "$!" > "$RUNNER_TEMP/samson-local-preview.pid"
           for attempt in {1..20}; do
-            version_status="$(curl --silent --show-error --max-time 20 \
-              --output "$version_file" --write-out '%{http_code}' \
-              "$PREVIEW_URL/version.json" || true)"
-            page_status="$(curl --silent --show-error --max-time 20 \
-              --output "$body_file" --write-out '%{http_code}' \
-              "$PREVIEW_URL/src/games/meja-it/" || true)"
-
-            deployed_sha="$(node --input-type=module -e '
-              import { readFileSync } from "node:fs";
-              try {
-                const payload = JSON.parse(readFileSync(process.argv[1], "utf8"));
-                process.stdout.write(payload.commit || payload.sha || payload.gitSha || "");
-              } catch {}
-            ' "$version_file")"
-
-            if [[ "$version_status" == "200" &&
-                  "$page_status" == "200" &&
-                  "$deployed_sha" == "$EXPECTED_SHA" ]] &&
-               grep -q 'PIXEL OFFICE' "$body_file"; then
-              echo "MEJA-IT preview verified at $EXPECTED_SHA."
+            if curl --silent --show-error --fail --location --max-time 10 \
+              http://127.0.0.1:4175/version.json > /dev/null; then
+              echo "preview_url=http://127.0.0.1:4175" >> "$GITHUB_OUTPUT"
               exit 0
             fi
-
-            echo "Preview propagation pending (attempt $attempt/20): version=$version_status page=$page_status sha=${deployed_sha:-missing}" >&2
-            sleep 3
+            sleep 1
           done
-
-          echo "Preview verification failed after propagation window." >&2
-          echo "Expected SHA: $EXPECTED_SHA" >&2
-          echo "Last version response:" >&2
-          sed -n '1,20p' "$version_file" >&2 || true
-          echo "Last page response:" >&2
-          sed -n '1,20p' "$body_file" >&2 || true
+          echo "Local preview did not become ready." >&2
+          sed -n '1,80p' "$RUNNER_TEMP/samson-local-preview.log" >&2 || true
           exit 1
 
-      - name: Publish preview link
+      - name: Verify deployed preview contract
         env:
-          PREVIEW_URL: ${{ steps.deploy.outputs.preview_url }}
+          PREVIEW_URL: ${{ steps.deploy.outputs.preview_url || steps.local.outputs.preview_url }}
+          EXPECTED_SHA: ${{ env.PREVIEW_SHA }}
+          PREVIEW_RETRY_ATTEMPTS: ${{ steps.cloudflare.outputs.available == 'true' && '30' || '1' }}
+          PREVIEW_RETRY_DELAY_MS: ${{ steps.cloudflare.outputs.available == 'true' && '5000' || '0' }}
+        run: node scripts/verify-preview.mjs
+
+      - name: Publish preview verification summary
+        if: always()
+        env:
+          PREVIEW_MODE: ${{ steps.cloudflare.outputs.mode }}
+          PREVIEW_URL: ${{ steps.deploy.outputs.preview_url || steps.local.outputs.preview_url }}
+        shell: bash
         run: |
           {
-            echo "## SAMSON PR #65 Preview"
+            echo "## SAMSON Preview Verification"
             echo ""
-            echo "- MEJA-IT Pixel Office: $PREVIEW_URL/src/games/meja-it/"
-            echo "- Root preview: $PREVIEW_URL/"
-            echo "- Isolated Worker: samson-pr-65-preview"
-            echo "- Production domain unchanged"
+            echo "- Required check context: preview-verification"
+            echo "- Revision: $PREVIEW_SHA"
+            echo "- Mode: ${PREVIEW_MODE:-unknown}"
+            echo "- Preview: ${PREVIEW_URL:-unavailable}"
+            if [[ "${PREVIEW_MODE:-}" == "cloudflare" ]]; then
+              echo "- Isolated Worker: $PREVIEW_WORKER_NAME"
+            fi
+            echo "- Contracts: version SHA, root application, redirects, and MEJA-IT route"
+            echo "- Production domain: unchanged"
           } >> "$GITHUB_STEP_SUMMARY"
