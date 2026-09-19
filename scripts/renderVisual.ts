@@ -51,7 +51,7 @@ interface CliOptions {
   name: string;
 }
 
-function parseArgs(argv: string[]): CliOptions {
+export function parseArgs(argv: string[]): CliOptions {
   const options: CliOptions = {
     outputDir: "dist-visuals",
     name: "forex-rule-card",
@@ -81,7 +81,7 @@ function parseArgs(argv: string[]): CliOptions {
   return options;
 }
 
-async function loadPayload(inputPath?: string): Promise<VisualCardData> {
+export async function loadPayload(inputPath?: string): Promise<VisualCardData> {
   if (!inputPath) return DEFAULT_PAYLOAD;
   const absolutePath = path.resolve(process.cwd(), inputPath);
   const raw = await fs.readFile(absolutePath, "utf8");
