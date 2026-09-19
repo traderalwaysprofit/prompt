@@ -39,8 +39,8 @@ jobs:
           npm run build
           npm run build:masumi-crm-cloud
 
-      - name: Validate security policy artifact
-        run: npm run validate:security-headers
+      - name: Validate built security-header artifact
+        run: npm run validate:security-headers:core
 
       - name: Start local static server
         if: github.event_name != 'workflow_dispatch'

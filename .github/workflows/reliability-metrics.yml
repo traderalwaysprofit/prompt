@@ -1,0 +1,58 @@
+name: Reliability Metrics
+
+on:
+  schedule:
+    # Sunday 19:00 WIB, before the Personal OS weekly review.
+    - cron: '0 12 * * 0'
+  workflow_dispatch:
+    inputs:
+      window_days:
+        description: Rolling measurement window in days
+        required: false
+        default: '30'
+        type: string
+
+permissions:
+  contents: read
+  actions: read
+
+concurrency:
+  group: reliability-metrics
+  cancel-in-progress: true
+
+jobs:
+  reliability-metrics:
+    name: reliability-metrics
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      GITHUB_TOKEN: ${{ github.token }}
+      WINDOW_DAYS: ${{ inputs.window_days || '30' }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Setup Node.js
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: 24
+
+      - name: Measure rolling reliability
+        run: >-
+          node scripts/measure-reliability.mjs
+          --window-days "$WINDOW_DAYS"
+          --json-out reliability-metrics/reliability.json
+          --markdown-out reliability-metrics/reliability.md
+
+      - name: Publish workflow summary
+        if: always()
+        run: cat reliability-metrics/reliability.md >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Upload reliability evidence
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: reliability-metrics-${{ github.run_id }}
+          path: reliability-metrics/
+          if-no-files-found: error
+          retention-days: 30

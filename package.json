@@ -32,12 +32,13 @@
     "observability:validate": "node scripts/validate-observability-config.mjs",
     "observability:print-env": "node scripts/validate-observability-config.mjs --print-env",
     "observability:smoke": "node scripts/check-observability-targets.mjs",
+    "reliability:measure": "node scripts/measure-reliability.mjs",
     "verify:worker": "wrangler deploy --dry-run --outdir .wrangler-dry-run",
     "verify:masumi-crm-worker": "npm run build:masumi-crm-cloud && wrangler deploy --dry-run --config wrangler.crm.jsonc --env preview --outdir .wrangler-crm-dry-run",
     "validate:security-headers:core": "node scripts/validate-security-headers.mjs",
     "validate:security-headers": "npm run validate:security-headers:core && npm run verify:worker && npm run verify:masumi-crm-worker",
     "validate:regression": "node scripts/validate-regression.mjs",
-    "ci:verify": "npm run test:tools && npm run build && npm run validate:security-headers",
+    "ci:verify": "npm run lint && npm run typecheck && npm run test:coverage && npm run test:tools:core && npm run build && npm run validate:security-headers",
     "prepare": "husky"
   },
   "lint-staged": {
