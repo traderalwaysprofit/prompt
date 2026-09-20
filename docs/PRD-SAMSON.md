@@ -196,9 +196,8 @@ Theme layer tidak boleh mengubah data/behavior inti dan harus tetap usable di mo
 - setiap tool mempunyai route/deep link sendiri;
 - Google Contacts mempertahankan local-first privacy contract;
 - B2B Prospecting memakai same-origin Worker API untuk provider traffic;
-- MASUMI Sales CRM memakai key `samsonMasumiCrmV1`, maksimum 2.000 lead, dan tidak mengirim data CRM ke server;
-- impor CRM hanya menerima backup JSON tervalidasi maksimal 5 MB dan memerlukan konfirmasi sebelum mengganti data;
-- ekspor CRM harus melindungi spreadsheet dari formula injection;
+- MASUMI Sales CRM ditampilkan sebagai launcher eksternal menuju `https://crm.samson.web.id/` dan route lama tetap mengarah ke aplikasi cloud;
+- validasi impor, batas 2.000 lead, backup JSON, dan perlindungan formula injection dijalankan oleh aplikasi CRM cloud serta Worker API;
 - untrusted import/provider data harus dirender secara aman;
 - candidate tidak auto-save tanpa review.
 

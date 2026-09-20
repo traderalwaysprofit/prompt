@@ -1,22 +1,24 @@
-# MASUMI Sales CRM V1
+# MASUMI Sales CRM V1 — Retired Local UI
+
+> Status: retired. The local Tools Hub UI was removed after the production cloud application became the canonical runtime. The route `#tools/masumi-sales-crm` is retained only as a compatibility redirect to `https://crm.samson.web.id/`.
 
 ## Purpose
 
-MASUMI Sales CRM is a local-only Practical Tools Hub module at `#tools/masumi-sales-crm`. It supports day-to-day lead registration, qualification, prioritization, forecasting, and follow-up without introducing accounts, a backend database, or frontend secrets.
+This document records the retired local-only Practical Tools Hub implementation. It is historical context, not the current runtime contract.
 
 ## Runtime contract
 
 - Registry entry: `/src/tools-registry.js`
-- UI/controller: `/src/tools/masumi-crm.js`
+- UI/controller: removed
 - Deterministic rules: `/src/tools/masumi-crm-core.js`
-- Adaptive styles: `/src/tools/masumi-crm.css`
+- Adaptive styles: removed
 - Storage key: `samsonMasumiCrmV1`
 - Maximum records: 2,000 leads
 - Backup format: schema `samson.masumi-crm.backup`, version `1`
 - Import format: `.json`, maximum 5 MB
-- Network behavior: none
+- Current destination: `https://crm.samson.web.id/`
 
-The module follows the generic `mountTool(root, context)` lifecycle and returns a `destroy()` controller. Its JavaScript and CSS are loaded only after the route is opened.
+The shared deterministic rules remain active because the cloud application and Worker APIs import them. The retired local controller and stylesheet are no longer shipped.
 
 ## Pipeline and forecast
 
@@ -68,8 +70,8 @@ Dashboard definitions:
 
 ## Verification
 
-Core rules are exercised by `npm run test:masumi-crm`. Browser coverage validates lazy loading, empty state, CRUD, persistence after reload, search/filtering, Lost reason enforcement, overdue follow-up, XSS resistance, backup/restore, CSV injection defense, import limits, four themes, and mobile overflow.
+Core rules remain exercised by `npm run test:masumi-crm`. Browser coverage now validates the external launcher, compatibility redirect, and the standalone cloud CRM application.
 
 ## Rollback
 
-Remove the registry entry and the three MASUMI CRM source files, then revert the related tests/documentation. A code rollback does not delete existing `samsonMasumiCrmV1` data from user devices, allowing the module to be restored without losing locally stored records.
+Restore the retired controller and stylesheet from Git history, add the registry `load()` entry again, and restore the former browser tests. Existing `samsonMasumiCrmV1` data on user devices is not deleted by this cleanup.

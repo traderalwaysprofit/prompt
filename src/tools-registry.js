@@ -37,14 +37,12 @@ export const TOOLS = Object.freeze([
     category: 'Sales & CRM',
     title: 'MASUMI Sales CRM',
     description: 'Kelola lead, pipeline, follow-up, dan aktivitas sales Masumi Beauty Indonesia.',
-    cloudUrl: MASUMI_CRM_URL,
     externalUrl: MASUMI_CRM_URL,
     externalTarget: '_blank',
     badges: masumiCrmBadges,
     status: 'ready',
     statusLabel: 'Aplikasi aktif',
-    iconPath: 'M3 21h18M5 21V7l7-4 7 4v14M8 11h8M8 15h8',
-    load: () => import('./tools/masumi-crm.js')
+    iconPath: 'M3 21h18M5 21V7l7-4 7 4v14M8 11h8M8 15h8'
   })
 ]);
 

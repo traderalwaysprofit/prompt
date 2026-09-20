@@ -21,7 +21,7 @@ The first CRM release stores data in `localStorage`. That design is appropriate 
 
 Run the operational CRM at `crm.samson.web.id` as a separate Worker application. Use Cloudflare Access OTP email for the outer access gate and application roles for authorization. Access D1 only through the CRM Worker. Keep the public Tools Hub card and route as the entry point.
 
-The CRM uses separate preview and production resources. The existing local CRM remains available as the migration source until production verification succeeds.
+The CRM uses separate preview and production resources. After production verification succeeded, the local Tools Hub UI was retired; Git history remains the rollback source and legacy browser data is not deleted by the cleanup.
 
 ## Options considered
 

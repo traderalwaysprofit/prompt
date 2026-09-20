@@ -45,9 +45,10 @@ assert.match(buildScript, /crm-client\.js/);
 assert.match(buildScript, /crm-core\.js/);
 
 const crmTool = TOOLS.find(({ id }) => id === 'masumi-sales-crm');
-assert.equal(crmTool.cloudUrl, 'https://crm.samson.web.id/');
 assert.equal(crmTool.externalUrl, 'https://crm.samson.web.id/');
 assert.equal(crmTool.externalTarget, '_blank');
+assert.equal('load' in crmTool, false);
+assert.equal('cloudUrl' in crmTool, false);
 
 const listCalls = [];
 const listClient = createCrmClient({

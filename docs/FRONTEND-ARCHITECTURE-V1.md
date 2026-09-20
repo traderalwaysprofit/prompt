@@ -1,6 +1,6 @@
 # Frontend Architecture V1 — Current Implementation
 
-**Status:** current-state documentation, updated 8 September 2026.
+**Status:** current-state documentation, updated 19 September 2026.
 
 ## 1. Objective
 
@@ -18,19 +18,19 @@ SAMSON is a static-first prompt, workflow, and practical-tools application for `
 | Compact prompt-card theme | `/src/prompt-card-theme.css` |
 | Navigation/onboarding styles | `/src/app-shell.css` |
 | Practical Tools Hub and hash router | `/src/tools.js` |
-| Practical Tools registry and lazy module loader | `/src/tools-registry.js` |
+| Practical Tools registry, internal loaders, and external destinations | `/src/tools-registry.js` |
 | Google Contacts UI/controller | `/src/tools/google-contacts.js` |
 | Google Contacts normalization and CSV contract | `/src/tools/google-contacts-core.js` |
 | B2B Prospecting UI/controller | `/src/tools/b2b-prospecting.js` |
 | B2B schema, normalization, dedupe, scoring, import/export, route contract | `/src/tools/b2b-prospecting-core.js` |
 | B2B local persistence/migration | `/src/tools/b2b-prospecting-storage.js` |
 | B2B same-origin API client | `/src/tools/b2b-prospecting-api.js` |
-| MASUMI Sales CRM UI/controller | `/src/tools/masumi-crm.js` |
+| MASUMI Sales CRM cloud UI/controller | `/apps/masumi-crm/app.js` |
 | MASUMI CRM schema, validation, scoring, KPI, backup, and CSV contract | `/src/tools/masumi-crm-core.js` |
 | Shared Tools Hub styling | `/src/tools.css` |
 | Google Contacts responsive/adaptive styling | `/src/tools/google-contacts.css` |
 | B2B Prospecting responsive/adaptive styling | `/src/tools/b2b-prospecting.css` |
-| MASUMI Sales CRM responsive/adaptive styling | `/src/tools/masumi-crm.css` |
+| MASUMI Sales CRM cloud responsive/adaptive styling | `/apps/masumi-crm/app.css` |
 | Ordered contact input template | `/assets/templates/samson-template-kontak.xlsx` |
 | Pinned spreadsheet parser | `package.json` / `package-lock.json`; published as `/vendor/xlsx.full.min.js` (SheetJS CE 0.20.3) |
 | Cloudflare Worker entry | `/worker/index.js` |
@@ -53,7 +53,7 @@ Static files are still generated into `dist/`. Cloudflare invokes `worker/index.
 - Practical Tools: `#tools` opens a registry-driven catalog.
 - `#tools/google-contacts`: local Excel/CSV normalization and Google Contacts CSV export.
 - `#tools/b2b-prospecting`: local-first prospect database with AI candidate review, dedupe, import/export, enrichment, and visit briefing.
-- `#tools/masumi-sales-crm`: local-only lead register, pipeline, priority scoring, KPI, follow-up, backup JSON, and safe CSV reporting.
+- `#tools/masumi-sales-crm`: compatibility route that redirects to the standalone cloud application at `https://crm.samson.web.id/`.
 - Creator/footer sections.
 
 Tool modules follow the generic `mountTool(root, context)` lifecycle. `tools.js` retains a temporary compatibility fallback for the older Google Contacts mount export.
@@ -71,7 +71,7 @@ A command uses the fields `id`, `name`, `categoryId`, `description`, and `templa
 Command IDs 47, 48, 50, and 52 are retired and reserved; validation rejects future reuse.
 
 B2B Prospecting uses a separate schema-versioned local record contract and does not modify the prompt catalog data files.
-MASUMI Sales CRM uses a separate schema-versioned record contract under `samsonMasumiCrmV1`, caps storage at 2,000 leads, and does not call a server endpoint.
+MASUMI Sales CRM is not mounted inside the SAMSON frontend. Its registry entry is an external launcher, while the shared deterministic CRM rules remain in `src/tools/masumi-crm-core.js` for the standalone cloud application and Worker APIs.
 
 ## 5. Interaction model
 
@@ -89,8 +89,8 @@ MASUMI Sales CRM uses a separate schema-versioned record contract under `samsonM
 ### Practical Tools
 
 1. Open `#tools` and render the registry-driven catalog.
-2. Lazy-load the selected tool module.
-3. Mount the tool and return a `destroy()` controller for route cleanup.
+2. Open an external destination when the selected registry entry defines `externalUrl`.
+3. Otherwise, lazy-load the selected tool module, mount it, and return a `destroy()` controller for route cleanup.
 4. Keep local-only processing in the browser where possible.
 5. Route credentialed AI operations through same-origin `/api/tools/b2b/*` endpoints.
 6. Never auto-save AI candidates; review and duplicate detection occur before persistence.

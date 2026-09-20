@@ -35,7 +35,7 @@ This branch introduces only reversible repository foundations:
 - network-free SQLite integration tests that execute the D1-compatible migration in CI.
 - Admin/Sales ownership enforcement, bounded list queries, strict JSON input, optimistic concurrency, soft delete, and atomic mutation audit events.
 - session-aware owner selection plus cloud CRUD, search, filter, pagination, loading/error/empty states, and version-conflict recovery;
-- a Tools Hub launcher to `https://crm.samson.web.id/` while retaining the local CRM as a migration fallback;
+- a Tools Hub launcher to `https://crm.samson.web.id/`; the retired local UI is no longer shipped;
 - dashboard KPI and an ordered active follow-up workspace calculated by the shared deterministic CRM core;
 - Admin-only JSON backup, safe CSV export, and two-phase JSON import with explicit owner mapping;
 - server-side schema/option/date/score/ID/count validation, SHA-256 validation checksum, and idempotent commit;
@@ -110,7 +110,7 @@ The Step 7 interface only calls same-origin `/api/crm/v1/*` routes. It does not 
 | FUN-010–011, AC-011 | shared scoring/KPI rules; Won/Lost excluded from forecast and active follow-up | role-scoped API calculations and browser KPI/follow-up checks |
 | FUN-014–017, NFR-005 | 5 MB/2,000 limits; schema, canonical option, date, score, ID, owner, file/target duplicate validation | invalid pipeline, duplicate-file, duplicate-target, oversized-file, and permission tests |
 | FUN-018–019, NFR-002, SEC-009 | Admin-only validate/commit, explicit confirmation, checksum match, idempotent retry, one D1 batch | authorization, missing-confirmation, changed-checksum, retry, and forced mid-transaction rollback tests |
-| FUN-020, FUN-022, NFR-003 | versioned server backup independent of table filters; local CRM key is never deleted | backup round-trip test and client source assertion |
+| FUN-020, FUN-022, NFR-003 | versioned server backup independent of table filters; legacy localStorage data is not deleted by the cleanup | backup round-trip test and client source assertion |
 | FUN-021 | every CSV cell is quoted and formula-leading values are prefixed safely | byte-order-mark and formula-injection regression tests |
 | FUN-023, SEC-011 | import job plus audit actor/action/entity/request/timestamp and bounded metadata | audit counts and sensitive-content exclusion tests |
 | FUN-024–025, NFR-004, AC-013 | explicit UI states, four themes, DOM-only dynamic content, responsive layout | static source checks plus dedicated desktop/mobile Playwright suite |
@@ -184,4 +184,4 @@ users are absent.
 
 ## Rollback
 
-The foundation is isolated from the current SAMSON Worker and local CRM. Reverting this branch removes the cloud scaffold without deleting `samsonMasumiCrmV1` data from user devices.
+The cloud application and Worker APIs are isolated from the main SAMSON Worker. Roll back through the cloud deployment history and D1 migration procedure; the retired local UI is not a production fallback.
